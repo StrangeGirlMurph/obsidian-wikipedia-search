@@ -1,0 +1,55 @@
+import { App, PluginSettingTab, Setting } from 'obsidian';
+import { languages } from './languages';
+import WikipediaSearch from './main';
+
+export interface WikipediaSearchSettings {
+	language: string;
+	format: string;
+}
+
+export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
+	language: 'en',
+	format: '[{title}]({url})'
+}
+
+export class WikipediaSearchSettingTab extends PluginSettingTab {
+	plugin: WikipediaSearch;
+
+	constructor(app: App, plugin: WikipediaSearch) {
+		super(app, plugin);
+		this.plugin = plugin;
+	}
+
+	display(): void {
+		const {containerEl} = this;
+
+		containerEl.empty();
+
+		containerEl.createEl('h1', {text: 'Wikipedia Search Settings'});
+
+		new Setting(containerEl)
+			.setName('Language')
+			.setDesc('Article language to search for.')
+			.addDropdown(dropdown => dropdown
+				.addOptions(languages)
+				.setValue(this.plugin.settings.language)
+				.onChange(async (value) => {
+					console.log('Wikipedia Search - Set language to: ' + value);
+					this.plugin.settings.language = value;
+					await this.plugin.saveSettings();
+				}));
+
+		new Setting(containerEl)
+			.setName("Format")
+			.setDesc("Format to paste the result.\n'{title}' and '{url}' will be replaced with the article title and URL.")
+			.addText(text => text
+				.setPlaceholder("Format")
+				.setValue(this.plugin.settings.format)
+				.onChange(async (value) => {
+					console.log("Wikipedia Search - Set format to: " + value);
+					this.plugin.settings.format = value;
+					await this.plugin.saveSettings();
+				}));
+
+	}
+}
