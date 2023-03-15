@@ -50,7 +50,7 @@ export class SearchModal extends SuggestModal<Article> {
 
 	async getSuggestions(query: string): Promise<Article[]> {
 		if (query === "") return [];
-		const response = await requestUrl(`https://${this.plugin.settings.language}.wikipedia.org/w/api.php?action=opensearch&search=${query}`);
+		const response = await requestUrl(`https://${this.plugin.settings.language}.wikipedia.org/w/api.php?action=opensearch&search=${query}&profile=fuzzy`);
 
 		return response["json"][1].map((title: string, index: number) => ({ title, url: response["json"][3][index] }));
 	}
