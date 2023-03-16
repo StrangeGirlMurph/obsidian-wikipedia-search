@@ -6,8 +6,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 1. Search under the Community Plugins for it and click install.
 2. You may have to additionally enable it from the installed plugin list.  
-	<img src="https://user-images.githubusercontent.com/62220780/225567578-8d8cdc57-01ea-4d7d-a281-14a05fdee2d7.png" width=600 />
-
+   <img src="https://user-images.githubusercontent.com/62220780/225567578-8d8cdc57-01ea-4d7d-a281-14a05fdee2d7.png" width=600 />
 
 ## Usage
 
