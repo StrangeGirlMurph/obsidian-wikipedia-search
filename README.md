@@ -11,4 +11,4 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 ## Demo
 
-<img src="https://user-images.githubusercontent.com/62220780/225430675-afa6be1f-d453-43cf-b9da-39ee481b9eac.mp4" />
+<img src="https://user-images.githubusercontent.com/62220780/225566310-c877daa5-f28a-4cea-a230-fdc0c8c59602.mp4" />
