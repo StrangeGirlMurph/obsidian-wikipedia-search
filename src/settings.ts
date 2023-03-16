@@ -29,7 +29,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName('Language')
-			.setDesc('Article language to search for.')
+			.setDesc('Wikipedia to search in. (type to search)')
 			.addDropdown(dropdown => dropdown
 				.addOptions(languages)
 				.setValue(this.plugin.settings.language)
@@ -41,7 +41,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Format")
-			.setDesc("Format to paste the result.\n'{title}' and '{url}' will be replaced with the article title and URL.")
+			.setDesc("Format of the insert. ('{title}' and '{url}' will be replaced with the article title and URL)")
 			.addText(text => text
 				.setPlaceholder("Format")
 				.setValue(this.plugin.settings.format)
