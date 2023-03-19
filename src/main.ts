@@ -50,9 +50,10 @@ export class SearchModal extends SuggestModal<Article> {
 
 	async getSuggestions(query: string): Promise<Article[]> {
 		if (query === "") return [];
-		const response = await requestUrl(`https://${this.plugin.settings.language}.wikipedia.org/w/api.php?action=opensearch&search=${query}&profile=fuzzy`);
+		const response = await requestUrl(`https://${this.plugin.settings.language}.wikipedia.org/w/api.php?action=opensearch&search=${query}&profile=fuzzy`).catch((e) => null);
 
-		return response["json"][1].map((title: string, index: number) => ({ title, url: response["json"][3][index] }));
+		if (response) return response["json"][1].map((title: string, index: number) => ({ title, url: response["json"][3][index] }));
+		return [{title: "An error occurred. You should check your internet connection!", url: ""}]
 	}
 
 	renderSuggestion(article: Article, el: HTMLElement) {
