@@ -4,9 +4,17 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 ## Installation
 
+### From the official plugins
+
 1. Search under the Community Plugins for it and click install.
-2. You may have to additionally enable it from the installed plugin list.  
+2. Enable the plugin (from the installed plugin list).  
    <img src="https://user-images.githubusercontent.com/62220780/225567578-8d8cdc57-01ea-4d7d-a281-14a05fdee2d7.png" width=600 />
+
+### Manual Installation
+
+1. Create the directory `[path-to-vault]/.obsidian/plugins/wikipedia-search`.
+2. Download the `main.js` and `mainfest.json` from the [latest release](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases) and put the in the created directory.
+3. Enable the plugin.
 
 ## Usage
 
