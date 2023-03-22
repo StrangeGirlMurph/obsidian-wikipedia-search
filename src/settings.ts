@@ -34,7 +34,6 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				.addOptions(languages)
 				.setValue(this.plugin.settings.language)
 				.onChange(async (value) => {
-					console.log('Wikipedia Search - Set language to: ' + value);
 					this.plugin.settings.language = value;
 					await this.plugin.saveSettings();
 				}));
@@ -46,7 +45,6 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				.setPlaceholder("Format")
 				.setValue(this.plugin.settings.format)
 				.onChange(async (value) => {
-					console.log("Wikipedia Search - Set format to: " + value);
 					this.plugin.settings.format = value;
 					await this.plugin.saveSettings();
 				}));
