@@ -3,8 +3,8 @@
 	"name": "Wikipedia Search",
 	"version": "1.1.0",
 	"minAppVersion": "0.15.0",
-	"description": "Search for a Wikipedia article and link it.",
-	"author": "Murphy (StrangeGirlMurph)",
+	"description": "Search for Wikipedia articles and link them.",
+	"author": "StrangeGirlMurph",
 	"authorUrl": "https://github.com/StrangeGirlMurph/",
 	"fundingUrl": "https://ko-fi.com/murph",
 	"isDesktopOnly": false
