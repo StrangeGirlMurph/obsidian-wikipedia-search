@@ -1,3 +1,4 @@
+import { timeStamp } from 'console';
 import { App, Editor, MarkdownView, SuggestModal, Plugin, requestUrl } from 'obsidian';
 import { DEFAULT_SETTINGS, WikipediaSearchSettings, WikipediaSearchSettingTab } from './settings';
 
@@ -36,6 +37,7 @@ export default class WikipediaSearch extends Plugin {
 interface Article {
 	title: string;
 	url: string;
+	description: string | null;
 }
 
 export class SearchModal extends SuggestModal<Article> {
@@ -50,15 +52,25 @@ export class SearchModal extends SuggestModal<Article> {
 
 	async getSuggestions(query: string): Promise<Article[]> {
 		if (query === "") return [];
-		const response = (await requestUrl(`https://${this.plugin.settings.language}.wikipedia.org/w/api.php?action=opensearch&search=${query}&profile=fuzzy`).catch((e) => null))?.json;
 
-		if (response) return response[1].map((title: string, index: number) => ({ title, url: response[3][index] }));
-		return [{title: "An error occurred. You should check your internet connection!", url: ""}]
+		const baseURL = `https://${this.plugin.settings.language}.wikipedia.org/w/api.php?format=json`;
+
+		// https://en.wikipedia.org/w/api.php?format=json&action=opensearch&profile=fuzzy&search=Wikipedia	
+		const searchResponse = (await requestUrl(baseURL + `&action=opensearch&profile=fuzzy&search=${query}`).catch((e) => null))?.json;
+		if (searchResponse[1].length === 0) return [];
+
+		// https://en.wikipedia.org/w/api.php?format=json&&action=query&prop=description&titles=Wikipedia
+		const descriptionResponse = (await requestUrl(baseURL + `&action=query&prop=description&titles=${searchResponse[1].join("|")}`).catch(e => null))?.json;
+		const descriptions = Object.values(descriptionResponse.query.pages).map((page: any) => page.description ?? null);
+
+		if (!searchResponse || !descriptions) return [{title: "An error occurred. You should check your internet connection!", url: "", description: ""}]
+
+		return searchResponse[1].map((title: string, index: number) => ({ title, url: searchResponse[3][index], description: descriptions[index] }));
 	}
 
 	renderSuggestion(article: Article, el: HTMLElement) {
 		el.createEl("div", { text: article.title });
-		el.createEl("small", { text: article.url.slice(8) });
+		el.createEl("small", { text: article.description ?? article.url.slice(8) });
 	}
 
 	onChooseSuggestion(article: Article) {
