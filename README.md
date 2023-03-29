@@ -30,7 +30,3 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
 <img src="https://user-images.githubusercontent.com/62220780/228493146-4028361c-7576-4c38-a94d-a87318d09a8d.mp4" />
-
-
-
-
