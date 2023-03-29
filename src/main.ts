@@ -63,8 +63,6 @@ export class SearchModal extends SuggestModal<Article> {
 		const descriptionResponse = (await requestUrl(baseURL + `&action=query&prop=description&titles=${searchResponse[1].join("|")}`).catch(e => null))?.json;
 		const descriptions = Object.values(descriptionResponse.query.pages).map((page: any) => ({title: page.title, description: page.description ?? null}));
 
-		console.log(descriptions)
-
 		if (!searchResponse || !descriptions) return [{title: "An error occurred. You should check your internet connection!", url: "", description: ""}]
 
 		return searchResponse[1].map((title: string, index: number) => ({ title, url: searchResponse[3][index], description: descriptions.find((val) => val.title === title)?.description }));
