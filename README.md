@@ -10,7 +10,7 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 
 1. Search under the Community Plugins in the settings for it and click install.
 2. Enable the plugin (from the installed plugin list).  
-   <img src="https://user-images.githubusercontent.com/62220780/225567578-8d8cdc57-01ea-4d7d-a281-14a05fdee2d7.png" width=600 />
+   <img src="https://user-images.githubusercontent.com/62220780/228493364-b4e8b3b1-e6df-4f8c-8d9b-db7f21e3099d.png" width=600 />
 
 ### Manual Installation
 
@@ -29,4 +29,8 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
-<img src="https://user-images.githubusercontent.com/62220780/225566310-c877daa5-f28a-4cea-a230-fdc0c8c59602.mp4" />
+<img src="https://user-images.githubusercontent.com/62220780/228493146-4028361c-7576-4c38-a94d-a87318d09a8d.mp4" />
+
+
+
+
