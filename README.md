@@ -2,6 +2,11 @@
 
 An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia articles and link them in your notes.
 
+## Features
+
+- Linking Wikipedia articles in all languages.
+- Hyperlinking selected text.
+
 ## Installation
 
 ### From the community plugins list
@@ -24,11 +29,6 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 2. Set your language and format in the settings.
 3. Open the command pallet with `CTRL+P` and run `Search Articles`.
 4. Search for an article and select the one you're looking for.
-
-## Features
-
-- Linking Wikipedia articles in all languages.
-- Hyperlinking selected text.
 
 ## Demo
 
