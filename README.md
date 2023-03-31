@@ -25,6 +25,11 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 3. Open the command pallet with `CTRL+P` and run `Search Articles`.
 4. Search for an article and select the one you're looking for.
 
+## Features
+
+- Linking Wikipedia articles in all languages.
+- Hyperlinking selected text.
+
 ## Demo
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
