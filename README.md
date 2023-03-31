@@ -25,7 +25,7 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 
 ## Usage
 
-What I mean with "*search*" in the following:
+What I mean with "_search_" in the following:
 
 - In editing view open the command pallet with `CTRL+P` and run `Search Articles`.
 - (Start typing, select one of the options and watch the magic happen and the link appear.)
@@ -34,16 +34,16 @@ What I mean with "*search*" in the following:
 
 1. Install the plugin and enable it.
 2. Set your language and format in the settings.
-3. Start *searching* :)
+3. Start _searching_ :)
 
 ### Features
 
 - Basic links  
-   Just *search* from somewhere in your file.
+   Just _search_ from somewhere in your file.
 - Hyperlinking  
-   Select some text and *search*. The selected text will replace the `{title}` in your format.
+   Select some text and _search_. The selected text will replace the `{title}` in your format.
 - Search different languages  
-   In the *search* bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search a different Wikipedia than your default. (spaces don't matter)
+   In the _search_ bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search a different Wikipedia than your default. (spaces don't matter)
 
 ## Demo
 

@@ -1,28 +1,28 @@
 {
-  "name": "wikipedia-search",
-  "version": "1.5.0",
-  "description": "An Obsidian plugin to search for Wikipedia articles and link them.",
-  "main": "src/main.js",
-  "scripts": {
-    "prettify": "eslint ./src/ --fix && npx prettier -w .",
-    "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
-    "version": "node version-bump.mjs && git add manifest.json versions.json"
-  },
-  "keywords": [],
-  "author": "StrangeGirlMurph",
-  "license": "SEE LICENSE",
-  "devDependencies": {
-    "@types/node": "^16.11.6",
-    "@typescript-eslint/eslint-plugin": "5.29.0",
-    "@typescript-eslint/parser": "5.29.0",
-    "builtin-modules": "3.3.0",
-    "esbuild": "0.17.3",
-    "eslint": "^8.37.0",
-    "eslint-config-prettier": "^8.8.0",
-    "obsidian": "latest",
-    "prettier": "^2.8.7",
-    "tslib": "2.4.0",
-    "typescript": "4.7.4"
-  }
+	"name": "wikipedia-search",
+	"version": "1.5.0",
+	"description": "An Obsidian plugin to search for Wikipedia articles and link them.",
+	"main": "src/main.js",
+	"scripts": {
+		"prettify": "eslint ./src/ --fix && npx prettier -w .",
+		"dev": "node esbuild.config.mjs",
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"keywords": [],
+	"author": "StrangeGirlMurph",
+	"license": "SEE LICENSE",
+	"devDependencies": {
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"esbuild": "0.17.3",
+		"eslint": "^8.37.0",
+		"eslint-config-prettier": "^8.8.0",
+		"obsidian": "latest",
+		"prettier": "^2.8.7",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4"
+	}
 }
