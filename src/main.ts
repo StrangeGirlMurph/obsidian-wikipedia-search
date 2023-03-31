@@ -6,6 +6,7 @@ import {
   Plugin,
   requestUrl,
 } from "obsidian";
+import { languages } from "./languages";
 import {
   DEFAULT_SETTINGS,
   WikipediaSearchSettings,
@@ -69,9 +70,22 @@ export class SearchModal extends SuggestModal<Article> {
   }
 
   async getSuggestions(query: string): Promise<Article[]> {
-    if (query === "") return [];
+    if (query.trim() === "") return [];
 
-    const baseURL = `https://${this.plugin.settings.language}.wikipedia.org/w/api.php?format=json`;
+    let languageCode = this.plugin.settings.language;
+    
+    const queryArgs = query.split(":", 2);
+    if (queryArgs.length > 1) {
+      const queryCode = queryArgs[0]?.trim();
+      const queryText = queryArgs[1]?.trim();
+      if (queryCode && Object.keys(languages).includes(queryCode)  && queryCode !== languageCode) {
+        languageCode = queryCode;
+        query = queryText;
+      }
+    }
+    if (query.trim() === "") return [];
+
+    const baseURL = `https://${languageCode}.wikipedia.org/w/api.php?format=json`;
 
     // https://en.wikipedia.org/w/api.php?format=json&action=opensearch&profile=fuzzy&search=Wikipedia
     const searchResponse = (

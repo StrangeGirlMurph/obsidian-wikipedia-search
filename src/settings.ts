@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import { languages } from "./languages";
 import WikipediaSearch from "./main";
 
@@ -29,14 +29,18 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
     new Setting(containerEl)
       .setName("Language")
-      .setDesc("Wikipedia to search in. (type to search)")
+      .setDesc("Default Wikipedia to search in. (type to search)")
       .addDropdown((dropdown) =>
         dropdown
-          .addOptions(languages)
+          .addOptions(Object.entries(languages).reduce((pre, lang) => ({
+            ...pre,
+            [lang[0]]: `${lang[0]} - ${lang[1]}`,
+        }), {}))
           .setValue(this.plugin.settings.language)
           .onChange(async (value) => {
             this.plugin.settings.language = value;
             await this.plugin.saveSettings();
+            new Notice(`Language set to ${languages[value]} (${value})!`);
           })
       );
 

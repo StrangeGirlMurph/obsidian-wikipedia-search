@@ -1,4 +1,4 @@
-export const languages = {
+export const languages: {[key: string]: string} = {
   aa: "Qafár af",
   ab: "аԥсшәа",
   ace: "Acèh",
