@@ -59,8 +59,15 @@ export class SearchModal extends SuggestModal<Article> {
     super(app);
     this.plugin = plugin;
     this.editor = editor;
+    this.setPlaceholder("Search Wikipedia...");
   }
 
+  onOpen(): void {
+    this.inputEl.value = this.editor.getSelection();
+    //@ts-ignore - private method
+    super.updateSuggestions();
+  }
+  
   async getSuggestions(query: string): Promise<Article[]> {
     if (query === "") return [];
 
@@ -108,14 +115,14 @@ export class SearchModal extends SuggestModal<Article> {
   renderSuggestion(article: Article, el: HTMLElement) {
     el.createEl("div", { text: article.title });
     el.createEl("small", {
-      text: article.description ?? article.url.slice(8),
+      text: article.description || article.url.slice(8),
     });
   }
 
   onChooseSuggestion(article: Article) {
     const link = this.plugin.settings.format
-      .replace("{title}", article.title)
+      .replace("{title}", this.editor.getSelection() || article.title)
       .replace("{url}", article.url);
-    this.editor.replaceRange(link, this.editor.getCursor());
+    this.editor.replaceSelection(link);
   }
 }
