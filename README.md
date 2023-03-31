@@ -25,17 +25,18 @@ Note: I am currently still waiting for the merge of my [PR](https://github.com/o
 
 ## Usage
 
+What I mean with "*search*" in the following:
+
+- In editing view open the command pallet with `CTRL+P` and run `Search Articles`.
+- (Start typing, select one of the options and watch the magic happen and the link appear.)
+
 ### Getting Started
 
 1. Install the plugin and enable it.
 2. Set your language and format in the settings.
+3. Start *searching* :)
 
 ### Features
-
->What I mean with "*search*" in the following:
->
->- In editing view open the command pallet with `CTRL+P` and run `Search Articles`.
->- (Start typing, select one of the options and watch the magic happen and the link appear.)
 
 - Basic links  
    Just *search* from somewhere in your file.
