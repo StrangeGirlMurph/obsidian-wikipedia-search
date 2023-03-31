@@ -26,11 +26,10 @@ export class SearchModal extends SuggestModal<Article> {
 	}
 
 	async getSuggestions(query: string): Promise<Article[]> {
-		if (query.trim() === "") {
-			this.emptyStateText = "What are you waiting for? Start typing :)";
+		if (!window.navigator.onLine) {
+			this.emptyStateText = "You have to be connected to the internet to search!";
 			return [];
 		}
-		this.emptyStateText = "No results found.";
 
 		let languageCode = this.plugin.settings.language;
 
@@ -43,7 +42,12 @@ export class SearchModal extends SuggestModal<Article> {
 				query = queryText;
 			}
 		}
-		if (query.trim() === "") return [];
+
+		if (query.trim() === "") {
+			this.emptyStateText = "What are you waiting for? Start typing :)";
+			return [];
+		}
+		this.emptyStateText = "No results found.";
 
 		const searchResponses = await searchWikipediaArticles(query, languageCode);
 		const descriptions = await getWikipediaArticleDescription(
@@ -52,7 +56,7 @@ export class SearchModal extends SuggestModal<Article> {
 		);
 
 		if (!searchResponses || !descriptions) {
-			this.emptyStateText = "An error occurred. You should check your internet connection!";
+			this.emptyStateText = "An error occurred... Go check the logs and open a bug report!";
 			return [];
 		}
 
@@ -94,11 +98,12 @@ async function searchWikipediaArticles(
 		await requestUrl(
 			getWikipediaBaseURL(languageCode) + `&action=opensearch&profile=fuzzy&search=${query}`
 		).catch((e) => {
-			console.error(`Error: ${e}`);
+			console.error(e);
 			return null;
 		})
 	)?.json;
 
+	if (!response) return null;
 	return response[1].map((title: string, index: number) => ({ title, url: response[3][index] }));
 }
 
@@ -111,7 +116,7 @@ async function getWikipediaArticleDescription(
 		await requestUrl(
 			getWikipediaBaseURL(languageCode) + `&action=query&prop=description&titles=${titles.join("|")}`
 		).catch((e) => {
-			console.error(`Error: ${e}`);
+			console.error(e);
 			return null;
 		})
 	)?.json;
@@ -133,7 +138,7 @@ async function getWikipediaArticleExtracts(
 			getWikipediaBaseURL(languageCode) +
 				`&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${titles.join("|")}`
 		).catch((e) => {
-			console.error(`Error: ${e}`);
+			console.error(e);
 			return null;
 		})
 	)?.json;
