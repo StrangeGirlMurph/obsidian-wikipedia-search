@@ -1,6 +1,6 @@
 {
   "name": "wikipedia-search",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "An Obsidian plugin to search for Wikipedia articles and link them.",
   "main": "src/main.js",
   "scripts": {
