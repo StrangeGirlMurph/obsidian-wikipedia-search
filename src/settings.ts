@@ -54,7 +54,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.setDesc(
 				"Format of the insert. (all '{title}', '{url}' and '{extract}' will be replaced with the selection/the articles title, URL and extract respectively)"
 			)
-			.addText((text) =>
+			.addTextArea((text) =>
 				text
 					.setPlaceholder("Format")
 					.setValue(this.plugin.settings.format)
