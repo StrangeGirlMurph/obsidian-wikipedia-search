@@ -67,7 +67,7 @@ export class SearchModal extends SuggestModal<Article> {
     //@ts-ignore - private method
     super.updateSuggestions();
   }
-  
+
   async getSuggestions(query: string): Promise<Article[]> {
     if (query === "") return [];
 
