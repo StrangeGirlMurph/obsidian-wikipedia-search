@@ -43,7 +43,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
     new Setting(containerEl)
       .setName("Format")
       .setDesc(
-        "Format of the insert. ('{title}' and '{url}' will be replaced with the article title and URL)"
+        "Format of the insert. ('{title}' and '{url}' will be replaced with the article title/selection and URL)"
       )
       .addText((text) =>
         text
