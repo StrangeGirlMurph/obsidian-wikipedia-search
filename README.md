@@ -49,4 +49,4 @@ What I mean with "*search*" in the following:
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
-<img src="https://user-images.githubusercontent.com/62220780/228493146-4028361c-7576-4c38-a94d-a87318d09a8d.mp4" />
+<img src="https://user-images.githubusercontent.com/62220780/229159785-a2d462d6-1bb6-41ed-90a8-e5928f64d9f9.mp4" />
