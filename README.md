@@ -7,6 +7,18 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 - Linking Wikipedia articles in all languages.
 - Hyperlinking selected text.
 
+## Table of contents
+
+- [Installation](#installation)
+  - [From the community plugins list](#from-the-community-plugins-list)
+  - [Manual Installation](#manual-installation)
+- [Usage](#usage)
+  - [Getting Started](#getting-started)
+  - [Features](#features)
+- [Demo](#demo)
+- [Questions \& Contributions](#questions--contributions)
+- [License](#license)
+
 ## Installation
 
 ### From the community plugins list
@@ -50,3 +62,13 @@ What I mean with "_search_" in the following:
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
 <img src="https://user-images.githubusercontent.com/62220780/229159785-a2d462d6-1bb6-41ed-90a8-e5928f64d9f9.mp4" />
+
+## Questions & Contributions
+
+Feel free to ask me and the community if you have and questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
+
+If you want to contribute you can do that but creating issues and creating pull requests :)
+
+## License
+
+This project is licensed under the [Humane Software License](https://github.com/StrangeGirlMurph/The-Humane-Software-License) see [LICENSE](LICENSE).
