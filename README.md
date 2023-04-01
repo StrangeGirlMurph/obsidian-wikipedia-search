@@ -6,6 +6,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 - Linking Wikipedia articles in all languages.
 - Hyperlinking selected text.
+- Pasting the articles extract.
 
 ## Installation
 
@@ -44,6 +45,8 @@ What I mean with "_search_" in the following:
    Select some text and _search_. The selected text will replace the `{title}` in your format.
 - Search different languages  
    In the _search_ bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search a different Wikipedia than your default. (spaces don't matter)
+- Include the articles extract (the first paragraph)  
+   Add `{extract}` somewhere in your format in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
 
 ## Demo
 
