@@ -114,7 +114,8 @@ async function getWikipediaArticleDescription(
 	// https://en.wikipedia.org/w/api.php?format=json&&action=query&prop=description&titles=Wikipedia
 	const response = (
 		await requestUrl(
-			getWikipediaBaseURL(languageCode) + `&action=query&prop=description&titles=${titles.join("|")}`
+			getWikipediaBaseURL(languageCode) +
+				`&action=query&prop=description&titles=${encodeURIComponent(titles.join("|"))}`
 		).catch((e) => {
 			console.error(e);
 			return null;
@@ -136,7 +137,9 @@ async function getWikipediaArticleExtracts(
 	const response = (
 		await requestUrl(
 			getWikipediaBaseURL(languageCode) +
-				`&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${titles.join("|")}`
+				`&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
+					titles.join("|")
+				)}`
 		).catch((e) => {
 			console.error(e);
 			return null;
