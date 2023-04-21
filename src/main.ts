@@ -1,4 +1,4 @@
-import { Editor, MarkdownView, Plugin } from "obsidian";
+import { Editor, Plugin } from "obsidian";
 import { SearchModal } from "./search";
 import { DEFAULT_SETTINGS, WikipediaSearchSettings, WikipediaSearchSettingTab } from "./settings";
 
@@ -14,11 +14,8 @@ export default class WikipediaSearch extends Plugin {
 			id: "search-article",
 			name: "Search Article",
 			editorCheckCallback: (checking: boolean, editor: Editor) => {
-				const markdownView = this.app.workspace.getActiveViewOfType(MarkdownView);
-				if (markdownView) {
-					if (!checking) new SearchModal(this.app, this, editor).open();
-					return true;
-				}
+				if (!checking) new SearchModal(this.app, this, editor).open();
+				return true;
 			},
 		});
 
