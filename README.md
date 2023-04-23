@@ -58,11 +58,11 @@ What I mean with "_search_" in the following:
 - Include the articles extract (the first paragraph)  
    Add `{extract}` somewhere in your format in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
 
-## Demo
+## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
-<img src="https://user-images.githubusercontent.com/62220780/229159785-a2d462d6-1bb6-41ed-90a8-e5928f64d9f9.mp4" />
+<img src="https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4" />
 
 ## Questions & Contributions
 
