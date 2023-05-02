@@ -2,6 +2,9 @@
 
 An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia articles and link them in your notes.
 
+*Don't worry about this project being "inactive". It's not inactive. It's done :)  
+(at least until there aren't any new feature requests)*
+
 ## Key [Features](#features)
 
 - Linking Wikipedia articles in all languages.
@@ -67,6 +70,7 @@ Note: OBS didn't record the overlay dropdown menu in the settings. It's there wh
 ## Questions & Contributions
 
 Feel free to ask me and the community if you have and questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
+I am happy to hear your feature requests! Just create an issue if you have a good idea.
 
 If you want to contribute you can do that but creating issues and creating pull requests :)
 
