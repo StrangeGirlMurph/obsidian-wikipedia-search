@@ -5,11 +5,13 @@ import WikipediaSearch from "./main";
 export interface WikipediaSearchSettings {
 	language: string;
 	format: string;
+	cursorAfter: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	format: "[{title}]({url})",
+	cursorAfter: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -26,6 +28,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		containerEl.createEl("h1", { text: "Wikipedia Search Settings" });
+
+		containerEl.createEl("h2", { text: "General" });
 
 		new Setting(containerEl)
 			.setName("Language")
@@ -62,6 +66,18 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						this.plugin.settings.format = value;
 						await this.plugin.saveSettings();
 					})
+			);
+
+		containerEl.createEl("h2", { text: "Workflow Optimizations" });
+
+		new Setting(containerEl)
+			.setName("Cursor Placement")
+			.setDesc("Whether the cursor is placed infront of the insert instead of after it.")
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.cursorAfter).onChange(async (value) => {
+					this.plugin.settings.cursorAfter = value;
+					await this.plugin.saveSettings();
+				})
 			);
 	}
 }

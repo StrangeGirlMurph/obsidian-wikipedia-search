@@ -75,17 +75,18 @@ export class SearchModal extends SuggestModal<Article> {
 	}
 
 	async onChooseSuggestion(article: Article) {
-		let extract: string | null = null;
-		if (this.plugin.settings.format.includes("{extract}")) {
-			extract =
-				(await getWikipediaArticleExtracts([article.title], this.plugin.settings.language))?.[0] ?? null;
-		}
+		const cursorPosition = this.editor.getCursor();
+		let extract: string | null = this.plugin.settings.format.includes("{extract}")
+			? (await getWikipediaArticleExtracts([article.title], this.plugin.settings.language))?.[0] ?? null
+			: null;
 
-		const link = this.plugin.settings.format
-			.replace("{title}", this.editor.getSelection() || article.title)
-			.replace("{url}", article.url)
-			.replace("{extract}", extract ?? "[Could not fetch the extract...]");
-		this.editor.replaceSelection(link);
+		const insert = this.plugin.settings.format
+			.replaceAll("{title}", this.editor.getSelection() || article.title)
+			.replaceAll("{url}", article.url)
+			.replaceAll("{extract}", extract ?? "[Could not fetch the extract...]");
+		this.editor.replaceSelection(insert);
+
+		if (this.plugin.settings.cursorAfter) this.editor.setCursor(cursorPosition);
 	}
 }
 
