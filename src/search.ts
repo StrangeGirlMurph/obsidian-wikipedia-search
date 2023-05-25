@@ -1,6 +1,7 @@
-import { App, Editor, requestUrl, SuggestModal } from "obsidian";
-import { languages } from "./languages";
+import { App, Editor, SuggestModal } from "obsidian";
 import WikipediaSearch from "./main";
+import { languages } from "./languages";
+import { getArticleDescriptions, getArticleExtracts, getArticles } from "./wikipediaAPI";
 
 interface Article {
 	title: string;
@@ -49,8 +50,8 @@ export class SearchModal extends SuggestModal<Article> {
 		}
 		this.emptyStateText = "No results found.";
 
-		const searchResponses = await searchWikipediaArticles(query, languageCode);
-		const descriptions = await getWikipediaArticleDescription(
+		const searchResponses = await getArticles(query, languageCode);
+		const descriptions = await getArticleDescriptions(
 			searchResponses?.map((a) => a.title) ?? [],
 			languageCode
 		);
@@ -58,6 +59,15 @@ export class SearchModal extends SuggestModal<Article> {
 		if (!searchResponses || !descriptions) {
 			this.emptyStateText = "An error occurred... Go check the logs and open a bug report!";
 			return [];
+		}
+
+		if (this.plugin.settings.autoInsert && searchResponses.length === 1) {
+			this.close();
+			this.onChooseSuggestion({
+				title: searchResponses[0].title,
+				url: searchResponses[0].url,
+				description: descriptions[0],
+			});
 		}
 
 		return searchResponses.map((article, index) => ({
@@ -77,7 +87,7 @@ export class SearchModal extends SuggestModal<Article> {
 	async onChooseSuggestion(article: Article) {
 		const cursorPosition = this.editor.getCursor();
 		let extract: string | null = this.plugin.settings.format.includes("{extract}")
-			? (await getWikipediaArticleExtracts([article.title], this.plugin.settings.language))?.[0] ?? null
+			? (await getArticleExtracts([article.title], this.plugin.settings.language))?.[0] ?? null
 			: null;
 
 		const insert = this.plugin.settings.format
@@ -88,72 +98,4 @@ export class SearchModal extends SuggestModal<Article> {
 
 		if (this.plugin.settings.cursorAfter) this.editor.setCursor(cursorPosition);
 	}
-}
-
-async function searchWikipediaArticles(
-	query: string,
-	languageCode: string
-): Promise<{ title: string; url: string }[] | null> {
-	// https://en.wikipedia.org/w/api.php?format=json&action=opensearch&profile=fuzzy&search=Wikipedia
-	const response = (
-		await requestUrl(
-			getWikipediaBaseURL(languageCode) + `&action=opensearch&profile=fuzzy&search=${query}`
-		).catch((e) => {
-			console.error(e);
-			return null;
-		})
-	)?.json;
-
-	if (!response) return null;
-	return response[1].map((title: string, index: number) => ({ title, url: response[3][index] }));
-}
-
-async function getWikipediaArticleDescription(
-	titles: string[],
-	languageCode: string
-): Promise<(string | null)[] | null> {
-	// https://en.wikipedia.org/w/api.php?format=json&&action=query&prop=description&titles=Wikipedia
-	const response = (
-		await requestUrl(
-			getWikipediaBaseURL(languageCode) +
-				`&action=query&prop=description&titles=${encodeURIComponent(titles.join("|"))}`
-		).catch((e) => {
-			console.error(e);
-			return null;
-		})
-	)?.json;
-
-	if (!response) return null;
-	if (!response.query) return [];
-	return Object.values(response.query.pages)
-		.sort((a: any, b: any) => titles.indexOf(a.title) - titles.indexOf(b.title))
-		.map((page: any) => page.description ?? null);
-}
-
-async function getWikipediaArticleExtracts(
-	titles: string[],
-	languageCode: string
-): Promise<(string | null)[] | null> {
-	// https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=Wikipedia
-	const response = (
-		await requestUrl(
-			getWikipediaBaseURL(languageCode) +
-				`&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=${encodeURIComponent(
-					titles.join("|")
-				)}`
-		).catch((e) => {
-			console.error(e);
-			return null;
-		})
-	)?.json;
-
-	if (!response) return null;
-	if (!response.query) return [];
-	return Object.values(response.query.pages)
-		.sort((a: any, b: any) => titles.indexOf(a.title) - titles.indexOf(b.title))
-		.map((page: any) => page.extract ?? null);
-}
-
-function getWikipediaBaseURL(languageCode: string) {
-	return `https://${languageCode}.wikipedia.org/w/api.php?format=json`;
 }

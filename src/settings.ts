@@ -6,12 +6,14 @@ export interface WikipediaSearchSettings {
 	language: string;
 	format: string;
 	cursorAfter: boolean;
+	autoInsert: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	format: "[{title}]({url})",
 	cursorAfter: false,
+	autoInsert: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -76,6 +78,18 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(this.plugin.settings.cursorAfter).onChange(async (value) => {
 					this.plugin.settings.cursorAfter = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Auto-Select Single Response Queries")
+			.setDesc(
+				"When hyperlinking: Whether or not to automatically select the response to a query when there is only one article to choose from."
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.autoInsert).onChange(async (value) => {
+					this.plugin.settings.autoInsert = value;
 					await this.plugin.saveSettings();
 				})
 			);
