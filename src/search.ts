@@ -61,7 +61,7 @@ export class SearchModal extends SuggestModal<Article> {
 			return [];
 		}
 
-		if (this.plugin.settings.autoInsert && searchResponses.length === 1) {
+		if (this.plugin.settings.autoInsertSingleResponseQueries && searchResponses.length === 1) {
 			this.close();
 			this.onChooseSuggestion({
 				title: searchResponses[0].title,
@@ -90,12 +90,16 @@ export class SearchModal extends SuggestModal<Article> {
 			? (await getArticleExtracts([article.title], this.plugin.settings.language))?.[0] ?? null
 			: null;
 
+		const selection = this.editor.getSelection();
 		const insert = this.plugin.settings.format
-			.replaceAll("{title}", this.editor.getSelection() || article.title)
+			.replaceAll(
+				"{title}",
+				this.plugin.settings.alwaysUseArticleTitle || selection === "" ? article.title : selection
+			)
 			.replaceAll("{url}", article.url)
 			.replaceAll("{extract}", extract ?? "[Could not fetch the extract...]");
 		this.editor.replaceSelection(insert);
 
-		if (this.plugin.settings.cursorAfter) this.editor.setCursor(cursorPosition);
+		if (this.plugin.settings.placeCursorInfrontOfInsert) this.editor.setCursor(cursorPosition);
 	}
 }

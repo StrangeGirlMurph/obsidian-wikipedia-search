@@ -5,15 +5,17 @@ import WikipediaSearch from "./main";
 export interface WikipediaSearchSettings {
 	language: string;
 	format: string;
-	cursorAfter: boolean;
-	autoInsert: boolean;
+	placeCursorInfrontOfInsert: boolean;
+	autoInsertSingleResponseQueries: boolean;
+	alwaysUseArticleTitle: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	format: "[{title}]({url})",
-	cursorAfter: false,
-	autoInsert: false,
+	placeCursorInfrontOfInsert: false,
+	autoInsertSingleResponseQueries: false,
+	alwaysUseArticleTitle: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -58,7 +60,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Format")
 			.setDesc(
-				"Format of the insert. (all '{title}', '{url}' and '{extract}' will be replaced with the selection/the articles title, URL and extract respectively)"
+				"Format of the insert. (all occurrences of '{title}', '{url}' and '{extract}' will be replaced with the selection/articles title, URL and extract respectively)"
 			)
 			.addTextArea((text) =>
 				text
@@ -74,10 +76,10 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Cursor Placement")
-			.setDesc("Whether the cursor is placed infront of the insert instead of after it.")
+			.setDesc("Whether or not the cursor is placed infront of the insert instead of after it.")
 			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.cursorAfter).onChange(async (value) => {
-					this.plugin.settings.cursorAfter = value;
+				toggle.setValue(this.plugin.settings.placeCursorInfrontOfInsert).onChange(async (value) => {
+					this.plugin.settings.placeCursorInfrontOfInsert = value;
 					await this.plugin.saveSettings();
 				})
 			);
@@ -88,8 +90,20 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				"When hyperlinking: Whether or not to automatically select the response to a query when there is only one article to choose from."
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(this.plugin.settings.autoInsert).onChange(async (value) => {
-					this.plugin.settings.autoInsert = value;
+				toggle.setValue(this.plugin.settings.autoInsertSingleResponseQueries).onChange(async (value) => {
+					this.plugin.settings.autoInsertSingleResponseQueries = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Use Article Title Instead Of Selection")
+			.setDesc(
+				"When hyperlinking: Whether or not to use the articles title instead of the selected text for '{title}' parameter."
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(this.plugin.settings.alwaysUseArticleTitle).onChange(async (value) => {
+					this.plugin.settings.alwaysUseArticleTitle = value;
 					await this.plugin.saveSettings();
 				})
 			);
