@@ -2,6 +2,9 @@
 
 An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia articles and link them in your notes.
 
+*Don't worry about this project being "inactive". It's not inactive. It's done :)  
+(at least until there aren't any new feature requests)*
+
 ## Key [Features](#features)
 
 - Linking Wikipedia articles in all languages.
@@ -26,7 +29,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 1. Search under the Community Plugins in the settings for it and click install.
 2. Enable the plugin (from the installed plugin list).  
-   <img src="https://user-images.githubusercontent.com/62220780/228493364-b4e8b3b1-e6df-4f8c-8d9b-db7f21e3099d.png" width=600 />
+   <img src="https://user-images.githubusercontent.com/62220780/233706925-d4203cae-06fc-4ba1-b29d-740492f19601.png" width=600 />
 
 ### Manual Installation
 
@@ -58,15 +61,16 @@ What I mean with "_search_" in the following:
 - Include the articles extract (the first paragraph)  
    Add `{extract}` somewhere in your format in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
 
-## Demo
+## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
-<img src="https://user-images.githubusercontent.com/62220780/229159785-a2d462d6-1bb6-41ed-90a8-e5928f64d9f9.mp4" />
+<img src="https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4" />
 
 ## Questions & Contributions
 
 Feel free to ask me and the community if you have and questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
+I am happy to hear your feature requests! Just create an issue if you have a good idea.
 
 If you want to contribute you can do that but creating issues and creating pull requests :)
 
