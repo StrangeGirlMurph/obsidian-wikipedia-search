@@ -29,7 +29,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 1. Search under the Community Plugins in the settings for it and click install.
 2. Enable the plugin (from the installed plugin list).  
-   <img src="https://user-images.githubusercontent.com/62220780/233706925-d4203cae-06fc-4ba1-b29d-740492f19601.png" width=600 />
+   <img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/c99cc357-a4cd-41fb-8dbb-58a37b9e32b4" width=600 />
 
 ### Manual Installation
 
@@ -41,7 +41,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 What I mean with "_search_" in the following:
 
-- In editing view open the command pallet with `CTRL+P` and run `Search Articles`.
+- In editing view open the command pallet with `CTRL+P` (that's the default hotkey) and run `Search Articles`.
 - (Start typing, select one of the options and watch the magic happen and the link appear.)
 
 ### Getting Started
@@ -55,9 +55,9 @@ What I mean with "_search_" in the following:
 - Basic links  
    Just _search_ from somewhere in your file.
 - Hyperlinking  
-   Select some text and _search_. The selected text will replace the `{title}` in your format.
+   Select some text and _search_. The selected text will replace the `{title}` in your format (can be changed with a setting).
 - Search different languages  
-   In the _search_ bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search a different Wikipedia than your default. (spaces don't matter)
+   In the _search_ bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
 - Include the articles extract (the first paragraph)  
    Add `{extract}` somewhere in your format in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
 
@@ -66,6 +66,13 @@ What I mean with "_search_" in the following:
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
 <img src="https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4" />
+
+## Settings
+
+The available settings and their default values:
+
+<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/5d173bbd-dced-4e00-884f-4205e62fb98a" width=600 />
+
 
 ## Questions & Contributions
 
