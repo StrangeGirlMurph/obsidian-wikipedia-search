@@ -39,7 +39,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 ## Usage
 
-What I mean with "_search_" in the following:
+What I mean with "*search*" in the following:
 
 - In editing view open the command pallet with `CTRL+P` (that's the default hotkey) and run `Search Articles`.
 - (Start typing, select one of the options and watch the magic happen and the link appear.)
@@ -48,16 +48,16 @@ What I mean with "_search_" in the following:
 
 1. Install the plugin and enable it.
 2. Set your language and format in the settings.
-3. Start _searching_ :)
+3. Start *searching* :)
 
 ### Features
 
 - Basic links  
-   Just _search_ from somewhere in your file.
+   Just *search* from somewhere in your file.
 - Hyperlinking  
-   Select some text and _search_. The selected text will replace the `{title}` in your format (can be changed with a setting).
+   Select some text and *search*. The selected text will replace the `{title}` in your format (can be changed with a setting).
 - Search different languages  
-   In the _search_ bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
+   In the *search* bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
 - Include the articles extract (the first paragraph)  
    Add `{extract}` somewhere in your format in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
 
@@ -72,7 +72,6 @@ Note: OBS didn't record the overlay dropdown menu in the settings. It's there wh
 The available settings and their default values:
 
 <img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/5d173bbd-dced-4e00-884f-4205e62fb98a" width=600 />
-
 
 ## Questions & Contributions
 
