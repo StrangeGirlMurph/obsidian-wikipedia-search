@@ -6,6 +6,7 @@ import { getArticleDescriptions, getArticleExtracts, getArticles } from "./wikip
 interface Article {
 	title: string;
 	url: string;
+	languageCode: string;
 	description: string | null;
 }
 
@@ -67,6 +68,7 @@ export class SearchModal extends SuggestModal<Article> {
 				title: searchResponses[0].title,
 				url: searchResponses[0].url,
 				description: descriptions[0],
+				languageCode,
 			});
 		}
 
@@ -74,6 +76,7 @@ export class SearchModal extends SuggestModal<Article> {
 			title: article.title,
 			url: article.url,
 			description: descriptions[index],
+			languageCode,
 		}));
 	}
 
@@ -97,6 +100,8 @@ export class SearchModal extends SuggestModal<Article> {
 				this.plugin.settings.alwaysUseArticleTitle || selection === "" ? article.title : selection
 			)
 			.replaceAll("{url}", article.url)
+			.replaceAll("{language}", languages[article.languageCode])
+			.replaceAll("{languageCode}", article.languageCode)
 			.replaceAll("{extract}", extract ?? "[Could not fetch the extract...]");
 		this.editor.replaceSelection(insert);
 

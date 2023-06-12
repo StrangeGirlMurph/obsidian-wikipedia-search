@@ -60,7 +60,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Format")
 			.setDesc(
-				"Format of the insert. (all occurrences of '{title}', '{url}' and '{extract}' will be replaced with the selection/articles title, URL and extract respectively)"
+				"Format of the insert. (all occurrences of '{title}', '{url}', '{language}', '{languageCode}' and '{extract}' will be replaced with the selection/articles title, URL, language, language code and extract respectively)"
 			)
 			.addTextArea((text) =>
 				text
