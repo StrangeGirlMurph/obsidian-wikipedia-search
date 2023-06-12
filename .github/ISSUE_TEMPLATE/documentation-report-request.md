@@ -3,6 +3,7 @@ name: Documentation report/request
 about: Report problems with the docs or share ideas.
 title: "[DOCS] "
 labels: documentation
+assignees: StrangeGirlMurph
 ---
 
 # Description

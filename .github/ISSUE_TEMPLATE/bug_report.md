@@ -3,6 +3,7 @@ name: Bug report
 about: Create a report to fix a bug you encountered.
 title: "[BUG] "
 labels: bug
+assignees: StrangeGirlMurph
 ---
 
 # Description
