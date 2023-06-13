@@ -2,6 +2,7 @@ import { App, Editor, SuggestModal } from "obsidian";
 import WikipediaSearch from "./main";
 import { languages } from "./languages";
 import { getArticleDescriptions, getArticleExtracts, getArticles } from "./wikipediaAPI";
+import { Template, WikipediaSearchSettings } from "./settings";
 
 interface Article {
 	title: string;
@@ -25,6 +26,13 @@ export class SearchModal extends SuggestModal<Article> {
 		this.inputEl.value = this.editor.getSelection();
 		//@ts-ignore - private method
 		super.updateSuggestions();
+	}
+
+	renderSuggestion(article: Article, el: HTMLElement) {
+		el.createEl("div", { text: article.title });
+		el.createEl("small", {
+			text: article.description || article.url.slice(8),
+		});
 	}
 
 	async getSuggestions(query: string): Promise<Article[]> {
@@ -80,31 +88,64 @@ export class SearchModal extends SuggestModal<Article> {
 		}));
 	}
 
-	renderSuggestion(article: Article, el: HTMLElement) {
-		el.createEl("div", { text: article.title });
+	async onChooseSuggestion(article: Article) {
+		if (this.plugin.settings.additionalTemplatesEnabled) {
+			new TemplateModal(app, this.plugin, this.editor, article).open();
+		} else {
+			insert(this.editor, this.plugin.settings, article, this.plugin.settings.defaultTemplate);
+		}
+	}
+}
+
+class TemplateModal extends SuggestModal<Template> {
+	plugin: WikipediaSearch;
+	editor: Editor;
+	article: Article;
+
+	constructor(app: App, plugin: WikipediaSearch, editor: Editor, article: Article) {
+		super(app);
+		this.plugin = plugin;
+		this.editor = editor;
+		this.article = article;
+	}
+
+	renderSuggestion(template: Template, el: HTMLElement) {
+		el.createEl("div", { text: template.name });
 		el.createEl("small", {
-			text: article.description || article.url.slice(8),
+			text: template.templateString,
 		});
 	}
 
-	async onChooseSuggestion(article: Article) {
-		const cursorPosition = this.editor.getCursor();
-		let extract: string | null = this.plugin.settings.format.includes("{extract}")
-			? (await getArticleExtracts([article.title], this.plugin.settings.language))?.[0] ?? null
-			: null;
-
-		const selection = this.editor.getSelection();
-		const insert = this.plugin.settings.format
-			.replaceAll(
-				"{title}",
-				this.plugin.settings.alwaysUseArticleTitle || selection === "" ? article.title : selection
-			)
-			.replaceAll("{url}", article.url)
-			.replaceAll("{language}", languages[article.languageCode])
-			.replaceAll("{languageCode}", article.languageCode)
-			.replaceAll("{extract}", extract ?? "[Could not fetch the extract...]");
-		this.editor.replaceSelection(insert);
-
-		if (this.plugin.settings.placeCursorInfrontOfInsert) this.editor.setCursor(cursorPosition);
+	async getSuggestions(query: string): Promise<Template[]> {
+		return [{ name: "Default", templateString: this.plugin.settings.defaultTemplate }]
+			.concat(this.plugin.settings.templates)
+			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
 	}
+
+	async onChooseSuggestion(template: Template) {
+		insert(this.editor, this.plugin.settings, this.article, template.templateString);
+	}
+}
+
+async function insert(
+	editor: Editor,
+	settings: WikipediaSearchSettings,
+	article: Article,
+	templateString: string
+) {
+	const cursorPosition = editor.getCursor();
+	let extract: string | null = templateString.includes("{extract}")
+		? (await getArticleExtracts([article.title], settings.language))?.[0] ?? null
+		: null;
+
+	const selection = editor.getSelection();
+	const insert = templateString
+		.replaceAll("{title}", settings.alwaysUseArticleTitle || selection === "" ? article.title : selection)
+		.replaceAll("{url}", article.url)
+		.replaceAll("{language}", languages[article.languageCode])
+		.replaceAll("{languageCode}", article.languageCode)
+		.replaceAll("{extract}", extract ?? "[Could not fetch the extract...]");
+	editor.replaceSelection(insert);
+
+	if (settings.placeCursorInfrontOfInsert) editor.setCursor(cursorPosition);
 }

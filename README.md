@@ -10,6 +10,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 - Linking Wikipedia articles in all languages.
 - Hyperlinking selected text.
 - Pasting the articles extract.
+- Using different templates for the insert.
 
 ## Table of contents
 
@@ -47,7 +48,7 @@ What I mean with "*search*" in the following:
 ### Getting Started
 
 1. Install the plugin and enable it.
-2. Set your language and format in the settings.
+2. Set your language and the template for the insert in the settings.
 3. Start *searching* :)
 
 ### Features
@@ -55,12 +56,16 @@ What I mean with "*search*" in the following:
 - Basic links  
    Just *search* from somewhere in your file.
 - Hyperlinking  
-   Select some text and *search*. The selected text will replace the `{title}` in your format (can be changed with a setting).
+   Select some text and *search*. The selected text will replace the `{title}` in your template (can be changed with a setting).
 - Search different languages  
    In the *search* bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
 - Include the articles extract (the first paragraph)  
-   Add `{extract}` somewhere in your format in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
-
+   Add `{extract}` somewhere in your template(s) in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
+- Multiple templates
+   Add multiple template options in the settings and dynamically select the one you want for your specific use case.
+- Small workflow optimization settings
+   Go through the settings to optimize the plugin for your specific workflow.
+  
 ## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
