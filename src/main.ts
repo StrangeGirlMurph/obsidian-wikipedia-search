@@ -1,6 +1,7 @@
 import { Editor, Plugin } from "obsidian";
-import { SearchModal } from "./search";
+import { LinkingModal } from "./commands/linkArticles";
 import { DEFAULT_SETTINGS, WikipediaSearchSettings, WikipediaSearchSettingTab } from "./settings";
+import { OpenArticleModal } from "./commands/openArticles";
 
 export default class WikipediaSearch extends Plugin {
 	settings: WikipediaSearchSettings;
@@ -11,11 +12,18 @@ export default class WikipediaSearch extends Plugin {
 		await this.loadSettings();
 
 		this.addCommand({
-			id: "search-article",
-			name: "Search Article",
-			editorCheckCallback: (checking: boolean, editor: Editor) => {
-				if (!checking) new SearchModal(this.app, this, editor).open();
-				return true;
+			id: "link-article",
+			name: "Link Article",
+			editorCallback: (editor: Editor) => {
+				new LinkingModal(this.app, this.settings, editor).open();
+			},
+		});
+
+		this.addCommand({
+			id: "open-article",
+			name: "Open Article",
+			callback: () => {
+				new OpenArticleModal(this.app, this.settings).open();
 			},
 		});
 

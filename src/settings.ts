@@ -1,5 +1,5 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
-import { languages } from "./languages";
+import { languages } from "./utils/languages";
 import WikipediaSearch from "./main";
 
 export interface WikipediaSearchSettings {
@@ -8,6 +8,7 @@ export interface WikipediaSearchSettings {
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
 	alwaysUseArticleTitle: boolean;
+	openArticlePosition: "left" | "right" | "top" | "bottom";
 	additionalTemplatesEnabled: boolean;
 	templates: Template[];
 }
@@ -23,6 +24,7 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
 	alwaysUseArticleTitle: false,
+	openArticlePosition: "right",
 	additionalTemplatesEnabled: false,
 	templates: [],
 };

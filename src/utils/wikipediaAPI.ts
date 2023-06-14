@@ -18,7 +18,7 @@ export async function getArticles(
 	return response[1].map((title: string, index: number) => ({ title, url: response[3][index] }));
 }
 
-export async function getArticleDescriptions(
+export async function getArticleDescription(
 	titles: string[],
 	languageCode: string
 ): Promise<(string | null)[] | null> {
@@ -40,7 +40,7 @@ export async function getArticleDescriptions(
 		.map((page: any) => page.description ?? null);
 }
 
-export async function getArticleExtracts(
+export async function getArticleExtract(
 	titles: string[],
 	languageCode: string
 ): Promise<(string | null)[] | null> {
@@ -62,6 +62,23 @@ export async function getArticleExtracts(
 	return Object.values(response.query.pages)
 		.sort((a: any, b: any) => titles.indexOf(a.title) - titles.indexOf(b.title))
 		.map((page: any) => page.extract ?? null);
+}
+
+export async function getArticleContent(title: string, languageCode: string): Promise<string | null> {
+	//https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&redirects=1&titles=Wikipedia
+	const response = (
+		await requestUrl(
+			getAPIBaseURL(languageCode) +
+				`&action=query&prop=extracts&redirects=1&titles=${encodeURIComponent(title)}`
+		).catch((e) => {
+			console.error(e);
+			return null;
+		})
+	)?.json;
+
+	if (!response) return null;
+	if (!response.query) return null;
+	return (Object.values(response.query.pages)[0] as any).extract ?? null;
 }
 
 export function getAPIBaseURL(languageCode: string) {
