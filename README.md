@@ -61,12 +61,12 @@ What I mean with "*search*" in the following:
    In the *search* bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
 - Include the articles extract (the first paragraph)  
    Add `{extract}` somewhere in your template(s) in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
-- Multiple templates
+- Multiple templates  
    Add multiple template options in the settings and dynamically select the one you want for your specific use case.
-- Small workflow optimization settings
+- Small workflow optimization settings  
    Go through the settings to optimize the plugin for your specific workflow.
   
-## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
+## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4) (not up to date)
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 
@@ -76,7 +76,7 @@ Note: OBS didn't record the overlay dropdown menu in the settings. It's there wh
 
 The available settings and their default values:
 
-<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/5d173bbd-dced-4e00-884f-4205e62fb98a" width=600 />
+<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/d112577b-2175-4e8d-86d2-bbf4d8e2ef41" width=600 />
 
 ## Questions & Contributions
 
