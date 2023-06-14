@@ -107,6 +107,7 @@ class TemplateModal extends SuggestModal<Template> {
 		this.plugin = plugin;
 		this.editor = editor;
 		this.article = article;
+		this.setPlaceholder("Pick a template...");
 	}
 
 	renderSuggestion(template: Template, el: HTMLElement) {

@@ -107,7 +107,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			for (const [i, val] of settings.templates.entries()) {
 				new Setting(containerEl)
 					.setName(`Additional Template Nr. ${i + 1}`)
-					.setDesc("Set the name and template.")
+					.setDesc("Set the templates name and template for the insert.")
 					.addText((text) =>
 						text
 							.setValue(val.name)
@@ -185,7 +185,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		containerEl.createEl("br");
 		containerEl.createEl("hr");
-		containerEl.createEl("h2", { text: "Feedback, Bug Reports and Feature Requests!" });
+		containerEl.createEl("h2", { text: "Feedback, Bug Reports and Feature Requests 🌿" });
 
 		const feedbackParagraph = containerEl.createEl("p");
 		feedbackParagraph.setText(
@@ -195,7 +195,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			text: "on GitHub",
 			href: "https://github.com/StrangeGirlMurph/obsidian-wikipedia-search",
 		});
-		feedbackParagraph.appendText(" and I'll get back to you ASAP :) ~ Murphy");
+		feedbackParagraph.appendText(" and I'll get back to you ASAP ~ Murphy :)");
 
 		containerEl.appendChild(feedbackParagraph);
 	}
