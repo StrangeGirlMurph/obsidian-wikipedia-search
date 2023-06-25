@@ -136,7 +136,7 @@ async function insert(
 ) {
 	const cursorPosition = editor.getCursor();
 	let extract: string | null = templateString.includes("{extract}")
-		? (await getArticleExtracts([article.title], settings.language))?.[0] ?? null
+		? (await getArticleExtracts([article.title], article.languageCode))?.[0] ?? null
 		: null;
 
 	const selection = editor.getSelection();
