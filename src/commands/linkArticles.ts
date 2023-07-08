@@ -1,8 +1,8 @@
-import { App, Editor, SuggestModal } from "obsidian";
+import { App, Editor, Notice, SuggestModal } from "obsidian";
 import { languages } from "../utils/languages";
-import { getArticleExtract } from "../utils/wikipediaAPI";
+import { getArticleIntro } from "../utils/wikipediaAPI";
 import { Template, WikipediaSearchSettings } from "../settings";
-import { Article } from "src/utils/interfaces";
+import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 
 export class LinkingModal extends SearchModal {
@@ -37,7 +37,7 @@ class TemplateModal extends SuggestModal<Template> {
 
 	async getSuggestions(query: string): Promise<Template[]> {
 		return [{ name: "Default", templateString: this.settings.defaultTemplate }]
-			.concat(this.settings.templates)
+			.concat(this.settings.additionalTemplates)
 			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
 	}
 
@@ -52,19 +52,23 @@ async function insert(
 	article: Article,
 	templateString: string
 ) {
-	const cursorPosition = editor.getCursor();
-	let extract: string | null = templateString.includes("{extract}")
-		? (await getArticleExtract([article.title], settings.language))?.[0] ?? null
-		: null;
-
 	const selection = editor.getSelection();
-	const insert = templateString
-		.replaceAll("{title}", settings.alwaysUseArticleTitle || selection === "" ? article.title : selection)
+	let insert = templateString
+		.replaceAll("{title}", settings.prioritizeArticleTitle || selection === "" ? article.title : selection)
 		.replaceAll("{url}", article.url)
 		.replaceAll("{language}", languages[article.languageCode])
-		.replaceAll("{languageCode}", article.languageCode)
-		.replaceAll("{extract}", extract ?? "[Could not fetch the extract...]");
-	editor.replaceSelection(insert);
+		.replaceAll("{languageCode}", article.languageCode);
 
+	if (templateString.includes("{intro}")) {
+		const intro: string | null = (await getArticleIntro([article.title], settings.language))?.[0] ?? null;
+		if (intro) {
+			insert = insert.replaceAll("{intro}", intro);
+		} else {
+			new Notice("Could not get articles introduction and had to leave it out...");
+		}
+	}
+
+	const cursorPosition = editor.getCursor();
+	editor.replaceSelection(insert);
 	if (settings.placeCursorInfrontOfInsert) editor.setCursor(cursorPosition);
 }

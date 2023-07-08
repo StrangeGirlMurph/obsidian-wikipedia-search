@@ -1,7 +1,8 @@
-import { Editor, Plugin } from "obsidian";
+import { Editor, Plugin, addIcon } from "obsidian";
 import { LinkingModal } from "./commands/linkArticles";
 import { DEFAULT_SETTINGS, WikipediaSearchSettings, WikipediaSearchSettingTab } from "./settings";
-import { OpenArticleModal } from "./commands/openArticles";
+import { OpenArticleModal, WIKIPEDIA_VIEW, WikipediaView } from "./commands/openArticles";
+import { wikipediaIcon } from "./utils/wikipediaIcon";
 
 export default class WikipediaSearch extends Plugin {
 	settings: WikipediaSearchSettings;
@@ -10,6 +11,8 @@ export default class WikipediaSearch extends Plugin {
 		console.log("loading wikipedia-search plugin");
 
 		await this.loadSettings();
+
+		this.registerView(WIKIPEDIA_VIEW, (leaf) => new WikipediaView(leaf));
 
 		this.addCommand({
 			id: "link-article",
@@ -26,6 +29,11 @@ export default class WikipediaSearch extends Plugin {
 				new OpenArticleModal(this.app, this.settings).open();
 			},
 		});
+
+		addIcon("wikipedia", wikipediaIcon);
+		this.addRibbonIcon("wikipedia", "Open Article", () =>
+			new OpenArticleModal(this.app, this.settings).open()
+		);
 
 		this.addSettingTab(new WikipediaSearchSettingTab(this.app, this));
 	}

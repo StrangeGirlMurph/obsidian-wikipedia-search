@@ -40,7 +40,7 @@ export async function getArticleDescription(
 		.map((page: any) => page.description ?? null);
 }
 
-export async function getArticleExtract(
+export async function getArticleIntro(
 	titles: string[],
 	languageCode: string
 ): Promise<(string | null)[] | null> {

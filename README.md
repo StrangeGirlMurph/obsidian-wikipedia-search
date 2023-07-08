@@ -66,7 +66,9 @@ What I mean with "*search*" in the following:
 - Small workflow optimization settings  
    Go through the settings to optimize the plugin for your specific workflow.
   
-## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4) (not up to date)
+## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
+
+**Not up to date!**
 
 Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
 

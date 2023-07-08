@@ -2,7 +2,13 @@ import { App, Editor, SuggestModal } from "obsidian";
 import { languages } from "../utils/languages";
 import { getArticleDescription, getArticles } from "../utils/wikipediaAPI";
 import { WikipediaSearchSettings } from "../settings";
-import { Article } from "./interfaces";
+
+export interface Article {
+	title: string;
+	url: string;
+	languageCode: string;
+	description: string | null;
+}
 
 export abstract class SearchModal extends SuggestModal<Article> {
 	settings: WikipediaSearchSettings;
