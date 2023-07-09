@@ -1,16 +1,7 @@
-import {
-	App,
-	Notice,
-	Workspace,
-	ItemView,
-	WorkspaceLeaf,
-	ViewStateResult,
-	sanitizeHTMLToDom,
-} from "obsidian";
+import { App, Workspace, ItemView, WorkspaceLeaf, ViewStateResult } from "obsidian";
 import { WikipediaSearchSettings } from "src/settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
-import { getArticleContent } from "src/utils/wikipediaAPI";
 
 export class OpenArticleModal extends SearchModal {
 	workspace: Workspace;
@@ -21,58 +12,44 @@ export class OpenArticleModal extends SearchModal {
 	}
 
 	async onChooseSuggestion(article: Article) {
-		const leaf = await this.workspace.getLeaf("tab");
+		const leaf = await this.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split");
 		leaf.setViewState({
 			type: WIKIPEDIA_VIEW,
 			active: true,
 			state: { input: article },
 		});
-
-		//this.workspace.revealLeaf(this.workspace.getLeavesOfType(WIKIPEDIA_VIEW)[0]);
 	}
 }
 
 export const WIKIPEDIA_VIEW = "wikipedia-article-view";
 
+type reducedArticle = { title: string; url: string };
 export class WikipediaView extends ItemView {
-	article: Article;
+	article: reducedArticle;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 	}
 
-	async setState(state: { input: Article }, result: ViewStateResult) {
+	async setState(state: { input: reducedArticle }, result: ViewStateResult) {
 		await super.setState(state, result);
 		this.article = state.input;
 
-		const content = await getArticleContent(this.article.title, this.article.languageCode);
-
-		if (!content) {
-			new Notice("Something went wrong :(");
-			return;
-		}
-
 		const container = this.containerEl;
 		container.empty();
-		container
-			.createDiv(undefined, (el) =>
-				el.addClasses([
-					"markdown-preview-view",
-					"markdown-rendered",
-					"node-insert-event",
-					"is-readable-line-width",
-					"allow-fold-headings",
-					"show-indentation-guide",
-					"allow-fold-lists",
-				])
-			)
-			.createDiv(undefined, (el) => {
-				el.addClasses(["markdown-preview-sizer", "markdown-preview-section"]);
-				el.append(sanitizeHTMLToDom(`<h1>${this.article.title}</h1>` + content));
-			});
+
+		const frame_styles: string[] = [
+			"height: 100%",
+			"width: 100%",
+			"background-color: white", // for pages with no background
+		];
+		const frame = document.createElement("iframe");
+		frame.setAttr("style", frame_styles.join("; "));
+		frame.setAttr("src", this.article.url);
+		container.appendChild(frame);
 	}
 
-	getState(): { input: Article } {
+	getState(): { input: reducedArticle } {
 		return Object.assign(super.getState(), { input: this.article });
 	}
 

@@ -56,6 +56,7 @@ async function insert(
 	let insert = templateString
 		.replaceAll("{title}", settings.prioritizeArticleTitle || selection === "" ? article.title : selection)
 		.replaceAll("{url}", article.url)
+		.replaceAll("{description}", article.description ?? "")
 		.replaceAll("{language}", languages[article.languageCode])
 		.replaceAll("{languageCode}", article.languageCode);
 

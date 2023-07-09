@@ -15,6 +15,7 @@ export interface WikipediaSearchSettings {
 	prioritizeArticleTitle: boolean;
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
+	openArticleInFullscreen: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
@@ -25,6 +26,7 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	prioritizeArticleTitle: false,
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
+	openArticleInFullscreen: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -69,7 +71,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName(`${settings.additionalTemplatesEnabled ? "Default " : ""}Template`)
 			.setDesc(
-				"The template for the insert. (all occurrences of '{title}', '{url}', '{language}', '{languageCode}' and '{intro}' will be replaced with the articles title (or the selection), url, language, language code and intro (first section) respectively)"
+				"The template for the insert. (all occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description} and '{intro}' will be replaced with the articles title (or the selection), url, language, language code, description (if available) and intro (first section) respectively)"
 			)
 			.addTextArea((text) =>
 				text
@@ -178,6 +180,16 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(settings.prioritizeArticleTitle).onChange(async (value) => {
 					settings.prioritizeArticleTitle = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Article Tab Placement")
+			.setDesc("Whether or not to open articles in full screen instead of in a split view.")
+			.addToggle((toggle) =>
+				toggle.setValue(settings.openArticleInFullscreen).onChange(async (value) => {
+					settings.openArticleInFullscreen = value;
 					await this.plugin.saveSettings();
 				})
 			);

@@ -14,6 +14,27 @@ export default class WikipediaSearch extends Plugin {
 
 		this.registerView(WIKIPEDIA_VIEW, (leaf) => new WikipediaView(leaf));
 
+		this.registerDomEvent(activeWindow, "click", (event) => {
+			const target = event.target;
+
+			if (target instanceof HTMLAnchorElement) {
+				const url = target.href;
+
+				if (!url.match(/https?\:\/\/([\w]+).wikipedia.org\/wiki\//g)) {
+					return;
+				}
+
+				event.preventDefault();
+
+				const leaf = this.app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split");
+				leaf.setViewState({
+					type: WIKIPEDIA_VIEW,
+					active: true,
+					state: { input: { title: decodeURIComponent(url.split("/").pop()!), url: url } },
+				});
+			}
+		});
+
 		this.addCommand({
 			id: "link-article",
 			name: "Link Article",
