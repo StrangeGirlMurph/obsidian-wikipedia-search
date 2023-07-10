@@ -188,7 +188,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Open Article In ...")
-			.setDesc("Whether or not to open article links in the browser instead of in-app.")
+			.setDesc("Whether or not to open links to articles in the browser instead of in-app.")
 			.addToggle((toggle) =>
 				toggle.setValue(settings.openArticleLinksInBrowser).onChange(async (value) => {
 					settings.openArticleLinksInBrowser = value;

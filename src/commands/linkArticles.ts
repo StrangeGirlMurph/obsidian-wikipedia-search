@@ -62,12 +62,12 @@ async function insert(
 
 	if (templateString.includes("{intro}")) {
 		const intro: string | null = (await getArticleIntro([article.title], settings.language))?.[0] ?? null;
-		if (intro) {
-			insert = insert.replaceAll("{intro}", intro);
-		} else {
-			new Notice("Could not get articles introduction and had to leave it out...");
-		}
+		if (intro) insert = insert.replaceAll("{intro}", intro);
+		else new Notice("Could not fetch the articles introduction...");
 	}
+
+	if (templateString.includes("{description}") && !article.description)
+		new Notice("The article has no description...");
 
 	const cursorPosition = editor.getCursor();
 	editor.replaceSelection(insert);
