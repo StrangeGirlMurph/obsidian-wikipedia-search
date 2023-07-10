@@ -89,7 +89,7 @@ Note: OBS didn't record the overlay dropdown menu in the settings. It's there wh
 
 The available settings and their default values:
 
-<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/d112577b-2175-4e8d-86d2-bbf4d8e2ef41" width=600 />
+<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/aba3a56c-10a3-4da3-be49-d79cd4226593" width=600 />
 
 ## Questions & Contributions
 
