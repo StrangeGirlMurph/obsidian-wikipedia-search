@@ -79,7 +79,8 @@ You can access these commands over the command palette. The `Open Article` also 
   
 ## [Demo](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/5ac2b7a4-110a-4764-a90f-49782a73d436.mp4)
 
-<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/62220780/252305053-5ac2b7a4-110a-4764-a90f-49782a73d436.mp4" />
+<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/2220c1d1-e05b-4429-a1d8-279426aeccc5
+.mp4" />
 
 ## Settings
 
