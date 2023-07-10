@@ -8,8 +8,9 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 ## Key [Features](#features)
 
 - Linking Wikipedia articles in all languages.
+- Opening articles and links directly in Obsidian.
 - Hyperlinking selected text.
-- Pasting the articles extract.
+- Pasting the articles introduction.
 - Using different templates for the insert.
 
 ## Table of contents
@@ -19,8 +20,10 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
   - [Manual Installation](#manual-installation)
 - [Usage](#usage)
   - [Getting Started](#getting-started)
+  - [Commands](#commands)
   - [Features](#features)
 - [Demo](#demo)
+- [Settings](#settings)
 - [Questions \& Contributions](#questions--contributions)
 - [License](#license)
 
@@ -40,30 +43,38 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 ## Usage
 
-What I mean with "*search*" in the following:
-
-- In editing view open the command pallet with `CTRL+P` (that's the default hotkey) and run `Search Articles`.
-- (Start typing, select one of the options and watch the magic happen and the link appear.)
-
 ### Getting Started
 
 1. Install the plugin and enable it.
-2. Set your language and the template for the insert in the settings.
-3. Start *searching* :)
+2. Set your language and the template for the insert in the settings (and the other settings as well if you want).
+3. Start searching/linking/reading :)
+
+### Commands
+
+The plugin comes with 2 commands:
+
+- `Link Article`
+- `Open Article`
+
+You can access these commands over the command palette. The `Open Article` also has its own little button in the ribbon menu (the Wikipedia Logo). Of course you can also set custom hotkeys for the commands in your settings.
 
 ### Features
 
-- Basic links  
-   Just *search* from somewhere in your file.
-- Hyperlinking  
-   Select some text and *search*. The selected text will replace the `{title}` in your template (can be changed with a setting).
-- Search different languages  
-   In the *search* bar start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
-- Include the articles extract (the first paragraph)  
-   Add `{extract}` somewhere in your template(s) in the settings. This will be replaced with the articles extract. (Note: It can be pretty long!)
-- Multiple templates  
+- **Basic links**  
+   Just use the `Link Article` command somewhere in your file (in edit mode).
+- **Opening Articles**  
+   The plugin lets you open Wikipedia articles directly in obsidian! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu).
+- **Hyperlinking**  
+   Select some text and use `Link Article`. The selected text will be the `{title}` parameter in your template (if you haven't changed that behaviour in the settings).
+- **Search different languages**  
+   In the search bar you can start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
+- **Include the articles intro** (the first paragraph)  
+   Add `{intro}` somewhere in your template in the settings. This will be replaced with the articles introduction. (Note: It can be pretty long!)
+- **Opens links to Wikipedia articles directly in obsidian**  
+   If you click on any link in your files which points to a Wikipedia article it gets opened directly in obsidian.
+- **Multiple templates**  
    Add multiple template options in the settings and dynamically select the one you want for your specific use case.
-- Small workflow optimization settings  
+- **Small workflow optimization settings**  
    Go through the settings to optimize the plugin for your specific workflow.
   
 ## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
