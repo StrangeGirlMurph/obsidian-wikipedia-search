@@ -198,7 +198,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Article Tab Placement")
-			.setDesc("Whether or not to open articles in full screen instead of in a split view.")
+			.setDesc("Whether or not to open articles in a fullscreen tab instead of a split view.")
 			.addToggle((toggle) =>
 				toggle.setValue(settings.openArticleInFullscreen).onChange(async (value) => {
 					settings.openArticleInFullscreen = value;
@@ -219,7 +219,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			href: "https://github.com/StrangeGirlMurph/obsidian-wikipedia-search",
 		});
 		feedbackParagraph.appendText(" and I'll get back to you ASAP. ~ Murphy :)");
-
 		containerEl.appendChild(feedbackParagraph);
+
+		containerEl.createEl("p", { text: "PS: Wikipedia also has a dark mode for everyone with an account." });
 	}
 }
