@@ -3,7 +3,7 @@
 	"name": "Wikipedia Search",
 	"version": "1.8.1",
 	"minAppVersion": "0.15.0",
-	"description": "Search for Wikipedia articles and link them.",
+	"description": "Search, link and open Wikipedia articles all from within the app!",
 	"author": "StrangeGirlMurph",
 	"authorUrl": "https://github.com/StrangeGirlMurph/",
 	"fundingUrl": "https://github.com/sponsors/StrangeGirlMurph",

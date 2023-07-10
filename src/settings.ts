@@ -1,30 +1,34 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
-import { languages } from "./languages";
+import { languages } from "./utils/languages";
 import WikipediaSearch from "./main";
-
-export interface WikipediaSearchSettings {
-	language: string;
-	defaultTemplate: string;
-	placeCursorInfrontOfInsert: boolean;
-	autoInsertSingleResponseQueries: boolean;
-	alwaysUseArticleTitle: boolean;
-	additionalTemplatesEnabled: boolean;
-	templates: Template[];
-}
 
 export interface Template {
 	name: string;
 	templateString: string;
 }
 
+export interface WikipediaSearchSettings {
+	language: string;
+	defaultTemplate: string;
+	templates: Template[];
+	additionalTemplatesEnabled: boolean;
+	prioritizeArticleTitle: boolean;
+	placeCursorInfrontOfInsert: boolean;
+	autoInsertSingleResponseQueries: boolean;
+	openArticleInFullscreen: boolean;
+	openArticleLinksInBrowser: boolean;
+}
+
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	defaultTemplate: "[{title}]({url})",
+	templates: [],
+	additionalTemplatesEnabled: false,
+	prioritizeArticleTitle: false,
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
-	alwaysUseArticleTitle: false,
-	additionalTemplatesEnabled: false,
-	templates: [],
+	openArticleInFullscreen: false,
+	openArticleLinksInBrowser: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -47,7 +51,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Language")
-			.setDesc("Default Wikipedia to search in. (type to search)")
+			.setDesc("The default Wikipedia to browse. (type to search)")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(
@@ -63,14 +67,13 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					.onChange(async (value) => {
 						settings.language = value;
 						await this.plugin.saveSettings();
-						new Notice(`Language set to ${languages[value]} (${value})!`);
 					})
 			);
 
 		new Setting(containerEl)
 			.setName(`${settings.additionalTemplatesEnabled ? "Default " : ""}Template`)
 			.setDesc(
-				"Template for the insert. (all occurrences of '{title}', '{url}', '{language}', '{languageCode}' and '{extract}' will be replaced with the selection/articles title, URL, language, language code and extract respectively)"
+				"The template for the insert. (all occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description} and '{intro}' will be replaced with the articles title (or the selection), url, language, language code, description (if available) and intro (first section) respectively)"
 			)
 			.addTextArea((text) =>
 				text
@@ -139,7 +142,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		containerEl.createEl("h2", { text: "Workflow Optimizations" });
 
 		new Setting(containerEl)
-			.setName("Use Additional Templates")
+			.setName("Additional Templates")
 			.setDesc("Enable additional templating options for the insert.")
 			.addToggle((toggle) =>
 				toggle.setValue(settings.additionalTemplatesEnabled).onChange(async (value) => {
@@ -174,11 +177,31 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Use Article Title Instead Of Selection")
 			.setDesc(
-				"When hyperlinking: Whether or not to use the articles title instead of the selected text for '{title}' parameter."
+				"When hyperlinking: Whether or not to use the articles title instead of the selected text for the '{title}' parameter of your template."
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(settings.alwaysUseArticleTitle).onChange(async (value) => {
-					settings.alwaysUseArticleTitle = value;
+				toggle.setValue(settings.prioritizeArticleTitle).onChange(async (value) => {
+					settings.prioritizeArticleTitle = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Open Article In ...")
+			.setDesc("Whether or not to open article links in the browser instead of in-app.")
+			.addToggle((toggle) =>
+				toggle.setValue(settings.openArticleLinksInBrowser).onChange(async (value) => {
+					settings.openArticleLinksInBrowser = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Article Tab Placement")
+			.setDesc("Whether or not to open articles in a fullscreen tab instead of a split view.")
+			.addToggle((toggle) =>
+				toggle.setValue(settings.openArticleInFullscreen).onChange(async (value) => {
+					settings.openArticleInFullscreen = value;
 					await this.plugin.saveSettings();
 				})
 			);
@@ -195,8 +218,9 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			text: "on GitHub",
 			href: "https://github.com/StrangeGirlMurph/obsidian-wikipedia-search",
 		});
-		feedbackParagraph.appendText(" and I'll get back to you ASAP ~ Murphy :)");
-
+		feedbackParagraph.appendText(" and I'll get back to you ASAP. ~ Murphy :)");
 		containerEl.appendChild(feedbackParagraph);
+
+		containerEl.createEl("p", { text: "PS: Wikipedia also has a dark mode for everyone with an account." });
 	}
 }

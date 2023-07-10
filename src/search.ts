@@ -1,7 +1,7 @@
 import { App, Editor, SuggestModal } from "obsidian";
 import WikipediaSearch from "./main";
-import { languages } from "./languages";
-import { getArticleDescriptions, getArticleExtracts, getArticles } from "./wikipediaAPI";
+import { languages } from "./utils/languages";
+import { getArticleDescription, getArticleIntro, getArticles } from "./utils/wikipediaAPI";
 import { Template, WikipediaSearchSettings } from "./settings";
 
 interface Article {
@@ -60,7 +60,7 @@ export class SearchModal extends SuggestModal<Article> {
 		this.emptyStateText = "No results found.";
 
 		const searchResponses = await getArticles(query, languageCode);
-		const descriptions = await getArticleDescriptions(
+		const descriptions = await getArticleDescription(
 			searchResponses?.map((a) => a.title) ?? [],
 			languageCode
 		);
@@ -136,12 +136,12 @@ async function insert(
 ) {
 	const cursorPosition = editor.getCursor();
 	let extract: string | null = templateString.includes("{extract}")
-		? (await getArticleExtracts([article.title], article.languageCode))?.[0] ?? null
+		? (await getArticleIntro([article.title], article.languageCode))?.[0] ?? null
 		: null;
 
 	const selection = editor.getSelection();
 	const insert = templateString
-		.replaceAll("{title}", settings.alwaysUseArticleTitle || selection === "" ? article.title : selection)
+		.replaceAll("{title}", settings.prioritizeArticleTitle || selection === "" ? article.title : selection)
 		.replaceAll("{url}", article.url)
 		.replaceAll("{language}", languages[article.languageCode])
 		.replaceAll("{languageCode}", article.languageCode)
