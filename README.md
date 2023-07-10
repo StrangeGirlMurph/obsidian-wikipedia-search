@@ -77,13 +77,9 @@ You can access these commands over the command palette. The `Open Article` also 
 - **Small workflow optimization settings**  
    Go through the settings to optimize the plugin for your specific workflow.
   
-## [Demo](https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4)
+## [Demo](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/5ac2b7a4-110a-4764-a90f-49782a73d436.mp4)
 
-**Not up to date!**
-
-Note: OBS didn't record the overlay dropdown menu in the settings. It's there when you use it. I promise :)
-
-<img src="https://user-images.githubusercontent.com/62220780/233829525-08684f49-31be-4064-a14c-cec9c0f671d8.mp4" />
+<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/62220780/252305053-5ac2b7a4-110a-4764-a90f-49782a73d436.mp4" />
 
 ## Settings
 
