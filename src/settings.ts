@@ -16,6 +16,7 @@ export interface WikipediaSearchSettings {
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
 	openArticleInFullscreen: boolean;
+	openArticleLinksInBrowser: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
@@ -27,6 +28,7 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
 	openArticleInFullscreen: false,
+	openArticleLinksInBrowser: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -180,6 +182,16 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(settings.prioritizeArticleTitle).onChange(async (value) => {
 					settings.prioritizeArticleTitle = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Open Article In ...")
+			.setDesc("Whether or not to open article links in the browser instead of in-app.")
+			.addToggle((toggle) =>
+				toggle.setValue(settings.openArticleLinksInBrowser).onChange(async (value) => {
+					settings.openArticleLinksInBrowser = value;
 					await this.plugin.saveSettings();
 				})
 			);

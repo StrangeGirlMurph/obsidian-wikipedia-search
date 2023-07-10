@@ -3,6 +3,19 @@ import { WikipediaSearchSettings } from "src/settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 
+export async function openArticleView(
+	workspace: Workspace,
+	settings: WikipediaSearchSettings,
+	article: Article | reducedArticle
+) {
+	const leaf = await workspace.getLeaf(settings.openArticleInFullscreen ? "tab" : "split");
+	leaf.setViewState({
+		type: WIKIPEDIA_VIEW,
+		active: true,
+		state: { input: article },
+	});
+}
+
 export class OpenArticleModal extends SearchModal {
 	workspace: Workspace;
 
@@ -12,12 +25,7 @@ export class OpenArticleModal extends SearchModal {
 	}
 
 	async onChooseSuggestion(article: Article) {
-		const leaf = await this.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split");
-		leaf.setViewState({
-			type: WIKIPEDIA_VIEW,
-			active: true,
-			state: { input: article },
-		});
+		openArticleView(this.workspace, this.settings, article);
 	}
 }
 
@@ -38,11 +46,7 @@ export class WikipediaView extends ItemView {
 		const container = this.containerEl;
 		container.empty();
 
-		const frame_styles: string[] = [
-			"height: 100%",
-			"width: 100%",
-			"background-color: white", // for pages with no background
-		];
+		const frame_styles: string[] = ["height: 100%", "width: 100%"];
 		const frame = document.createElement("iframe");
 		frame.setAttr("style", frame_styles.join("; "));
 		frame.setAttr("src", this.article.url);

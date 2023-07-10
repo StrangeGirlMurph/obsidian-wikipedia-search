@@ -1,8 +1,10 @@
-import { Editor, Plugin, addIcon } from "obsidian";
+import { Editor, Notice, Plugin, addIcon, requestUrl } from "obsidian";
 import { LinkingModal } from "./commands/linkArticles";
 import { DEFAULT_SETTINGS, WikipediaSearchSettings, WikipediaSearchSettingTab } from "./settings";
-import { OpenArticleModal, WIKIPEDIA_VIEW, WikipediaView } from "./commands/openArticles";
+import { OpenArticleModal, WIKIPEDIA_VIEW, WikipediaView, openArticleView } from "./commands/openArticles";
 import { wikipediaIcon } from "./utils/wikipediaIcon";
+
+const originalOpen = window.open;
 
 export default class WikipediaSearch extends Plugin {
 	settings: WikipediaSearchSettings;
@@ -10,30 +12,38 @@ export default class WikipediaSearch extends Plugin {
 	async onload() {
 		console.log("loading wikipedia-search plugin");
 
+		window.open = (URL?: string | URL | undefined): Window | null => {
+			if (this.settings.openArticleLinksInBrowser) return originalOpen(URL);
+			if (!URL) return null;
+
+			const url = URL.toString() || "";
+
+			// Check if the url is a wikipedia url
+			if (!url.match(/https?\:\/\/([\w]+).wikipedia.org\/wiki\//g)) {
+				originalOpen(URL);
+				return null;
+			}
+
+			// Check if the article exists
+			requestUrl({ url: url, method: "HEAD" })
+				.catch((e) => e)
+				.then((res) => {
+					if (res.status != 200) {
+						new Notice("Article doesn't exist...");
+					} else {
+						openArticleView(this.app.workspace, this.settings, {
+							title: decodeURIComponent(url.split("/").pop()!),
+							url: url,
+						});
+					}
+				});
+
+			return null;
+		};
+
 		await this.loadSettings();
 
 		this.registerView(WIKIPEDIA_VIEW, (leaf) => new WikipediaView(leaf));
-
-		this.registerDomEvent(activeWindow, "click", (event) => {
-			const target = event.target;
-
-			if (target instanceof HTMLAnchorElement) {
-				const url = target.href;
-
-				if (!url.match(/https?\:\/\/([\w]+).wikipedia.org\/wiki\//g)) {
-					return;
-				}
-
-				event.preventDefault();
-
-				const leaf = this.app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split");
-				leaf.setViewState({
-					type: WIKIPEDIA_VIEW,
-					active: true,
-					state: { input: { title: decodeURIComponent(url.split("/").pop()!), url: url } },
-				});
-			}
-		});
 
 		this.addCommand({
 			id: "link-article",
@@ -57,6 +67,10 @@ export default class WikipediaSearch extends Plugin {
 		);
 
 		this.addSettingTab(new WikipediaSearchSettingTab(this.app, this));
+	}
+
+	onunload() {
+		window.open = originalOpen;
 	}
 
 	async loadSettings() {
