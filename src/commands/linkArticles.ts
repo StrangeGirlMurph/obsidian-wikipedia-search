@@ -37,7 +37,7 @@ class TemplateModal extends SuggestModal<Template> {
 
 	async getSuggestions(query: string): Promise<Template[]> {
 		return [{ name: "Default", templateString: this.settings.defaultTemplate }]
-			.concat(this.settings.additionalTemplates)
+			.concat(this.settings.templates)
 			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
 	}
 

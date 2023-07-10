@@ -10,7 +10,7 @@ export interface Template {
 export interface WikipediaSearchSettings {
 	language: string;
 	defaultTemplate: string;
-	additionalTemplates: Template[];
+	templates: Template[];
 	additionalTemplatesEnabled: boolean;
 	prioritizeArticleTitle: boolean;
 	placeCursorInfrontOfInsert: boolean;
@@ -22,7 +22,7 @@ export interface WikipediaSearchSettings {
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	defaultTemplate: "[{title}]({url})",
-	additionalTemplates: [],
+	templates: [],
 	additionalTemplatesEnabled: false,
 	prioritizeArticleTitle: false,
 	placeCursorInfrontOfInsert: false,
@@ -93,13 +93,13 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				.setDesc("Adds a new template option to choose from.")
 				.addButton((button) =>
 					button.setIcon("plus").onClick(async () => {
-						if (settings.additionalTemplates.length == 20)
+						if (settings.templates.length == 20)
 							return new Notice(
 								"Easy buddy... I need to stop you right there. You can only have up to 20 additional templates. It's for your own good!"
 							);
 
-						settings.additionalTemplates.push({
-							name: `Template #${settings.additionalTemplates.length + 1}`,
+						settings.templates.push({
+							name: `Template #${settings.templates.length + 1}`,
 							templateString: DEFAULT_SETTINGS.defaultTemplate,
 						});
 						await this.plugin.saveSettings();
@@ -107,7 +107,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					})
 				);
 
-			for (const [i, val] of settings.additionalTemplates.entries()) {
+			for (const [i, val] of settings.templates.entries()) {
 				new Setting(containerEl)
 					.setName(`Additional Template Nr. ${i + 1}`)
 					.setDesc("Set the templates name and template for the insert.")
@@ -116,7 +116,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 							.setValue(val.name)
 							.setPlaceholder("Name")
 							.onChange(async (value) => {
-								settings.additionalTemplates[i].name = value;
+								settings.templates[i].name = value;
 								await this.plugin.saveSettings();
 							})
 					)
@@ -125,13 +125,13 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 							.setPlaceholder("Template")
 							.setValue(val.templateString)
 							.onChange(async (value) => {
-								settings.additionalTemplates[i].templateString = value;
+								settings.templates[i].templateString = value;
 								await this.plugin.saveSettings();
 							})
 					)
 					.addButton((button) =>
 						button.setIcon("minus").onClick(async () => {
-							settings.additionalTemplates.splice(i, 1);
+							settings.templates.splice(i, 1);
 							await this.plugin.saveSettings();
 							this.display();
 						})
