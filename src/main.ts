@@ -32,7 +32,7 @@ export default class WikipediaSearch extends Plugin {
 						new Notice("Article doesn't exist...");
 					} else {
 						openArticleView(this.app.workspace, this.settings, {
-							title: decodeURIComponent(url.split("/").pop()!),
+							title: decodeURIComponent(url.split("/").pop()!.replaceAll("_", " ")),
 							url: url,
 						});
 					}

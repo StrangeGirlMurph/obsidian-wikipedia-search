@@ -9,6 +9,8 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
 
 ## Key [Features](#features)
 
+**[Demo Video](https://github-production-user-asset-6210df.s3.amazonaws.com/62220780/252306094-2220c1d1-e05b-4429-a1d8-279426aeccc5.mp4)**
+
 - Linking Wikipedia articles in all languages.
 - Opening articles and links directly in Obsidian.
 - Hyperlinking selected text.
@@ -24,7 +26,6 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia ar
   - [Getting Started](#getting-started)
   - [Commands](#commands)
   - [Features](#features)
-- [Demo](#demo)
 - [Settings](#settings)
 - [Questions \& Contributions](#questions--contributions)
 - [License](#license)
@@ -79,8 +80,6 @@ You can access these commands over the command palette. The `Open Article` also 
 - **Small workflow optimization settings**  
    Go through the settings to optimize the plugin for your specific workflow.
   
-## [Demo](https://github-production-user-asset-6210df.s3.amazonaws.com/62220780/252306094-2220c1d1-e05b-4429-a1d8-279426aeccc5.mp4)
-
 ## Settings
 
 The available settings and their default values:
