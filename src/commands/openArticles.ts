@@ -46,9 +46,8 @@ export class WikipediaView extends ItemView {
 		const container = this.containerEl;
 		container.empty();
 
-		const frame_styles: string[] = ["height: 100%", "width: 100%"];
 		const frame = document.createElement("iframe");
-		frame.setAttr("style", frame_styles.join("; "));
+		frame.setAttr("style", "height: 100%; width: 100%");
 		frame.setAttr("src", this.article.url);
 		container.appendChild(frame);
 	}
