@@ -12,17 +12,14 @@ export default class WikipediaSearch extends Plugin {
 	async onload() {
 		console.log("loading wikipedia-search plugin");
 
-		window.open = (URL?: string | URL | undefined): Window | null => {
-			if (this.settings.openArticleLinksInBrowser) return originalOpen(URL);
-			if (!URL) return null;
+		window.open = (URL?: string | URL | undefined, target?, features?): Window | null => {
+			if (this.settings.openArticleLinksInBrowser || !URL) return originalOpen(URL, target, features);
 
 			const url = URL.toString() || "";
 
 			// Check if the url is a wikipedia url
-			if (!url.match(/https?\:\/\/([\w]+).wikipedia.org\/wiki\//g)) {
-				originalOpen(URL);
-				return null;
-			}
+			if (!url.match(/https?\:\/\/([\w]+).wikipedia.org\/wiki\//g))
+				return originalOpen(URL, target, features);
 
 			// Check if the article exists
 			requestUrl({ url: url, method: "HEAD" })
