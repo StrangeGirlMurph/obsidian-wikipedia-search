@@ -1,7 +1,7 @@
 {
 	"name": "wikipedia-search",
 	"version": "1.9.1",
-	"description": "An Obsidian plugin to search for Wikipedia articles and link them.",
+	"description": "An Obsidian plugin to search, link and open Wikipedia articles, all within the app!",
 	"main": "src/main.js",
 	"scripts": {
 		"prettify": "eslint ./src/ --fix && npx prettier -w .",
