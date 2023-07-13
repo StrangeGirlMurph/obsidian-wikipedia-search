@@ -67,6 +67,7 @@ You can access these commands over the command palette. The `Open Article` also 
    Just use the `Link Article` command somewhere in your file (in edit mode).
 - **Opening Articles**  
    The plugin lets you open Wikipedia articles directly in obsidian! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu).
+   Note: Opening big articles might take a while. Just wait :)
 - **Hyperlinking**  
    Select some text and use `Link Article`. The selected text will be the `{title}` parameter in your template (if you haven't changed that behaviour in the settings).
 - **Search different languages**  
