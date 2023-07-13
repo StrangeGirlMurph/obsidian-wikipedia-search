@@ -89,10 +89,10 @@ The available settings and their default values:
 
 ## Questions & Contributions
 
-Feel free to ask me and the community if you have and questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
+Feel free to ask me and the community if you have any questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
 I am happy to hear your feature requests! Just create an issue if you have a good idea.
 
-If you want to contribute you can do that but creating issues and creating pull requests :)
+If you want to contribute you can do that simply by creating issues and pull requests :)
 
 ## License
 
