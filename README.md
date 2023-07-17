@@ -1,6 +1,6 @@
 # Obsidian Wikipedia Search Plugin
 
-An [Obsidian.md](https://obsidian.md/) plugin to quickly search for Wikipedia articles and link them in your notes.
+An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open Wikipedia articles directly in Obsidian and in your notes.
 
 *Don't worry about this project being "inactive". It's not inactive. It's done :)  
 (at least until there aren't any new feature requests)*
