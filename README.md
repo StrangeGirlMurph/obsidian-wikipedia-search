@@ -67,6 +67,7 @@ You can access these commands over the command palette. The `Open Article` also 
    Just use the `Link Article` command somewhere in your file (in edit mode).
 - **Opening Articles**  
    The plugin lets you open Wikipedia articles directly in obsidian! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu).
+   Note: Opening big articles might take a while. Just wait :)
 - **Hyperlinking**  
    Select some text and use `Link Article`. The selected text will be the `{title}` parameter in your template (if you haven't changed that behaviour in the settings).
 - **Search different languages**  
@@ -88,10 +89,10 @@ The available settings and their default values:
 
 ## Questions & Contributions
 
-Feel free to ask me and the community if you have and questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
+Feel free to ask me and the community if you have any questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
 I am happy to hear your feature requests! Just create an issue if you have a good idea.
 
-If you want to contribute you can do that but creating issues and creating pull requests :)
+If you want to contribute you can do that simply by creating issues and pull requests :)
 
 ## License
 
