@@ -21,6 +21,11 @@ export default class WikipediaSearch extends Plugin {
 			if (!url.match(/https?\:\/\/([\w]+).wikipedia.org\/wiki\//g))
 				return originalOpen(URL, target, features);
 
+			if (!window.navigator.onLine) {
+				new Notice("You're currently offline...");
+				return null;
+			}
+
 			// Check if the article exists
 			requestUrl({ url: url, method: "HEAD" })
 				.catch((e) => e)
