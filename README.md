@@ -9,7 +9,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 
 ## Key [Features](#features)
 
-**[Demo Video](https://github-production-user-asset-6210df.s3.amazonaws.com/62220780/252306094-2220c1d1-e05b-4429-a1d8-279426aeccc5.mp4)**
+**[Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d)**
 
 - Linking Wikipedia articles in all languages.
 - Opening articles and links directly in Obsidian.
