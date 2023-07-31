@@ -17,7 +17,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 
 ### [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d)
 
-<img src="https://github-production-user-asset-6210df.s3.amazonaws.com/62220780/257213304-0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d.mp4" />
+https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d
 
 ## Table of contents
 
