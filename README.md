@@ -13,9 +13,9 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 - Pasting the articles introduction.
 - Using different templates for the insert.
 
-### [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d)
+### [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/4e25face-9fb9-4b7b-b25c-3c18dac7b6bf)
 
-<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d>
+<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/4e25face-9fb9-4b7b-b25c-3c18dac7b6bf>
 
 ## Table of contents
 
