@@ -41,7 +41,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 
 1. Search under the Community Plugins in the settings for it and click install.
 2. Enable the plugin (from the installed plugin list).  
-   <img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/c99cc357-a4cd-41fb-8dbb-58a37b9e32b4" width=600 />
+   <img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/5386d683-1cbf-4ae7-863f-3697a48ee3d0" width=600 />
 
 ### Manual Installation
 
@@ -87,7 +87,7 @@ You can access these commands over the command palette (`CTRL+P`). The `Open Art
 
 The available settings and their default values:
 
-<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/aba3a56c-10a3-4da3-be49-d79cd4226593" width=600 />
+<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/c0fabd12-a696-4d28-a4f5-7ba893b69828" width=600 />
 
 ## Questions & Contributions
 
