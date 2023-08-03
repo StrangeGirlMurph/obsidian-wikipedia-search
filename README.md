@@ -10,17 +10,20 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 ## Key [Features](#features)
 
 - Linking Wikipedia articles in all languages.
-- Opening articles and links directly in Obsidian.
+- Opening articles and links directly in Obsidian (using the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)).
 - Hyperlinking selected text.
 - Pasting the articles introduction.
 - Using different templates for the insert.
 
 ### [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d)
 
-https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d
+<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/0cbd610e-d824-4eb3-99e6-5ab53eb7fe1d>
 
 ## Table of contents
 
+- [Key Features](#key-features)
+  - [Demo Video](#demo-video)
+- [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [From the community plugins list](#from-the-community-plugins-list)
   - [Manual Installation](#manual-installation)
@@ -61,23 +64,20 @@ The plugin comes with 2 commands:
 - `Link Article`
 - `Open Article`
 
-You can access these commands over the command palette. The `Open Article` also has its own little button in the ribbon menu (the Wikipedia Logo). Of course you can also set custom hotkeys for the commands in your settings.
+You can access these commands over the command palette (`CTRL+P`). The `Open Article` also has its own little button in the ribbon menu on the left (the Wikipedia Logo). Of course you can also set custom hotkeys for the commands in your settings.
 
 ### Features
 
 - **Basic links**  
    Just use the `Link Article` command somewhere in your file (in edit mode).
 - **Opening Articles**  
-   The plugin lets you open Wikipedia articles directly in obsidian! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu).
-   Note: Opening big articles might take a while. Just wait :)
+   The plugin lets you search for Wikipedia articles and open them in your browser or directly in Obsidian with the help of the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu). If you want to open the article in Obsidian you first have to [install](obsidian://show-plugin?id=surfing) the amazing Surfing plugin from the community plugin list.  
 - **Hyperlinking**  
    Select some text and use `Link Article`. The selected text will be the `{title}` parameter in your template (if you haven't changed that behaviour in the settings).
 - **Search different languages**  
    In the search bar you can start with a valid Wikipedia language code followed by a semicolon (e.g. `da:albert einstein`). This will let you search articles in all kinds of languages. (spaces don't matter)
 - **Include the articles intro** (the first paragraph)  
    Add `{intro}` somewhere in your template in the settings. This will be replaced with the articles introduction. (Note: It can be pretty long!)
-- **Opens links to Wikipedia articles directly in obsidian**  
-   If you click on any link in your files which points to a Wikipedia article it gets opened directly in obsidian.
 - **Multiple templates**  
    Add multiple template options in the settings and dynamically select the one you want for your specific use case.
 - **Small workflow optimization settings**  

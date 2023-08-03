@@ -1,73 +1,58 @@
-import { App, Workspace, ItemView, WorkspaceLeaf, ViewStateResult } from "obsidian";
+import { App, Workspace, Modal } from "obsidian";
+import WikipediaSearchPlugin from "src/main";
 import { WikipediaSearchSettings } from "src/settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 
-export async function openArticleView(
-	workspace: Workspace,
-	settings: WikipediaSearchSettings,
-	article: Article | reducedArticle
-) {
-	const leaf = await workspace.getLeaf(settings.openArticleInFullscreen ? "tab" : "split");
-	leaf.setViewState({
-		type: WIKIPEDIA_VIEW,
-		active: true,
-		state: { input: article },
-	});
-}
-
 export class OpenArticleModal extends SearchModal {
 	workspace: Workspace;
+	plugin: WikipediaSearchPlugin;
 
-	constructor(app: App, settings: WikipediaSearchSettings) {
+	constructor(plugin: WikipediaSearchPlugin, settings: WikipediaSearchSettings) {
 		super(app, settings);
 		this.workspace = app.workspace;
+		this.plugin = plugin;
 	}
 
 	async onChooseSuggestion(article: Article) {
-		openArticleView(this.workspace, this.settings, article);
+		// @ts-expect-error undocumented
+		if (app.plugins.enabledPlugins.has("surfing") && !this.settings.openArticlesInBrowser) {
+			app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split").setViewState({
+				type: "surfing-view",
+				active: true,
+				state: { url: article.url },
+			});
+		} else {
+			if (this.settings.showedSurfingMessage) {
+				window.open(article.url, "_blank");
+			} else {
+				new SurfingInfoModal(app, article).open();
+				this.settings.showedSurfingMessage = true;
+				this.plugin.saveSettings();
+			}
+		}
 	}
 }
 
-export const WIKIPEDIA_VIEW = "wikipedia-article-view";
+class SurfingInfoModal extends Modal {
+	article: Article;
 
-type reducedArticle = { title: string; url: string };
-export class WikipediaView extends ItemView {
-	article: reducedArticle;
-
-	constructor(leaf: WorkspaceLeaf) {
-		super(leaf);
+	constructor(app: App, article: Article) {
+		super(app);
+		this.article = article;
 	}
 
-	async setState(state: { input: reducedArticle }, result: ViewStateResult) {
-		await super.setState(state, result);
-		this.article = state.input;
+	onOpen() {
+		const surfingLink = `<a href="obsidian://show-plugin?id=surfing">Surfing plugin</a>`;
 
-		const container = this.containerEl;
-		container.empty();
+		const data = `<h4>Wikipedia Search plugin ♥ ${surfingLink}</h4>
+			<p>The Wikipedia Search plugin integrates with the amazing Surfing plugin to enable you to open Wikipedia articles directly inside of Obsidian! You just need to install and enable it. It has tons of awesome features and does the heavy lifting of loading the website itself in Obsidian. In this case the Wikipedia Search plugin just provides the search functionality. Using the Surfing plugin is completely optional but I highly recommend you check it out! Note: This will only be shown to you once but you can always find the information later in the README on GitHub as well. ~ Murphy :)</p>
+			<b>tl;dr: Install and enable the amazing ${surfingLink} to open Wikipedia articles directly inside of Obsidian!</b>`;
 
-		const frame = document.createElement("iframe");
-		frame.setAttr("style", "height: 100%; width: 100%");
-		frame.setAttr("src", this.article.url);
-		container.appendChild(frame);
+		this.contentEl.innerHTML = data;
 	}
 
-	getState(): { input: reducedArticle } {
-		return Object.assign(super.getState(), { input: this.article });
+	onClose() {
+		window.open(this.article.url, "_blank");
 	}
-
-	getIcon(): string {
-		return "wikipedia";
-	}
-
-	getViewType() {
-		return WIKIPEDIA_VIEW;
-	}
-
-	getDisplayText() {
-		if (!this.article) return "";
-		return `${this.article.title} - Wikipedia`;
-	}
-
-	async onOpen() {}
 }

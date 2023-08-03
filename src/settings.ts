@@ -1,6 +1,6 @@
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import { languages } from "./utils/languages";
-import WikipediaSearch from "./main";
+import WikipediaSearchPlugin from "./main";
 
 export interface Template {
 	name: string;
@@ -16,7 +16,8 @@ export interface WikipediaSearchSettings {
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
 	openArticleInFullscreen: boolean;
-	openArticleLinksInBrowser: boolean;
+	openArticlesInBrowser: boolean;
+	showedSurfingMessage: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
@@ -28,13 +29,14 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
 	openArticleInFullscreen: false,
-	openArticleLinksInBrowser: false,
+	openArticlesInBrowser: false,
+	showedSurfingMessage: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
-	plugin: WikipediaSearch;
+	plugin: WikipediaSearchPlugin;
 
-	constructor(app: App, plugin: WikipediaSearch) {
+	constructor(app: App, plugin: WikipediaSearchPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -46,7 +48,6 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		containerEl.empty();
 
 		containerEl.createEl("h1", { text: "Wikipedia Search Settings" });
-
 		containerEl.createEl("h2", { text: "General" });
 
 		new Setting(containerEl)
@@ -187,18 +188,22 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Open Article In ...")
-			.setDesc("Whether or not to open links to articles in the browser instead of in-app.")
+			.setName("Open Article In Browser")
+			.setDesc(
+				"Whether or not to open articles in the browser instead of in-app if the Surfing plugin is installed and enabled."
+			)
 			.addToggle((toggle) =>
-				toggle.setValue(settings.openArticleLinksInBrowser).onChange(async (value) => {
-					settings.openArticleLinksInBrowser = value;
+				toggle.setValue(settings.openArticlesInBrowser).onChange(async (value) => {
+					settings.openArticlesInBrowser = value;
 					await this.plugin.saveSettings();
 				})
 			);
 
 		new Setting(containerEl)
 			.setName("Article Tab Placement")
-			.setDesc("Whether or not to open articles in a fullscreen tab instead of a split view.")
+			.setDesc(
+				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin."
+			)
 			.addToggle((toggle) =>
 				toggle.setValue(settings.openArticleInFullscreen).onChange(async (value) => {
 					settings.openArticleInFullscreen = value;
@@ -206,21 +211,10 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				})
 			);
 
-		containerEl.createEl("br");
-		containerEl.createEl("hr");
-		containerEl.createEl("h2", { text: "Feedback, Bug Reports and Feature Requests 🌿" });
-
-		const feedbackParagraph = containerEl.createEl("p");
-		feedbackParagraph.setText(
-			"If you have any kind feedback, please let me know! I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features and all the bugs you found. Don't be shy! Just create an issue "
-		);
-		feedbackParagraph.createEl("a", {
-			text: "on GitHub",
-			href: "https://github.com/StrangeGirlMurph/obsidian-wikipedia-search",
-		});
-		feedbackParagraph.appendText(" and I'll get back to you ASAP. ~ Murphy :)");
-		containerEl.appendChild(feedbackParagraph);
-
-		containerEl.createEl("p", { text: "PS: Wikipedia also has a dark mode for everyone with an account." });
+		const appendix = `<hr/>
+		<h2>Feedback, Bug Reports and Feature Requests 🌿</h2>
+		<p>If you have any kind of feedback, please let me know! I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features and all the bugs you found. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
+		<p>PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
+		containerEl.createEl("div").innerHTML = appendix;
 	}
 }

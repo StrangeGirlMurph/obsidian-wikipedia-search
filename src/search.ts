@@ -1,5 +1,5 @@
 import { App, Editor, SuggestModal } from "obsidian";
-import WikipediaSearch from "./main";
+import WikipediaSearchPlugin from "./main";
 import { languages } from "./utils/languages";
 import { getArticleDescription, getArticleIntro, getArticles } from "./utils/wikipediaAPI";
 import { Template, WikipediaSearchSettings } from "./settings";
@@ -12,10 +12,10 @@ interface Article {
 }
 
 export class SearchModal extends SuggestModal<Article> {
-	plugin: WikipediaSearch;
+	plugin: WikipediaSearchPlugin;
 	editor: Editor;
 
-	constructor(app: App, plugin: WikipediaSearch, editor: Editor) {
+	constructor(app: App, plugin: WikipediaSearchPlugin, editor: Editor) {
 		super(app);
 		this.plugin = plugin;
 		this.editor = editor;
@@ -98,11 +98,11 @@ export class SearchModal extends SuggestModal<Article> {
 }
 
 class TemplateModal extends SuggestModal<Template> {
-	plugin: WikipediaSearch;
+	plugin: WikipediaSearchPlugin;
 	editor: Editor;
 	article: Article;
 
-	constructor(app: App, plugin: WikipediaSearch, editor: Editor, article: Article) {
+	constructor(app: App, plugin: WikipediaSearchPlugin, editor: Editor, article: Article) {
 		super(app);
 		this.plugin = plugin;
 		this.editor = editor;
