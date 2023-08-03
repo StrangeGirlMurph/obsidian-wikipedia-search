@@ -1,6 +1,6 @@
 {
 	"name": "wikipedia-search",
-	"version": "2.1.0",
+	"version": "2.1.1",
 	"description": "An Obsidian plugin to search, link and open Wikipedia articles, all within the app!",
 	"main": "src/main.js",
 	"scripts": {
