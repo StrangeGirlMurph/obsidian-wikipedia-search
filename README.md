@@ -19,9 +19,6 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 
 ## Table of contents
 
-- [Key Features](#key-features)
-  - [Demo Video](#demo-video)
-- [Table of contents](#table-of-contents)
 - [Installation](#installation)
   - [From the community plugins list](#from-the-community-plugins-list)
   - [Manual Installation](#manual-installation)
