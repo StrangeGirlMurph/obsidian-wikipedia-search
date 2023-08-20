@@ -1,6 +1,6 @@
 import { App, Editor, SuggestModal } from "obsidian";
 import { languages } from "../utils/languages";
-import { getArticleDescription, getArticles } from "../utils/wikipediaAPI";
+import { getArticleDescriptions, getArticles } from "../utils/wikipediaAPI";
 import { WikipediaSearchSettings } from "../settings";
 
 export interface Article {
@@ -61,7 +61,7 @@ export abstract class SearchModal extends SuggestModal<Article> {
 		this.emptyStateText = "No results found.";
 
 		const searchResponses = await getArticles(query, languageCode);
-		const descriptions = await getArticleDescription(
+		const descriptions = await getArticleDescriptions(
 			searchResponses?.map((a) => a.title) ?? [],
 			languageCode
 		);

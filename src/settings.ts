@@ -10,6 +10,7 @@ export interface Template {
 export interface WikipediaSearchSettings {
 	language: string;
 	defaultTemplate: string;
+	thumbnailWidth: number | null;
 	templates: Template[];
 	additionalTemplatesEnabled: boolean;
 	prioritizeArticleTitle: boolean;
@@ -23,6 +24,7 @@ export interface WikipediaSearchSettings {
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	defaultTemplate: "[{title}]({url})",
+	thumbnailWidth: null,
 	templates: [],
 	additionalTemplatesEnabled: false,
 	prioritizeArticleTitle: false,
@@ -74,7 +76,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName(`${settings.additionalTemplatesEnabled ? "Default " : ""}Template`)
 			.setDesc(
-				"The template for the insert. (all occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description} and '{intro}' will be replaced with the articles title (or the selection), url, language, language code, description (if available) and intro (first section) respectively)"
+				"The template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively."
 			)
 			.addTextArea((text) =>
 				text
@@ -82,6 +84,19 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					.setValue(settings.defaultTemplate)
 					.onChange(async (value) => {
 						settings.defaultTemplate = value;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
+			.setName("Thumbnail Width")
+			.setDesc("The width of the thumbnail in pixels. Leave empty to use the original size.")
+			.addText((text) =>
+				text
+					.setPlaceholder("Width")
+					.setValue(settings.thumbnailWidth ? settings.thumbnailWidth.toString() : "")
+					.onChange(async (value) => {
+						settings.thumbnailWidth = parseInt(value);
 						await this.plugin.saveSettings();
 					})
 			);
@@ -211,7 +226,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				})
 			);
 
-		const appendix = `<hr/>
+		const appendix = `
 		<h2>Feedback, Bug Reports and Feature Requests 🌿</h2>
 		<p>If you have any kind of feedback, please let me know! I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features and all the bugs you found. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
 		<p>PS: Wikipedia also has a dark mode for everyone with an account.</p>`;

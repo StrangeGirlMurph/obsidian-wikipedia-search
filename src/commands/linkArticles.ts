@@ -1,6 +1,6 @@
 import { App, Editor, Notice, SuggestModal } from "obsidian";
 import { languages } from "../utils/languages";
-import { getArticleIntro } from "../utils/wikipediaAPI";
+import { getArticleIntros, getArticleThumbnails } from "../utils/wikipediaAPI";
 import { Template, WikipediaSearchSettings } from "../settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
@@ -61,13 +61,27 @@ async function insert(
 		.replaceAll("{languageCode}", article.languageCode);
 
 	if (templateString.includes("{intro}")) {
-		const intro: string | null = (await getArticleIntro([article.title], settings.language))?.[0] ?? null;
-		if (intro) insert = insert.replaceAll("{intro}", intro);
-		else new Notice("Could not fetch the articles introduction...");
+		const intro: string | null = (await getArticleIntros([article.title], settings.language))?.[0] ?? null;
+		insert = insert.replaceAll("{intro}", intro ?? "");
+		if (!intro) new Notice("Could not fetch the articles introduction.");
+	}
+
+	if (templateString.includes("{thumbnail}")) {
+		const thumbnailUrl: string | null =
+			(await getArticleThumbnails([article.title], settings.language))?.[0] ?? null;
+		insert = insert.replaceAll(
+			"{thumbnail}",
+			thumbnailUrl
+				? `![${article.title} Thumbnail${
+						settings.thumbnailWidth ? ` | ${settings.thumbnailWidth}` : ""
+				  }](${thumbnailUrl})`
+				: ""
+		);
+		if (!thumbnailUrl) new Notice("Could not fetch the articles thumbnail.");
 	}
 
 	if (templateString.includes("{description}") && !article.description)
-		new Notice("The article has no description...");
+		new Notice("The article has no description.");
 
 	const cursorPosition = editor.getCursor();
 	editor.replaceSelection(insert);
