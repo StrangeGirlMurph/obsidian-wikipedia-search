@@ -228,7 +228,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		const appendix = `
 		<h2>Feedback, Bug Reports and Feature Requests 🌿</h2>
-		<p>If you have any kind of feedback, please let me know! I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features and all the bugs you found. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
+		<p>If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
 		<p>PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
 		containerEl.createEl("div").innerHTML = appendix;
 	}
