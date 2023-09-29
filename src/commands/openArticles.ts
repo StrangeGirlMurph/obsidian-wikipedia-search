@@ -1,4 +1,4 @@
-import { Workspace, Modal } from "obsidian";
+import { Workspace, Modal, Platform } from "obsidian";
 import WikipediaSearchPlugin from "src/main";
 import { WikipediaSearchSettings } from "src/settings";
 import { Article } from "src/utils/searchModal";
@@ -54,7 +54,7 @@ class SurfingInfoModal extends Modal {
 
 	onClose() {
 		// @ts-expect-error undocumented
-		if (app.plugins.enabledPlugins.has("surfing")) {
+		if (app.plugins.enabledPlugins.has("surfing") && Platform.isDesktopApp) {
 			app.workspace.getLeaf("split").setViewState({
 				type: "surfing-view",
 				active: true,
