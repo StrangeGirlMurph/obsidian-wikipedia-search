@@ -15,15 +15,19 @@ export class OpenArticleModal extends SearchModal {
 	}
 
 	async onChooseSuggestion(article: Article) {
-		// @ts-expect-error undocumented
-		if (app.plugins.enabledPlugins.has("surfing") && !this.settings.openArticlesInBrowser) {
+		if (
+			// @ts-expect-error undocumented
+			app.plugins.enabledPlugins.has("surfing") &&
+			!this.settings.openArticlesInBrowser &&
+			Platform.isDesktopApp
+		) {
 			app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split").setViewState({
 				type: "surfing-view",
 				active: true,
 				state: { url: article.url },
 			});
 		} else {
-			if (this.settings.showedSurfingMessage) {
+			if (this.settings.showedSurfingMessage || !Platform.isDesktopApp) {
 				window.open(article.url, "_blank");
 			} else {
 				new SurfingInfoModal(article).open();
@@ -54,7 +58,7 @@ class SurfingInfoModal extends Modal {
 
 	onClose() {
 		// @ts-expect-error undocumented
-		if (app.plugins.enabledPlugins.has("surfing") && Platform.isDesktopApp) {
+		if (app.plugins.enabledPlugins.has("surfing")) {
 			app.workspace.getLeaf("split").setViewState({
 				type: "surfing-view",
 				active: true,
