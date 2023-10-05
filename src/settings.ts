@@ -1,4 +1,4 @@
-import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting, TextComponent } from "obsidian";
 import { languages } from "./utils/languages";
 import WikipediaSearchPlugin from "./main";
 
@@ -12,6 +12,8 @@ export interface WikipediaSearchSettings {
 	defaultTemplate: string;
 	thumbnailWidth: number | null;
 	templates: Template[];
+	createArticleNote: boolean;
+	createArticleNotePath: string;
 	additionalTemplatesEnabled: boolean;
 	prioritizeArticleTitle: boolean;
 	placeCursorInfrontOfInsert: boolean;
@@ -26,6 +28,8 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	defaultTemplate: "[{title}]({url})",
 	thumbnailWidth: null,
 	templates: [],
+	createArticleNote: false,
+	createArticleNotePath: "/",
 	additionalTemplatesEnabled: false,
 	prioritizeArticleTitle: false,
 	placeCursorInfrontOfInsert: false,
@@ -99,7 +103,30 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						settings.thumbnailWidth = parseInt(value);
 						await this.plugin.saveSettings();
 					})
+		);
+		
+		if (settings.createArticleNote) {
+			containerEl.createEl("h2", { text: "Create new note" });
+
+			new Setting(containerEl)
+			.setName("Path for created notes")
+			.setDesc("Folder where created notes should be saved")
+				.addSearch((text: TextComponent) => {
+					// TODO: add a performant folder suggester
+					text
+						.setPlaceholder("Example: folderA/folderB")
+						.setValue(settings.createArticleNotePath)
+						.onChange(async () => {
+							settings.createArticleNotePath = text.getValue();
+							if (settings.createArticleNotePath.length == 0) {
+								settings.createArticleNotePath = DEFAULT_SETTINGS.createArticleNotePath;
+								new Notice("Empty path not available. Set to default!");
+							}
+							await this.plugin.saveSettings();
+						});
+				}
 			);
+		}
 
 		if (settings.additionalTemplatesEnabled) {
 			containerEl.createEl("h2", { text: "Additional Templates" });
@@ -157,6 +184,22 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		containerEl.createEl("h2", { text: "Workflow Optimizations" });
 
+		new Setting(containerEl)
+			.setName("Create new note")
+			.setDesc("Instead of linking in current selection, create a new note for the article. By activating this option, the default template will change. After activating you can change the template.")
+			.addToggle((toggle) =>
+				toggle.setValue(settings.createArticleNote).onChange(async (value) => {
+					settings.createArticleNote = value;
+					if (settings.createArticleNote) {
+						settings.defaultTemplate = "{title}\n{thumbnail}\n{intro}";
+					} else {
+						settings.defaultTemplate = DEFAULT_SETTINGS.defaultTemplate;
+					}
+					await this.plugin.saveSettings();
+					this.display();
+				})
+		);
+		
 		new Setting(containerEl)
 			.setName("Additional Templates")
 			.setDesc("Enable additional templating options for the insert.")
