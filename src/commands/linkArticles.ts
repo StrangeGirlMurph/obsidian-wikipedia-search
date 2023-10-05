@@ -10,7 +10,7 @@ export class LinkingModal extends SearchModal {
 		if (this.settings.additionalTemplatesEnabled) {
 			new TemplateModal(app, this.settings, this.editor!, article).open();
 		} else {
-			insert(this.editor!, this.settings, article, this.settings.defaultTemplate);
+			insert(app, this.editor!, this.settings, article, this.settings.defaultTemplate);
 		}
 	}
 }
@@ -42,19 +42,21 @@ class TemplateModal extends SuggestModal<Template> {
 	}
 
 	async onChooseSuggestion(template: Template) {
-		insert(this.editor, this.settings, this.article, template.templateString);
+		insert(super.app, this.editor, this.settings, this.article, template.templateString);
 	}
 }
 
 async function insert(
+	app: App, 
 	editor: Editor,
 	settings: WikipediaSearchSettings,
 	article: Article,
 	templateString: string
 ) {
 	const selection = editor.getSelection();
+	const noteTitle = settings.prioritizeArticleTitle || selection === "" ? article.title : selection;
 	let insert = templateString
-		.replaceAll("{title}", settings.prioritizeArticleTitle || selection === "" ? article.title : selection)
+		.replaceAll("{title}", noteTitle)
 		.replaceAll("{url}", article.url)
 		.replaceAll("{description}", article.description ?? "")
 		.replaceAll("{language}", languages[article.languageCode])
@@ -83,7 +85,45 @@ async function insert(
 	if (templateString.includes("{description}") && !article.description)
 		new Notice("The article has no description.");
 
+	if (settings.createArticleNote) {
+		if ((await createNoteForArticle(app, settings, noteTitle, insert))) {
+			insert = `[[${noteTitle}]]`;
+		}
+	}
+
 	const cursorPosition = editor.getCursor();
 	editor.replaceSelection(insert);
 	if (settings.placeCursorInfrontOfInsert) editor.setCursor(cursorPosition);
+}
+
+async function createNoteForArticle(
+	app: App, 
+	settings: WikipediaSearchSettings, 
+	title: string, 
+	content: string
+) {
+	const normalizedTitle = normalizeTitle(title);
+	const newNotePath = `${settings.createArticleNotePath}/${normalizedTitle}.md`;
+
+	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
+	if (existingFile) {
+		new Notice(`File '${normalizedTitle}.md' already exists in the set folder.`);
+		return false;
+	}
+
+	try {
+		await app.vault.create(newNotePath, `${content}\n`); 
+		new Notice("New note created successfully.");
+	} catch (err) {
+		new Notice("Error creating new note.");
+		console.error("Error creating new note:", err);
+		return false;
+	}
+	return true;
+}
+
+function normalizeTitle(input: string): string {
+    let normalized = input.replace(/[\\/:"*?<>|]+/g, '_');
+    normalized = normalized.trim();
+    return normalized;
 }
