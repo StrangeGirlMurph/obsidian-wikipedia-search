@@ -1,4 +1,4 @@
-import { App, Editor, Notice, SuggestModal } from "obsidian";
+import { App, Editor, Notice, SuggestModal, normalizePath } from "obsidian";
 import { languages } from "../utils/languages";
 import { getArticleIntros, getArticleThumbnails } from "../utils/wikipediaAPI";
 import { Template, WikipediaSearchSettings } from "../settings";
@@ -10,7 +10,8 @@ export class LinkingModal extends SearchModal {
 		if (this.settings.additionalTemplatesEnabled) {
 			new TemplateModal(app, this.settings, this.editor!, article).open();
 		} else {
-			insert(app, this.editor!, this.settings, article, this.settings.defaultTemplate);
+			insert(app, this.editor!, this.settings, article,
+				{ name: "Default", templateString: this.settings.defaultTemplate, createArticleNote: false, createArticleNoteCustomPath: this.settings.createArticleNotePath });
 		}
 	}
 }
@@ -36,13 +37,13 @@ class TemplateModal extends SuggestModal<Template> {
 	}
 
 	async getSuggestions(query: string): Promise<Template[]> {
-		return [{ name: "Default", templateString: this.settings.defaultTemplate }]
+		return [{ name: "Default", templateString: this.settings.defaultTemplate, createArticleNote: false, createArticleNoteCustomPath: this.settings.createArticleNotePath }]
 			.concat(this.settings.templates)
 			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
 	}
 
 	async onChooseSuggestion(template: Template) {
-		insert(super.app, this.editor, this.settings, this.article, template.templateString);
+		insert(app, this.editor, this.settings, this.article, template);
 	}
 }
 
@@ -51,9 +52,10 @@ async function insert(
 	editor: Editor,
 	settings: WikipediaSearchSettings,
 	article: Article,
-	templateString: string
+	template: Template
 ) {
 	const selection = editor.getSelection();
+	const templateString = template.templateString;
 	const noteTitle = settings.prioritizeArticleTitle || selection === "" ? article.title : selection;
 	let insert = templateString
 		.replaceAll("{title}", noteTitle)
@@ -85,9 +87,10 @@ async function insert(
 	if (templateString.includes("{description}") && !article.description)
 		new Notice("The article has no description.");
 
-	if (settings.createArticleNote) {
-		if ((await createNoteForArticle(app, settings, noteTitle, insert))) {
-			insert = `[[${noteTitle}]]`;
+	if (template.createArticleNote) {
+		const createdNote = await createNoteInFolder(app, noteTitle, insert, template);
+		if (createdNote != null) {
+			insert = `[${noteTitle}](${createdNote})`;
 		}
 	}
 
@@ -96,19 +99,18 @@ async function insert(
 	if (settings.placeCursorInfrontOfInsert) editor.setCursor(cursorPosition);
 }
 
-async function createNoteForArticle(
-	app: App, 
-	settings: WikipediaSearchSettings, 
-	title: string, 
-	content: string
-) {
-	const normalizedTitle = normalizeTitle(title);
-	const newNotePath = `${settings.createArticleNotePath}/${normalizedTitle}.md`;
-
+async function createNoteInFolder(
+	app: App,
+	title: string,
+	content: string,
+	template: Template
+): Promise<string | null> {
+	const newNotePath = normalizePath(`${template.createArticleNoteCustomPath}/${title}.md`);
 	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
+	
 	if (existingFile) {
-		new Notice(`File '${normalizedTitle}.md' already exists in the set folder.`);
-		return false;
+		new Notice(`File already exists in the current folder.`);
+		return null;
 	}
 
 	try {
@@ -117,13 +119,7 @@ async function createNoteForArticle(
 	} catch (err) {
 		new Notice("Error creating new note.");
 		console.error("Error creating new note:", err);
-		return false;
+		return null;
 	}
-	return true;
-}
-
-function normalizeTitle(input: string): string {
-    let normalized = input.replace(/[\\/:"*?<>|]+/g, '_');
-    normalized = normalized.trim();
-    return normalized;
+	return newNotePath;
 }
