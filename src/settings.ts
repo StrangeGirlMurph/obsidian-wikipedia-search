@@ -1,10 +1,12 @@
-import { App, Notice, PluginSettingTab, Setting, TextComponent } from "obsidian";
+import { App, DropdownComponent, Notice, PluginSettingTab, Setting, TFolder } from "obsidian";
 import { languages } from "./utils/languages";
 import WikipediaSearchPlugin from "./main";
 
 export interface Template {
 	name: string;
 	templateString: string;
+	createArticleNote: boolean;
+	createArticleNoteCustomPath: string;
 }
 
 export interface WikipediaSearchSettings {
@@ -12,7 +14,6 @@ export interface WikipediaSearchSettings {
 	defaultTemplate: string;
 	thumbnailWidth: number | null;
 	templates: Template[];
-	createArticleNote: boolean;
 	createArticleNotePath: string;
 	additionalTemplatesEnabled: boolean;
 	prioritizeArticleTitle: boolean;
@@ -28,7 +29,6 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	defaultTemplate: "[{title}]({url})",
 	thumbnailWidth: null,
 	templates: [],
-	createArticleNote: false,
 	createArticleNotePath: "/",
 	additionalTemplatesEnabled: false,
 	prioritizeArticleTitle: false,
@@ -103,33 +103,33 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						settings.thumbnailWidth = parseInt(value);
 						await this.plugin.saveSettings();
 					})
-		);
-		
-		if (settings.createArticleNote) {
-			containerEl.createEl("h2", { text: "Create new note" });
-
-			new Setting(containerEl)
-			.setName("Path for created notes")
-			.setDesc("Folder where created notes should be saved")
-				.addSearch((text: TextComponent) => {
-					// TODO: add a performant folder suggester
-					text
-						.setPlaceholder("Example: folderA/folderB")
-						.setValue(settings.createArticleNotePath)
-						.onChange(async () => {
-							settings.createArticleNotePath = text.getValue();
-							if (settings.createArticleNotePath.length == 0) {
-								settings.createArticleNotePath = DEFAULT_SETTINGS.createArticleNotePath;
-								new Notice("Empty path not available. Set to default!");
-							}
-							await this.plugin.saveSettings();
-						});
-				}
 			);
-		}
 
 		if (settings.additionalTemplatesEnabled) {
 			containerEl.createEl("h2", { text: "Additional Templates" });
+			
+			new Setting(containerEl)
+				.setName("Default path for created notes")
+				.setDesc("Folder where created notes should be saved. Set empty to use the vault root folder. (type to search)")
+					.addDropdown((dropdown: DropdownComponent) => {
+						dropdown
+							.addOptions(this.app.vault.getAllLoadedFiles()
+								.filter(f => (f instanceof TFolder))
+								.reduce((acc, item) => {
+									acc[item.name] = item.name;
+									return acc;
+								}, {} as Record<string, string>))
+							.setValue(settings.createArticleNotePath)
+							.onChange(async (newFolder: string) => {
+								if (newFolder.length == 0) {
+									settings.createArticleNotePath = DEFAULT_SETTINGS.createArticleNotePath;
+								} else {
+									settings.createArticleNotePath = newFolder;
+								}
+								await this.plugin.saveSettings();
+							});
+					}
+				);
 
 			new Setting(containerEl)
 				.setName("Add Template")
@@ -144,6 +144,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						settings.templates.push({
 							name: `Template #${settings.templates.length + 1}`,
 							templateString: DEFAULT_SETTINGS.defaultTemplate,
+							createArticleNote: false,
+							createArticleNoteCustomPath: settings.createArticleNotePath
 						});
 						await this.plugin.saveSettings();
 						this.display();
@@ -151,9 +153,11 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				);
 
 			for (const [i, val] of settings.templates.entries()) {
+				containerEl.createEl("h4", { text: `Additional Template Nr. ${i + 1}` });
+
 				new Setting(containerEl)
-					.setName(`Additional Template Nr. ${i + 1}`)
-					.setDesc("Set the templates name and template for the insert.")
+					.setName(`Name`)
+					.setDesc("Set the templates name. ")
 					.addText((text) =>
 						text
 							.setValue(val.name)
@@ -162,7 +166,55 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 								settings.templates[i].name = value;
 								await this.plugin.saveSettings();
 							})
-					)
+					);
+				
+				new Setting(containerEl)
+					.setName(`Create Note`)
+					.setDesc(`Enable to create a new note for the article, instead of just linking it. By activating this option, the template will change to a preferred setup. After activating you can change the template for your needs.`)
+					.addToggle((toggle) =>
+						toggle
+							.setValue(val.createArticleNote)
+							.onChange(async (value) => {
+								settings.templates[i].createArticleNote = value;
+								if (settings.templates[i].createArticleNote) {
+									settings.templates[i].templateString = "{thumbnail}\n{intro}\n\n{url}";
+								} else {
+									settings.templates[i].templateString = DEFAULT_SETTINGS.defaultTemplate;
+								}
+								await this.plugin.saveSettings();
+								this.display();
+							})
+					);
+				
+				if (val.createArticleNote) {
+					new Setting(containerEl)
+						.setName("Custom path for created notes")
+						.setDesc("Custom folder where created notes should be saved. Set empty for default path. (type to search)")
+							.addDropdown((dropdown: DropdownComponent) => {
+								dropdown
+									.addOptions(this.app.vault.getAllLoadedFiles()
+										.filter(f => (f instanceof TFolder))
+										.reduce((acc, item) => {
+											acc[item.name] = item.name;
+											return acc;
+										}, {} as Record<string, string>))
+									.setValue(val.createArticleNoteCustomPath)
+									.onChange(async (newFolder: string) => {
+										if (newFolder.length == 0) {
+											settings.templates[i].createArticleNoteCustomPath = settings.createArticleNotePath;
+										} else {
+											settings.templates[i].createArticleNoteCustomPath = newFolder;
+										}
+										await this.plugin.saveSettings();
+										this.display();
+									});
+							}
+						);
+				}
+
+				new Setting(containerEl)
+					.setName("Template")
+					.setDesc("Set the template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively.")
 					.addTextArea((text) =>
 						text
 							.setPlaceholder("Template")
@@ -171,7 +223,10 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 								settings.templates[i].templateString = value;
 								await this.plugin.saveSettings();
 							})
-					)
+					);
+					
+				new Setting(containerEl)
+					.setName(`Remove template`)
 					.addButton((button) =>
 						button.setIcon("minus").onClick(async () => {
 							settings.templates.splice(i, 1);
@@ -179,26 +234,12 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 							this.display();
 						})
 					);
+				
+				containerEl.createEl("hr");
 			}
 		}
 
 		containerEl.createEl("h2", { text: "Workflow Optimizations" });
-
-		new Setting(containerEl)
-			.setName("Create new note")
-			.setDesc("Instead of linking in current selection, create a new note for the article. By activating this option, the default template will change. After activating you can change the template.")
-			.addToggle((toggle) =>
-				toggle.setValue(settings.createArticleNote).onChange(async (value) => {
-					settings.createArticleNote = value;
-					if (settings.createArticleNote) {
-						settings.defaultTemplate = "{title}\n{thumbnail}\n{intro}";
-					} else {
-						settings.defaultTemplate = DEFAULT_SETTINGS.defaultTemplate;
-					}
-					await this.plugin.saveSettings();
-					this.display();
-				})
-		);
 		
 		new Setting(containerEl)
 			.setName("Additional Templates")
