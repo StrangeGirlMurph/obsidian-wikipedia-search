@@ -1,4 +1,4 @@
-import { App, DropdownComponent, Notice, PluginSettingTab, Setting, TFolder } from "obsidian";
+import { App, DropdownComponent, Notice, PluginSettingTab, Setting, TFolder, ToggleComponent } from "obsidian";
 import { languages } from "./utils/languages";
 import WikipediaSearchPlugin from "./main";
 
@@ -6,6 +6,7 @@ export interface Template {
 	name: string;
 	templateString: string;
 	createArticleNote: boolean;
+	createArticleNoteUseCustomPath: boolean;
 	createArticleNoteCustomPath: string;
 }
 
@@ -23,6 +24,16 @@ export interface WikipediaSearchSettings {
 	openArticlesInBrowser: boolean;
 	showedSurfingMessage: boolean;
 }
+
+export const DEFAULT_TEMPLATE = (settings: WikipediaSearchSettings): Template => {
+	return {
+		name: "Default",
+		templateString: settings.defaultTemplate,
+		createArticleNote: false,
+		createArticleNoteUseCustomPath: false,
+		createArticleNoteCustomPath: settings.createArticleNotePath
+	};
+};
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
@@ -145,6 +156,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 							name: `Template #${settings.templates.length + 1}`,
 							templateString: DEFAULT_SETTINGS.defaultTemplate,
 							createArticleNote: false,
+							createArticleNoteUseCustomPath: false,
 							createArticleNoteCustomPath: settings.createArticleNotePath
 						});
 						await this.plugin.saveSettings();
@@ -189,27 +201,36 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				if (val.createArticleNote) {
 					new Setting(containerEl)
 						.setName("Custom path for created notes")
-						.setDesc("Custom folder where created notes should be saved. Set empty for default path. (type to search)")
-							.addDropdown((dropdown: DropdownComponent) => {
-								dropdown
-									.addOptions(this.app.vault.getAllLoadedFiles()
-										.filter(f => (f instanceof TFolder))
-										.reduce((acc, item) => {
-											acc[item.name] = item.name;
-											return acc;
-										}, {} as Record<string, string>))
-									.setValue(val.createArticleNoteCustomPath)
-									.onChange(async (newFolder: string) => {
-										if (newFolder.length == 0) {
-											settings.templates[i].createArticleNoteCustomPath = settings.createArticleNotePath;
-										} else {
-											settings.templates[i].createArticleNoteCustomPath = newFolder;
-										}
-										await this.plugin.saveSettings();
-										this.display();
-									});
-							}
-						);
+						.setDesc("Custom folder where created notes should be saved. Activate to use custom template path. (type to search)")
+						.addDropdown((dropdown: DropdownComponent) => {
+							dropdown
+								.addOptions(this.app.vault.getAllLoadedFiles()
+									.filter(f => (f instanceof TFolder))
+									.reduce((acc, item) => {
+										acc[item.name] = item.name;
+										return acc;
+									}, {} as Record<string, string>))
+								.setValue(val.createArticleNoteCustomPath)
+								.setDisabled(!val.createArticleNoteUseCustomPath)
+								.onChange(async (newFolder: string) => {
+									if (newFolder.length == 0) {
+										settings.templates[i].createArticleNoteCustomPath = settings.createArticleNotePath;
+									} else {
+										settings.templates[i].createArticleNoteCustomPath = newFolder;
+									}
+									await this.plugin.saveSettings();
+									this.display();
+								});
+						})
+						.addToggle((toggle: ToggleComponent) => {
+							toggle
+								.setValue(settings.templates[i].createArticleNoteUseCustomPath)
+								.onChange(async (newValue) => {
+									settings.templates[i].createArticleNoteUseCustomPath = newValue;
+									await this.plugin.saveSettings();
+									this.display();
+								})
+						});
 				}
 
 				new Setting(containerEl)
