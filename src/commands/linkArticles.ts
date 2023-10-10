@@ -1,7 +1,7 @@
 import { App, Editor, Notice, SuggestModal, normalizePath } from "obsidian";
 import { languages } from "../utils/languages";
 import { getArticleIntros, getArticleThumbnails } from "../utils/wikipediaAPI";
-import { Template, WikipediaSearchSettings } from "../settings";
+import { DEFAULT_TEMPLATE, Template, WikipediaSearchSettings } from "../settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 
@@ -10,8 +10,7 @@ export class LinkingModal extends SearchModal {
 		if (this.settings.additionalTemplatesEnabled) {
 			new TemplateModal(app, this.settings, this.editor!, article).open();
 		} else {
-			insert(app, this.editor!, this.settings, article,
-				{ name: "Default", templateString: this.settings.defaultTemplate, createArticleNote: false, createArticleNoteCustomPath: this.settings.createArticleNotePath });
+			insert(app, this.editor!, this.settings, article, DEFAULT_TEMPLATE(this.settings));
 		}
 	}
 }
@@ -37,7 +36,7 @@ class TemplateModal extends SuggestModal<Template> {
 	}
 
 	async getSuggestions(query: string): Promise<Template[]> {
-		return [{ name: "Default", templateString: this.settings.defaultTemplate, createArticleNote: false, createArticleNoteCustomPath: this.settings.createArticleNotePath }]
+		return [DEFAULT_TEMPLATE(this.settings)]
 			.concat(this.settings.templates)
 			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
 	}
@@ -88,9 +87,12 @@ async function insert(
 		new Notice("The article has no description.");
 
 	if (template.createArticleNote) {
+		if (!template.createArticleNoteUseCustomPath) {
+			template.createArticleNoteCustomPath = settings.createArticleNotePath;
+		}
 		const createdNote = await createNoteInFolder(app, noteTitle, insert, template);
 		if (createdNote != null) {
-			insert = `[${noteTitle}](${createdNote})`;
+			insert = `[[${createdNote}|${noteTitle}]]`;
 		}
 	}
 
@@ -109,7 +111,7 @@ async function createNoteInFolder(
 	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
 	
 	if (existingFile) {
-		new Notice(`File already exists in the current folder.`);
+		new Notice(`File already exists in the current folder. Instead directly linked article on cursor/selection.`);
 		return null;
 	}
 
