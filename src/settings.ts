@@ -1,6 +1,7 @@
-import { App, DropdownComponent, Notice, PluginSettingTab, Setting, TFolder, ToggleComponent } from "obsidian";
+import { App, Notice, PluginSettingTab, SearchComponent, Setting, ToggleComponent } from "obsidian";
 import { languages } from "./utils/languages";
 import WikipediaSearchPlugin from "./main";
+import { FolderSuggest } from "./utils/suggesters/folderSuggest";
 
 export interface Template {
 	name: string;
@@ -118,18 +119,13 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		if (settings.additionalTemplatesEnabled) {
 			containerEl.createEl("h2", { text: "Additional Templates" });
-			
-			new Setting(containerEl)
+
+			new Setting(this.containerEl)
 				.setName("Default path for created notes")
-				.setDesc("Folder where created notes should be saved. Set empty to use the vault root folder. (type to search)")
-					.addDropdown((dropdown: DropdownComponent) => {
-						dropdown
-							.addOptions(this.app.vault.getAllLoadedFiles()
-								.filter(f => (f instanceof TFolder))
-								.reduce((acc, item) => {
-									acc[item.name] = item.name;
-									return acc;
-								}, {} as Record<string, string>))
+				.setDesc("Folder where created notes should be saved. (type to search)")
+					.addSearch((search: SearchComponent) => {
+                		new FolderSuggest(this.app, search.inputEl);
+                		search.setPlaceholder("Example: folder1/folder2")
 							.setValue(settings.createArticleNotePath)
 							.onChange(async (newFolder: string) => {
 								if (newFolder.length == 0) {
@@ -139,8 +135,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 								}
 								await this.plugin.saveSettings();
 							});
-					}
-				);
+            });
 
 			new Setting(containerEl)
 				.setName("Add Template")
@@ -197,17 +192,12 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					);
 				
 				if (val.createArticleNote) {
-					new Setting(containerEl)
+					new Setting(this.containerEl)
 						.setName("Custom path for created notes")
 						.setDesc("Custom folder where created notes should be saved. Activate to use custom template path. (type to search)")
-						.addDropdown((dropdown: DropdownComponent) => {
-							dropdown
-								.addOptions(this.app.vault.getAllLoadedFiles()
-									.filter(f => (f instanceof TFolder))
-									.reduce((acc, item) => {
-										acc[item.name] = item.name;
-										return acc;
-									}, {} as Record<string, string>))
+						.addSearch((search: SearchComponent) => {
+							new FolderSuggest(this.app, search.inputEl);
+							search.setPlaceholder("Example: folder1/folder2")
 								.setValue(val.createArticleNoteCustomPath)
 								.setDisabled(!val.createArticleNoteUseCustomPath)
 								.onChange(async (newFolder: string) => {
@@ -217,7 +207,6 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 										settings.templates[i].createArticleNoteCustomPath = newFolder;
 									}
 									await this.plugin.saveSettings();
-									this.display();
 								});
 						})
 						.addToggle((toggle: ToggleComponent) => {
