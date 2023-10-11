@@ -91,9 +91,10 @@ async function insert(
 			template.createArticleNoteCustomPath = settings.createArticleNotePath;
 		}
 		const createdNote = await createNoteInFolder(app, noteTitle, insert, template);
-		if (createdNote != null) {
-			insert = `[[${createdNote}|${noteTitle}]]`;
+		if (createdNote == null) {
+			return;
 		}
+		insert = `[[${createdNote}|${noteTitle}]]`;
 	}
 
 	const cursorPosition = editor.getCursor();
@@ -111,7 +112,7 @@ async function createNoteInFolder(
 	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
 	
 	if (existingFile) {
-		new Notice(`File already exists in the current folder. Instead directly linked article on cursor/selection.`);
+		new Notice(`Aborted action, because file '${normalizePath(title)}.md' already exists in the set folder.`);
 		return null;
 	}
 
