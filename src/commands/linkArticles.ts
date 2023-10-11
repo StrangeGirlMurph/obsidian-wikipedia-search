@@ -108,6 +108,10 @@ async function createNoteInFolder(
 	content: string,
 	template: Template
 ): Promise<string | null> {
+	if (!(await app.vault.adapter.exists(normalizePath(template.createArticleNoteCustomPath)))) {
+		new Notice("Configured path for notes to be created, is not existing! Go to the plugin settings and check the paths!", 5000);
+		return null;
+	}
 	const newNotePath = normalizePath(`${template.createArticleNoteCustomPath}/${title}.md`);
 	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
 	
