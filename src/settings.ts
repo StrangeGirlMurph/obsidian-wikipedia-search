@@ -188,10 +188,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 							.setValue(val.createArticleNote)
 							.onChange(async (value) => {
 								settings.templates[i].createArticleNote = value;
-								if (settings.templates[i].createArticleNote) {
+								if (settings.templates[i].createArticleNote && settings.templates[i].templateString == DEFAULT_SETTINGS.defaultTemplate) {
 									settings.templates[i].templateString = "{thumbnail}\n{intro}\n\n{url}";
-								} else {
-									settings.templates[i].templateString = DEFAULT_SETTINGS.defaultTemplate;
 								}
 								await this.plugin.saveSettings();
 								this.display();
