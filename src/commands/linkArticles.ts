@@ -1,16 +1,16 @@
 import { App, Editor, Notice, SuggestModal, normalizePath } from "obsidian";
 import { languages } from "../utils/languages";
 import { getArticleIntros, getArticleThumbnails } from "../utils/wikipediaAPI";
-import { DEFAULT_TEMPLATE, Template, WikipediaSearchSettings } from "../settings";
+import { Template, WikipediaSearchSettings } from "../settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 
 export class LinkingModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
-		if (this.settings.additionalTemplatesEnabled) {
+		if (this.settings.templates.length > 1) {
 			new TemplateModal(app, this.settings, this.editor!, article).open();
 		} else {
-			insert(app, this.editor!, this.settings, article, DEFAULT_TEMPLATE(this.settings));
+			insert(app, this.editor!, this.settings, article, this.settings.templates[0]);
 		}
 	}
 }
@@ -29,16 +29,16 @@ class TemplateModal extends SuggestModal<Template> {
 	}
 
 	renderSuggestion(template: Template, el: HTMLElement) {
-		el.createEl("div", { text: template.name });
+		el.createEl("div", { text: `${template.name} ${template.createNote ? "(new note)" : "(inplace)"}` });
 		el.createEl("small", {
-			text: template.templateString,
+			text: template.templateString.replaceAll("\n", "\\n"),
 		});
 	}
 
 	async getSuggestions(query: string): Promise<Template[]> {
-		return [DEFAULT_TEMPLATE(this.settings)]
-			.concat(this.settings.templates)
-			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
+		return this.settings.templates.filter((template) =>
+			template.name.toLowerCase().includes(query.toLowerCase())
+		);
 	}
 
 	async onChooseSuggestion(template: Template) {
@@ -47,7 +47,7 @@ class TemplateModal extends SuggestModal<Template> {
 }
 
 async function insert(
-	app: App, 
+	app: App,
 	editor: Editor,
 	settings: WikipediaSearchSettings,
 	article: Article,
@@ -86,9 +86,9 @@ async function insert(
 	if (templateString.includes("{description}") && !article.description)
 		new Notice("The article has no description.");
 
-	if (template.createArticleNote) {
-		if (!template.createArticleNoteUseCustomPath) {
-			template.createArticleNoteCustomPath = settings.createArticleNotePath;
+	if (template.createNote) {
+		if (template.customPath === "") {
+			template.customPath = settings.defaultNotePath;
 		}
 		const createdNote = await createNoteInFolder(app, noteTitle, insert, template);
 		if (createdNote == null) {
@@ -108,20 +108,23 @@ async function createNoteInFolder(
 	content: string,
 	template: Template
 ): Promise<string | null> {
-	if (!(await app.vault.adapter.exists(normalizePath(template.createArticleNoteCustomPath)))) {
-		new Notice("Configured path for notes to be created, is not existing! Go to the plugin settings and check the paths!", 5000);
+	if (!(await app.vault.adapter.exists(normalizePath(template.customPath)))) {
+		new Notice(
+			"Configured path for notes to be created, is not existing! Go to the plugin settings and check the paths!",
+			5000
+		);
 		return null;
 	}
-	const newNotePath = normalizePath(`${template.createArticleNoteCustomPath}/${title}.md`);
+	const newNotePath = normalizePath(`${template.customPath}/${title}.md`);
 	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
-	
+
 	if (existingFile) {
 		new Notice(`Aborted action, because file '${normalizePath(title)}.md' already exists in the set folder.`);
 		return null;
 	}
 
 	try {
-		await app.vault.create(newNotePath, `${content}\n`); 
+		await app.vault.create(newNotePath, `${content}\n`);
 		new Notice("New note created successfully.");
 	} catch (err) {
 		new Notice("Error creating new note.");

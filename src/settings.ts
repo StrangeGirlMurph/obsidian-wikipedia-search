@@ -1,4 +1,4 @@
-import { App, Notice, PluginSettingTab, SearchComponent, Setting, ToggleComponent } from "obsidian";
+import { App, Modal, Notice, PluginSettingTab, SearchComponent, Setting } from "obsidian";
 import { languages } from "./utils/languages";
 import WikipediaSearchPlugin from "./main";
 import { FolderSuggest } from "./utils/suggesters/folderSuggest";
@@ -6,18 +6,25 @@ import { FolderSuggest } from "./utils/suggesters/folderSuggest";
 export interface Template {
 	name: string;
 	templateString: string;
-	createArticleNote: boolean;
-	createArticleNoteUseCustomPath: boolean;
-	createArticleNoteCustomPath: string;
+	createNote: boolean;
+	customPath: string; // use the default if empty
 }
+
+const DEFAULT_TEMPLATE_STRING_INLINE = "[{title}]({url})";
+const DEFAULT_TEMPLATE_STRING_NOTE = "{thumbnail}\n[{title}]({url}): {intro}\n";
+
+export const DEFAULT_TEMPLATE: Template = {
+	name: "Default",
+	templateString: DEFAULT_TEMPLATE_STRING_INLINE,
+	createNote: false,
+	customPath: "",
+};
 
 export interface WikipediaSearchSettings {
 	language: string;
-	defaultTemplate: string;
 	thumbnailWidth: number | null;
 	templates: Template[];
-	createArticleNotePath: string;
-	additionalTemplatesEnabled: boolean;
+	defaultNotePath: string;
 	prioritizeArticleTitle: boolean;
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
@@ -26,23 +33,11 @@ export interface WikipediaSearchSettings {
 	showedSurfingMessage: boolean;
 }
 
-export const DEFAULT_TEMPLATE = (settings: WikipediaSearchSettings): Template => {
-	return {
-		name: "Default",
-		templateString: settings.defaultTemplate,
-		createArticleNote: false,
-		createArticleNoteUseCustomPath: false,
-		createArticleNoteCustomPath: settings.createArticleNotePath
-	};
-};
-
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
-	defaultTemplate: "[{title}]({url})",
 	thumbnailWidth: null,
-	templates: [],
-	createArticleNotePath: "/",
-	additionalTemplatesEnabled: false,
+	templates: [DEFAULT_TEMPLATE],
+	defaultNotePath: "/",
 	prioritizeArticleTitle: false,
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
@@ -53,24 +48,41 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
 	plugin: WikipediaSearchPlugin;
+	settings: WikipediaSearchSettings;
 
 	constructor(app: App, plugin: WikipediaSearchPlugin) {
 		super(app, plugin);
 		this.plugin = plugin;
+		this.settings = plugin.settings;
+	}
+
+	addNotePathSearch(item: Template, setting: Setting): Setting {
+		if (!item.createNote) return setting;
+
+		return setting.addSearch((search: SearchComponent) => {
+			search.inputEl.setAttr("style", "width: 100%;");
+
+			new FolderSuggest(app, search.inputEl);
+			search
+				.setPlaceholder("custom note path")
+				.setValue(item.customPath)
+				.onChange(async (newFolder: string) => {
+					item.customPath = newFolder;
+					await this.plugin.saveSettings();
+				});
+		});
 	}
 
 	display(): void {
 		const { containerEl } = this;
-		const settings = this.plugin.settings;
 
 		containerEl.empty();
 
-		containerEl.createEl("h1", { text: "Wikipedia Search Settings" });
-		containerEl.createEl("h2", { text: "General" });
+		new Setting(containerEl).setName("Wikipedia Search Settings").setHeading();
 
 		new Setting(containerEl)
 			.setName("Language")
-			.setDesc("The default Wikipedia to browse. (type to search)")
+			.setDesc("The default Wikipedia to browse.")
 			.addDropdown((dropdown) =>
 				dropdown
 					.addOptions(
@@ -82,190 +94,156 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 							{}
 						)
 					)
-					.setValue(settings.language)
+					.setValue(this.settings.language)
 					.onChange(async (value) => {
-						settings.language = value;
-						await this.plugin.saveSettings();
-					})
-			);
-
-		new Setting(containerEl)
-			.setName(`${settings.additionalTemplatesEnabled ? "Default " : ""}Template`)
-			.setDesc(
-				"The template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively."
-			)
-			.addTextArea((text) =>
-				text
-					.setPlaceholder("Template")
-					.setValue(settings.defaultTemplate)
-					.onChange(async (value) => {
-						settings.defaultTemplate = value;
+						this.settings.language = value;
 						await this.plugin.saveSettings();
 					})
 			);
 
 		new Setting(containerEl)
 			.setName("Thumbnail Width")
-			.setDesc("The width of the thumbnail in pixels. Leave empty to use the original size.")
+			.setDesc("The width of the thumbnails in pixels. Leave empty to use the original size.")
 			.addText((text) =>
 				text
 					.setPlaceholder("Width")
-					.setValue(settings.thumbnailWidth ? settings.thumbnailWidth.toString() : "")
+					.setValue(this.settings.thumbnailWidth ? this.settings.thumbnailWidth.toString() : "")
 					.onChange(async (value) => {
-						settings.thumbnailWidth = parseInt(value);
+						this.settings.thumbnailWidth = parseInt(value);
 						await this.plugin.saveSettings();
 					})
 			);
 
-		if (settings.additionalTemplatesEnabled) {
-			containerEl.createEl("h2", { text: "Additional Templates" });
+		new Setting(this.containerEl)
+			.setName("Default Note Path")
+			.setDesc("Default folder where created notes should be saved.")
+			.addSearch((search: SearchComponent) => {
+				new FolderSuggest(this.app, search.inputEl);
+				search
+					.setPlaceholder("Example: folder/subfolder")
+					.setValue(this.settings.defaultNotePath)
+					.onChange(async (newFolder: string) => {
+						if (newFolder.length == 0) {
+							this.settings.defaultNotePath = DEFAULT_SETTINGS.defaultNotePath;
+						} else {
+							this.settings.defaultNotePath = newFolder;
+						}
+						await this.plugin.saveSettings();
+					});
+			});
 
-			new Setting(this.containerEl)
-				.setName("Default path for created notes")
-				.setDesc("Folder where created notes should be saved. (type to search)")
-					.addSearch((search: SearchComponent) => {
-                		new FolderSuggest(this.app, search.inputEl);
-                		search.setPlaceholder("Example: folder1/folder2")
-							.setValue(settings.createArticleNotePath)
-							.onChange(async (newFolder: string) => {
-								if (newFolder.length == 0) {
-									settings.createArticleNotePath = DEFAULT_SETTINGS.createArticleNotePath;
-								} else {
-									settings.createArticleNotePath = newFolder;
-								}
-								await this.plugin.saveSettings();
-							});
-            });
+		new Setting(containerEl)
+			.setName("Template Guide")
+			.setDesc("Get an explanation on how to set templates.")
+			.addButton((button) =>
+				button.setButtonText("Guide").onClick(async () => {
+					const modal = new Modal(app);
+					modal.titleEl.setText("Template Guide");
+					modal.contentEl.innerHTML =
+						"1. Start by giving your template a name in the text field at the left. <br/><br/> 2. Next you can use the first toggle to make the template create a new note with it's content being the inserted template when linking an article instead of inserting directly in the current file. <br/><br/> 3. If that toggle is on a search field appears which allows you to set a custom path for the new note. You can leave it empty if you just want to use the default note path. <br/><br/> 4. Lastly you can set the actual template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively.";
+					modal.open();
+				})
+			);
 
-			new Setting(containerEl)
-				.setName("Add Template")
-				.setDesc("Adds a new template option to choose from.")
-				.addButton((button) =>
-					button.setIcon("plus").onClick(async () => {
-						if (settings.templates.length == 20)
-							return new Notice(
-								"Easy buddy... I need to stop you right there. You can only have up to 20 additional templates. It's for your own good!"
-							);
+		new Setting(containerEl).setName("Templates").setHeading();
 
-						settings.templates.push({
-							name: `Template #${settings.templates.length + 1}`,
-							templateString: DEFAULT_SETTINGS.defaultTemplate,
-							createArticleNote: false,
-							createArticleNoteUseCustomPath: false,
-							createArticleNoteCustomPath: settings.createArticleNotePath
-						});
+		for (const [i, template] of this.settings.templates.entries()) {
+			const isDefaultTemplate = i == 0;
+
+			let setting = new Setting(containerEl);
+
+			if (isDefaultTemplate) {
+				setting.setName("Default Template");
+				setting.infoEl.children[0].setAttr("style", "width: max-content;");
+				setting.controlEl.setAttr("style", "width: 100%;");
+			} else {
+				setting.addText((text) =>
+					text
+						.setValue(template.name)
+						.setPlaceholder("Name")
+						.onChange(async (value) => {
+							template.name = value;
+							await this.plugin.saveSettings();
+						})
+				);
+				setting.controlEl.children[0].setAttr("style", "width: 150px;");
+			}
+
+			setting.addToggle((toggle) =>
+				toggle
+					.setTooltip("new note")
+					.setValue(template.createNote)
+					.onChange(async (value) => {
+						template.createNote = value;
+						if (template.createNote && template.templateString == DEFAULT_TEMPLATE_STRING_INLINE) {
+							template.templateString = DEFAULT_TEMPLATE_STRING_NOTE;
+						}
 						await this.plugin.saveSettings();
 						this.display();
 					})
+			);
+
+			if (!isDefaultTemplate) setting.settingEl.style.display = "block";
+			setting.controlEl.children[isDefaultTemplate ? 0 : 1].setAttr("style", "margin-right: auto;");
+
+			setting = this.addNotePathSearch(template, setting);
+
+			setting.addTextArea((text) => {
+				text.inputEl.setAttr(
+					"style",
+					"white-space:pre;overflow-wrap:normal;overflow:hidden;resize:none;flex-shrink:0;width:200px;"
 				);
+				text.inputEl.setAttr("rows", "2");
 
-			for (const [i, val] of settings.templates.entries()) {
-				containerEl.createEl("h4", { text: `Additional Template Nr. ${i + 1}` });
+				return text
+					.setPlaceholder("Template")
+					.setValue(template.templateString)
+					.onChange(async (value) => {
+						template.templateString = value;
+						await this.plugin.saveSettings();
+					});
+			});
 
-				new Setting(containerEl)
-					.setName(`Name`)
-					.setDesc("Set the templates name. ")
-					.addText((text) =>
-						text
-							.setValue(val.name)
-							.setPlaceholder("Name")
-							.onChange(async (value) => {
-								settings.templates[i].name = value;
-								await this.plugin.saveSettings();
-							})
-					);
-				
-				new Setting(containerEl)
-					.setName(`Create Note`)
-					.setDesc(`Enable to create a new note for the article, instead of just linking it. By activating this option, the template will change to a preferred setup. After activating you can change the template for your needs.`)
-					.addToggle((toggle) =>
-						toggle
-							.setValue(val.createArticleNote)
-							.onChange(async (value) => {
-								settings.templates[i].createArticleNote = value;
-								if (settings.templates[i].createArticleNote && settings.templates[i].templateString == DEFAULT_SETTINGS.defaultTemplate) {
-									settings.templates[i].templateString = "{thumbnail}\n{intro}\n\n{url}";
-								}
-								await this.plugin.saveSettings();
-								this.display();
-							})
-					);
-				
-				if (val.createArticleNote) {
-					new Setting(this.containerEl)
-						.setName("Custom path for created notes")
-						.setDesc("Custom folder where created notes should be saved. Activate to use custom template path. (type to search)")
-						.addSearch((search: SearchComponent) => {
-							new FolderSuggest(this.app, search.inputEl);
-							search.setPlaceholder("Example: folder1/folder2")
-								.setValue(val.createArticleNoteCustomPath)
-								.setDisabled(!val.createArticleNoteUseCustomPath)
-								.onChange(async (newFolder: string) => {
-									if (newFolder.length == 0) {
-										settings.templates[i].createArticleNoteCustomPath = settings.createArticleNotePath;
-									} else {
-										settings.templates[i].createArticleNoteCustomPath = newFolder;
-									}
-									await this.plugin.saveSettings();
-								});
-						})
-						.addToggle((toggle: ToggleComponent) => {
-							toggle
-								.setValue(settings.templates[i].createArticleNoteUseCustomPath)
-								.onChange(async (newValue) => {
-									settings.templates[i].createArticleNoteUseCustomPath = newValue;
-									await this.plugin.saveSettings();
-									this.display();
-								})
-						});
-				}
-
-				new Setting(containerEl)
-					.setName("Template")
-					.setDesc("Set the template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively.")
-					.addTextArea((text) =>
-						text
-							.setPlaceholder("Template")
-							.setValue(val.templateString)
-							.onChange(async (value) => {
-								settings.templates[i].templateString = value;
-								await this.plugin.saveSettings();
-							})
-					);
-					
-				new Setting(containerEl)
-					.setName(`Remove template`)
-					.addButton((button) =>
-						button.setIcon("minus").onClick(async () => {
-							settings.templates.splice(i, 1);
+			if (!isDefaultTemplate)
+				setting.addExtraButton((button) =>
+					button
+						.setTooltip("delete last template")
+						.setIcon("minus")
+						.onClick(async () => {
+							this.settings.templates.splice(i, 1);
 							await this.plugin.saveSettings();
 							this.display();
 						})
-					);
-				
-				containerEl.createEl("hr");
-			}
+				);
 		}
 
-		containerEl.createEl("h2", { text: "Workflow Optimizations" });
-		
-		new Setting(containerEl)
-			.setName("Additional Templates")
-			.setDesc("Enable additional templating options for the insert.")
-			.addToggle((toggle) =>
-				toggle.setValue(settings.additionalTemplatesEnabled).onChange(async (value) => {
-					settings.additionalTemplatesEnabled = value;
+		new Setting(containerEl).addExtraButton((button) =>
+			button
+				.setTooltip("add template")
+				.setIcon("plus")
+				.onClick(async () => {
+					if (this.settings.templates.length == 21)
+						return new Notice(
+							"Easy buddy... I need to stop you right there. You can only have up to 20 additional templates. It's for your own good! (I think)"
+						);
+
+					this.settings.templates.push({
+						...DEFAULT_TEMPLATE,
+						name: `Additional Template`,
+					});
 					await this.plugin.saveSettings();
 					this.display();
 				})
-			);
+		);
+
+		new Setting(containerEl).setName("Workflow Optimizations").setHeading();
 
 		new Setting(containerEl)
 			.setName("Cursor Placement")
 			.setDesc("Whether or not the cursor is placed infront of the insert instead of after it.")
 			.addToggle((toggle) =>
-				toggle.setValue(settings.placeCursorInfrontOfInsert).onChange(async (value) => {
-					settings.placeCursorInfrontOfInsert = value;
+				toggle.setValue(this.settings.placeCursorInfrontOfInsert).onChange(async (value) => {
+					this.settings.placeCursorInfrontOfInsert = value;
 					await this.plugin.saveSettings();
 				})
 			);
@@ -276,8 +254,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				"When hyperlinking: Whether or not to automatically select the response to a query when there is only one article to choose from."
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(settings.autoInsertSingleResponseQueries).onChange(async (value) => {
-					settings.autoInsertSingleResponseQueries = value;
+				toggle.setValue(this.settings.autoInsertSingleResponseQueries).onChange(async (value) => {
+					this.settings.autoInsertSingleResponseQueries = value;
 					await this.plugin.saveSettings();
 				})
 			);
@@ -288,8 +266,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				"When hyperlinking: Whether or not to use the articles title instead of the selected text for the '{title}' parameter of your template."
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(settings.prioritizeArticleTitle).onChange(async (value) => {
-					settings.prioritizeArticleTitle = value;
+				toggle.setValue(this.settings.prioritizeArticleTitle).onChange(async (value) => {
+					this.settings.prioritizeArticleTitle = value;
 					await this.plugin.saveSettings();
 				})
 			);
@@ -300,8 +278,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				"Whether or not to open articles in the browser instead of in-app if the Surfing plugin is installed and enabled."
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(settings.openArticlesInBrowser).onChange(async (value) => {
-					settings.openArticlesInBrowser = value;
+				toggle.setValue(this.settings.openArticlesInBrowser).onChange(async (value) => {
+					this.settings.openArticlesInBrowser = value;
 					await this.plugin.saveSettings();
 				})
 			);
@@ -312,16 +290,16 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin."
 			)
 			.addToggle((toggle) =>
-				toggle.setValue(settings.openArticleInFullscreen).onChange(async (value) => {
-					settings.openArticleInFullscreen = value;
+				toggle.setValue(this.settings.openArticleInFullscreen).onChange(async (value) => {
+					this.settings.openArticleInFullscreen = value;
 					await this.plugin.saveSettings();
 				})
 			);
 
-		const appendix = `
-		<h2>Feedback, Bug Reports and Feature Requests 🌿</h2>
-		<p>If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
+		new Setting(containerEl).setName("Feedback, Bug Reports and Feature Requests 🌿").setHeading();
+		const appendix = `<p style="border-top:1px solid var(--background-modifier-border); padding: 0.75em 0; margin: unset;">If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
 		<p>PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
-		containerEl.createEl("div").innerHTML = appendix;
+		const div = containerEl.createEl("div");
+		div.innerHTML = appendix;
 	}
 }
