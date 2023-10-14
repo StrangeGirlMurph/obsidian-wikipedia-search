@@ -60,9 +60,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		if (!item.createNote) return setting;
 
 		return setting.addSearch((search: SearchComponent) => {
-			search.inputEl.setAttr("style", "width: 100%;");
-
 			new FolderSuggest(app, search.inputEl);
+			search.inputEl.style.flexGrow = "1";
 			search
 				.setPlaceholder("custom note path")
 				.setValue(item.customPath)
@@ -151,47 +150,46 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			const isDefaultTemplate = i == 0;
 
 			let setting = new Setting(containerEl);
+			setting.settingEl.removeChild(setting.infoEl);
+			setting.controlEl.style.flexWrap = "wrap";
+			setting.controlEl.style.justifyContent = "center";
 
-			if (isDefaultTemplate) {
-				setting.setName("Default Template");
-				setting.infoEl.children[0].setAttr("style", "width: max-content;");
-				setting.controlEl.setAttr("style", "width: 100%;");
-			} else {
-				setting.addText((text) =>
-					text
-						.setValue(template.name)
-						.setPlaceholder("Name")
-						.onChange(async (value) => {
-							template.name = value;
-							await this.plugin.saveSettings();
-						})
-				);
-				setting.controlEl.children[0].setAttr("style", "width: 150px;");
-			}
+			setting.addText((text) => {
+				if (isDefaultTemplate) text.setDisabled(true);
+				return text
+					.setValue(isDefaultTemplate ? "Default Tempalte" : template.name)
+					.setPlaceholder("Name")
+					.onChange(async (value) => {
+						template.name = value;
+						await this.plugin.saveSettings();
+					});
+			});
+			setting.controlEl.children[0].setAttr("style", "width: 180px;");
 
 			setting.addToggle((toggle) =>
 				toggle
-					.setTooltip("new note")
+					.setTooltip("creates note")
 					.setValue(template.createNote)
 					.onChange(async (value) => {
 						template.createNote = value;
-						if (template.createNote && template.templateString == DEFAULT_TEMPLATE_STRING_INLINE) {
+						if (template.templateString == DEFAULT_TEMPLATE_STRING_INLINE) {
 							template.templateString = DEFAULT_TEMPLATE_STRING_NOTE;
+						} else if (template.templateString == DEFAULT_TEMPLATE_STRING_NOTE) {
+							template.templateString = DEFAULT_TEMPLATE_STRING_INLINE;
 						}
 						await this.plugin.saveSettings();
 						this.display();
 					})
 			);
 
-			if (!isDefaultTemplate) setting.settingEl.style.display = "block";
-			setting.controlEl.children[isDefaultTemplate ? 0 : 1].setAttr("style", "margin-right: auto;");
+			//setting.controlEl.children[1].setAttr("style", "margin-right: auto;");
 
 			setting = this.addNotePathSearch(template, setting);
 
 			setting.addTextArea((text) => {
 				text.inputEl.setAttr(
 					"style",
-					"white-space:pre;overflow-wrap:normal;overflow:hidden;resize:none;flex-shrink:0;width:200px;"
+					"white-space:pre;overflow-wrap:normal;overflow:hidden;resize:none;flex-grow:1;"
 				);
 				text.inputEl.setAttr("rows", "2");
 
@@ -204,22 +202,22 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					});
 			});
 
-			if (!isDefaultTemplate)
-				setting.addExtraButton((button) =>
-					button
-						.setTooltip("delete last template")
-						.setIcon("minus")
-						.onClick(async () => {
-							this.settings.templates.splice(i, 1);
-							await this.plugin.saveSettings();
-							this.display();
-						})
-				);
+			setting.addExtraButton((button) => {
+				if (isDefaultTemplate) button.setDisabled(true);
+				return button
+					.setTooltip("delete template")
+					.setIcon("minus")
+					.onClick(async () => {
+						this.settings.templates.splice(i, 1);
+						await this.plugin.saveSettings();
+						this.display();
+					});
+			});
 		}
 
 		new Setting(containerEl).addExtraButton((button) =>
 			button
-				.setTooltip("add template")
+				.setTooltip("create new template")
 				.setIcon("plus")
 				.onClick(async () => {
 					if (this.settings.templates.length == 21)
