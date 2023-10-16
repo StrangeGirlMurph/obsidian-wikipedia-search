@@ -40,7 +40,7 @@ export default class WikipediaSearchPlugin extends Plugin {
 	onunload() {}
 
 	async loadSettings() {
-		let settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		const settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 
 		// Data migration
 		if ("defaultTemplate" in settings) {
