@@ -1,10 +1,13 @@
 import { Editor, Plugin, addIcon } from "obsidian";
 import { LinkingModal } from "./commands/linkArticles";
-import { DEFAULT_SETTINGS, WikipediaSearchSettings, WikipediaSearchSettingTab } from "./settings";
+import {
+	DEFAULT_SETTINGS,
+	DEFAULT_TEMPLATE,
+	WikipediaSearchSettings,
+	WikipediaSearchSettingTab,
+} from "./settings";
 import { OpenArticleModal } from "./commands/openArticles";
 import { wikipediaIcon } from "./utils/wikipediaIcon";
-
-const originalOpen = window.open;
 
 export default class WikipediaSearchPlugin extends Plugin {
 	settings: WikipediaSearchSettings;
@@ -34,12 +37,23 @@ export default class WikipediaSearchPlugin extends Plugin {
 		this.addSettingTab(new WikipediaSearchSettingTab(app, this));
 	}
 
-	onunload() {
-		window.open = originalOpen;
-	}
+	onunload() {}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		let settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+
+		// Data migration
+		if ("defaultTemplate" in settings) {
+			settings.templates.unshift(
+				Object.assign(DEFAULT_TEMPLATE, { templateString: settings.defaultTemplate })
+			);
+			Object.keys(settings).forEach((key) => {
+				if (!(key in DEFAULT_SETTINGS)) delete settings[key];
+			});
+		}
+
+		this.settings = settings;
+		this.saveSettings();
 	}
 
 	async saveSettings() {

@@ -23,11 +23,11 @@ export const DEFAULT_TEMPLATE: Template = {
 export interface WikipediaSearchSettings {
 	language: string;
 	thumbnailWidth: number | null;
-	templates: Template[];
 	defaultNotePath: string;
-	prioritizeArticleTitle: boolean;
+	templates: Template[];
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
+	prioritizeArticleTitle: boolean;
 	openArticleInFullscreen: boolean;
 	openArticlesInBrowser: boolean;
 	showedSurfingMessage: boolean;
@@ -36,11 +36,11 @@ export interface WikipediaSearchSettings {
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
 	thumbnailWidth: null,
-	templates: [DEFAULT_TEMPLATE],
 	defaultNotePath: "/",
-	prioritizeArticleTitle: false,
+	templates: [DEFAULT_TEMPLATE],
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
+	prioritizeArticleTitle: false,
 	openArticleInFullscreen: false,
 	openArticlesInBrowser: false,
 	showedSurfingMessage: false,
@@ -126,6 +126,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					.onChange(async (newFolder: string) => {
 						if (newFolder.length == 0) {
 							this.settings.defaultNotePath = DEFAULT_SETTINGS.defaultNotePath;
+							search.setValue(this.settings.defaultNotePath);
 						} else {
 							this.settings.defaultNotePath = newFolder;
 						}
