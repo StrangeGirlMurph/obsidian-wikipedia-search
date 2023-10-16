@@ -104,7 +104,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Thumbnail width")
-			.setDesc("The width of the thumbnails in pixels. Leave empty to use the original size.")
+			.setDesc("The width of the thumbnails in pixels. (Leave empty to use the original size.)")
 			.addText((text) =>
 				text
 					.setPlaceholder("Width")
@@ -117,10 +117,10 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(this.containerEl)
 			.setName("Default note path")
-			.setDesc("Default folder where created notes should be saved.")
+			.setDesc("Default folder where notes should be created.")
 			.addSearch((search: SearchComponent) => {
 				new FolderSuggest(this.app, search.inputEl);
-				search
+				return search
 					.setPlaceholder("Example: folder/subfolder")
 					.setValue(this.settings.defaultNotePath)
 					.onChange(async (newFolder: string) => {
@@ -136,13 +136,13 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Template guide")
-			.setDesc("Get an explanation on how to set templates.")
+			.setDesc("Get an explanation on how to configure templates.")
 			.addButton((button) =>
 				button.setButtonText("Guide").onClick(async () => {
 					const modal = new Modal(app);
-					modal.titleEl.setText("Template Guide");
+					modal.titleEl.setText("Template guide");
 					modal.contentEl.innerHTML =
-						"1. Start by giving your template a name in the text field at the left. <br/><br/> 2. Next you can use the first toggle to make the template create a new note with it's content being the inserted template when linking an article instead of inserting directly in the current file. <br/><br/> 3. If that toggle is on a search field appears which allows you to set a custom path for the new note. You can leave it empty if you just want to use the default note path. <br/><br/> 4. Lastly you can set the actual template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively.<br/><br/>Note: You can't rename nor delete the default template.";
+						"1. Start by giving your template a name in the text field at the left. <br/><br/> 2. Next you can use the toggle to make the template create a new note with it's content being the inserted template when linking an article instead of inserting directly in the current file. <br/><br/> 3. If that toggle is on, a search field appears which allows you to set a custom path for the new note. You can leave it empty if that template should just use the default note path. <br/><br/> 4. Lastly you can set the actual template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (the articles first section) and thumbnail embed (if available) respectively.<br/><br/>Note: You can't rename nor delete the default template.";
 					modal.open();
 				})
 			);
@@ -211,6 +211,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 			setting.addExtraButton((button) => {
 				if (isDefaultTemplate) button.setDisabled(true);
+				button.extraSettingsEl.style.height = "min-content";
 				return button
 					.setTooltip("delete template")
 					.setIcon("minus")
@@ -222,7 +223,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			});
 
 			const div = setting.controlEl.createDiv();
-			div.setAttr("style", "display:flex;flex-grow:1;gap:var(--size-4-2);");
+			div.setAttr("style", "display:flex;flex-grow:1;gap:var(--size-4-2);align-items:center;");
 
 			div.appendChild(setting.controlEl.children[setting.controlEl.children.length - 3]);
 			div.appendChild(setting.controlEl.children[setting.controlEl.children.length - 2]);
@@ -235,7 +236,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				.onClick(async () => {
 					if (this.settings.templates.length == 21)
 						return new Notice(
-							"Easy buddy... I need to stop you right there. You can only have up to 20 additional templates. It's for your own good! (I think)"
+							"Easy buddy... I need to stop you right there. You can only have up to 20 additional templates. It's for your own good! (I think) If you really need more come and talk to me on GitHub. If you convince me I'll let you have more.",
+							15000
 						);
 
 					this.settings.templates.push({

@@ -55,9 +55,9 @@ async function insert(
 ) {
 	const selection = editor.getSelection();
 	const templateString = template.templateString;
-	const noteTitle = settings.prioritizeArticleTitle || selection === "" ? article.title : selection;
+	const title = settings.prioritizeArticleTitle || selection === "" ? article.title : selection;
 	let insert = templateString
-		.replaceAll("{title}", noteTitle)
+		.replaceAll("{title}", title)
 		.replaceAll("{url}", article.url)
 		.replaceAll("{description}", article.description ?? "")
 		.replaceAll("{language}", languages[article.languageCode])
@@ -90,11 +90,10 @@ async function insert(
 		if (template.customPath === "") {
 			template.customPath = settings.defaultNotePath;
 		}
-		const createdNote = await createNoteInFolder(app, noteTitle, insert, template);
-		if (createdNote == null) {
-			return;
-		}
-		insert = `[[${createdNote}|${noteTitle}]]`;
+		const path = await createNoteInFolder(app, article.title, insert, template);
+		if (path == null) return;
+
+		insert = `[[${path}|${title}]]`;
 	}
 
 	const cursorPosition = editor.getCursor();
@@ -110,26 +109,26 @@ async function createNoteInFolder(
 ): Promise<string | null> {
 	if (!(await app.vault.adapter.exists(normalizePath(template.customPath)))) {
 		new Notice(
-			"Configured path for notes to be created, is not existing! Go to the plugin settings and check the paths!",
-			5000
+			"Aborted! The folder you specified in the settings to create this new note in does not exist. Please visit the plugin settings and change the path!",
+			15000
 		);
 		return null;
 	}
-	const newNotePath = normalizePath(`${template.customPath}/${title}.md`);
-	const existingFile = app.vault.getAbstractFileByPath(newNotePath);
+	const path = normalizePath(`${template.customPath}/${title}.md`);
+	const file = app.vault.getAbstractFileByPath(path);
 
-	if (existingFile) {
-		new Notice(`Aborted action, because file '${normalizePath(title)}.md' already exists in the set folder.`);
+	if (file) {
+		new Notice(`Aborted! '${path}' already exists.`);
 		return null;
 	}
 
 	try {
-		await app.vault.create(newNotePath, `${content}\n`);
+		await app.vault.create(path, content);
 		new Notice("New note created successfully.");
+		return path;
 	} catch (err) {
-		new Notice("Error creating new note.");
+		new Notice("Error creating new note... Please check the console logs for more information.");
 		console.error("Error creating new note:", err);
 		return null;
 	}
-	return newNotePath;
 }
