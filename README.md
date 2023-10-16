@@ -2,8 +2,8 @@
 
 An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open Wikipedia articles directly in Obsidian and in your notes.
 
-*Don't worry about this project being "inactive". It's not inactive. It's done :)  
-(at least until there aren't any new feature requests)*
+_Don't worry about this project being "inactive". It's not inactive. It's done :)  
+(at least until there aren't any new feature requests)_
 
 ## Key [Features](#features)
 
@@ -12,6 +12,7 @@ An [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open W
 - Hyperlinking selected text.
 - Pasting the articles introduction.
 - Using different templates for the insert.
+- Creating notes for articles.
 
 ### [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/4e25face-9fb9-4b7b-b25c-3c18dac7b6bf)
 
@@ -64,9 +65,9 @@ You can access these commands over the command palette (`CTRL+P`). The `Open Art
 ### Features
 
 - **Basic links**  
-   Just use the `Link Article` command somewhere in your file (in edit mode).
+   Just use the `Link Article` command somewhere in your file (in edit mode). If you want that action to create a new note for this, change the templates settings.
 - **Opening Articles**  
-   The plugin lets you search for Wikipedia articles and open them in your browser or directly in Obsidian with the help of the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu). If you want to open the article in Obsidian you first have to [install](obsidian://show-plugin?id=surfing) the amazing Surfing plugin from the community plugin list (note: this is only available on desktop).  
+   The plugin lets you search for Wikipedia articles and open them in your browser or directly in Obsidian with the help of the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu). If you want to open the article in Obsidian you first have to [install](obsidian://show-plugin?id=surfing) the amazing Surfing plugin from the community plugin list (note: this is only available on desktop).
 - **Hyperlinking**  
    Select some text and use `Link Article`. The selected text will be the `{title}` parameter in your template (if you haven't changed that behaviour in the settings).
 - **Search different languages**  
@@ -77,7 +78,7 @@ You can access these commands over the command palette (`CTRL+P`). The `Open Art
    Add multiple template options in the settings and dynamically select the one you want for your specific use case.
 - **Small workflow optimization settings**  
    Go through the settings to optimize the plugin for your specific workflow.
-  
+
 ## Settings
 
 The available settings and their default values:
