@@ -11,7 +11,7 @@ export interface Template {
 }
 
 const DEFAULT_TEMPLATE_STRING_INLINE = "[{title}]({url})";
-const DEFAULT_TEMPLATE_STRING_NOTE = "{thumbnail}\n[{title}]({url}): {intro}\n";
+const DEFAULT_TEMPLATE_STRING_NOTE = "{thumbnail}\n[{title}]({url}): {intro}";
 
 export const DEFAULT_TEMPLATE: Template = {
 	name: "Default",
@@ -59,9 +59,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 	addNotePathSearch(item: Template, setting: Setting): Setting {
 		if (!item.createNote) return setting;
 
-		return setting.addSearch((search: SearchComponent) => {
+		setting.addSearch((search: SearchComponent) => {
 			new FolderSuggest(app, search.inputEl);
-			search.inputEl.style.flexGrow = "1";
 			search
 				.setPlaceholder("custom note path")
 				.setValue(item.customPath)
@@ -70,6 +69,9 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					await this.plugin.saveSettings();
 				});
 		});
+
+		setting.controlEl.children[2].setAttr("style", "flex-grow:1;width:170px;");
+		return setting;
 	}
 
 	display(): void {
@@ -101,7 +103,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Thumbnail Width")
+			.setName("Thumbnail width")
 			.setDesc("The width of the thumbnails in pixels. Leave empty to use the original size.")
 			.addText((text) =>
 				text
@@ -114,7 +116,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(this.containerEl)
-			.setName("Default Note Path")
+			.setName("Default note path")
 			.setDesc("Default folder where created notes should be saved.")
 			.addSearch((search: SearchComponent) => {
 				new FolderSuggest(this.app, search.inputEl);
@@ -132,14 +134,14 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			});
 
 		new Setting(containerEl)
-			.setName("Template Guide")
+			.setName("Template guide")
 			.setDesc("Get an explanation on how to set templates.")
 			.addButton((button) =>
 				button.setButtonText("Guide").onClick(async () => {
 					const modal = new Modal(app);
 					modal.titleEl.setText("Template Guide");
 					modal.contentEl.innerHTML =
-						"1. Start by giving your template a name in the text field at the left. <br/><br/> 2. Next you can use the first toggle to make the template create a new note with it's content being the inserted template when linking an article instead of inserting directly in the current file. <br/><br/> 3. If that toggle is on a search field appears which allows you to set a custom path for the new note. You can leave it empty if you just want to use the default note path. <br/><br/> 4. Lastly you can set the actual template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively.";
+						"1. Start by giving your template a name in the text field at the left. <br/><br/> 2. Next you can use the first toggle to make the template create a new note with it's content being the inserted template when linking an article instead of inserting directly in the current file. <br/><br/> 3. If that toggle is on a search field appears which allows you to set a custom path for the new note. You can leave it empty if you just want to use the default note path. <br/><br/> 4. Lastly you can set the actual template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (first section) and thumbnail embed (if available) respectively.<br/><br/>Note: You can't rename nor delete the default template.";
 					modal.open();
 				})
 			);
@@ -164,7 +166,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						await this.plugin.saveSettings();
 					});
 			});
-			setting.controlEl.children[0].setAttr("style", "width: 180px;");
+			setting.controlEl.children[0].setAttr("style", "width: 160px;");
 
 			setting.addToggle((toggle) =>
 				toggle
@@ -172,17 +174,21 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					.setValue(template.createNote)
 					.onChange(async (value) => {
 						template.createNote = value;
-						if (template.templateString == DEFAULT_TEMPLATE_STRING_INLINE) {
+						if (
+							template.createNote &&
+							(template.templateString == DEFAULT_TEMPLATE_STRING_INLINE || template.templateString === "")
+						) {
 							template.templateString = DEFAULT_TEMPLATE_STRING_NOTE;
-						} else if (template.templateString == DEFAULT_TEMPLATE_STRING_NOTE) {
+						} else if (
+							!template.createNote &&
+							(template.templateString == DEFAULT_TEMPLATE_STRING_NOTE || template.templateString === "")
+						) {
 							template.templateString = DEFAULT_TEMPLATE_STRING_INLINE;
 						}
 						await this.plugin.saveSettings();
 						this.display();
 					})
 			);
-
-			//setting.controlEl.children[1].setAttr("style", "margin-right: auto;");
 
 			setting = this.addNotePathSearch(template, setting);
 
@@ -213,6 +219,12 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						this.display();
 					});
 			});
+
+			const div = setting.controlEl.createDiv();
+			div.setAttr("style", "display:flex;flex-grow:1;gap:var(--size-4-2);");
+
+			div.appendChild(setting.controlEl.children[setting.controlEl.children.length - 3]);
+			div.appendChild(setting.controlEl.children[setting.controlEl.children.length - 2]);
 		}
 
 		new Setting(containerEl).addExtraButton((button) =>
@@ -234,10 +246,10 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				})
 		);
 
-		new Setting(containerEl).setName("Workflow Optimizations").setHeading();
+		new Setting(containerEl).setName("Workflow optimizations").setHeading();
 
 		new Setting(containerEl)
-			.setName("Cursor Placement")
+			.setName("Cursor placement")
 			.setDesc("Whether or not the cursor is placed infront of the insert instead of after it.")
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.placeCursorInfrontOfInsert).onChange(async (value) => {
@@ -247,7 +259,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Auto-Select Single Response Queries")
+			.setName("Auto-select single response queries")
 			.setDesc(
 				"When hyperlinking: Whether or not to automatically select the response to a query when there is only one article to choose from."
 			)
@@ -259,7 +271,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Use Article Title Instead Of Selection")
+			.setName("Use article title instead of selection")
 			.setDesc(
 				"When hyperlinking: Whether or not to use the articles title instead of the selected text for the '{title}' parameter of your template."
 			)
@@ -271,7 +283,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Open Article In Browser")
+			.setName("Open srticle in browser")
 			.setDesc(
 				"Whether or not to open articles in the browser instead of in-app if the Surfing plugin is installed and enabled."
 			)
@@ -283,7 +295,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Article Tab Placement")
+			.setName("Article tab placement")
 			.setDesc(
 				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin."
 			)
@@ -294,7 +306,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				})
 			);
 
-		new Setting(containerEl).setName("Feedback, Bug Reports and Feature Requests 🌿").setHeading();
+		new Setting(containerEl).setName("Feedback, bug reports and feature requests 🌿").setHeading();
 		const appendix = `<p style="border-top:1px solid var(--background-modifier-border); padding: 0.75em 0; margin: unset;">If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
 		<p>PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
 		const div = containerEl.createEl("div");
