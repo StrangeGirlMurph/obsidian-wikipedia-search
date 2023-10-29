@@ -14,9 +14,9 @@ _Don't worry about this project being "inactive". It's not inactive. It's done :
 - Using different templates for the insert.
 - Creating notes for articles.
 
-### [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/4e25face-9fb9-4b7b-b25c-3c18dac7b6bf)
+### Demo Video
 
-<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/4e25face-9fb9-4b7b-b25c-3c18dac7b6bf>
+<img src="assets/demo.mp4" />
 
 ## Table of contents
 
@@ -37,7 +37,7 @@ _Don't worry about this project being "inactive". It's not inactive. It's done :
 
 1. Search under the Community Plugins in the settings for it and click install.
 2. Enable the plugin (from the installed plugin list).  
-   <img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/ea8433b0-ab56-4b2b-b637-cc740796e736" width=600 />
+   <img src="assets/plugin.png" width=600 />
 
 ### Manual Installation
 
@@ -83,7 +83,7 @@ You can access these commands over the command palette (`CTRL+P`). The `Open Art
 
 The available settings and their default values:
 
-<img src="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/c0fabd12-a696-4d28-a4f5-7ba893b69828" width=600 />
+<img src="assets/settings.png" width=600 />
 
 ## Questions & Contributions
 
