@@ -16,7 +16,7 @@ _Don't worry about this project being "inactive". It's not inactive. It's done :
 
 ### [Demo Video](https://raw.githubusercontent.com/StrangeGirlMurph/obsidian-wikipedia-search/master/assets/demo.mp4)
 
-https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/e49a9474-f124-4697-9d7b-4874582abfe7
+<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/e49a9474-f124-4697-9d7b-4874582abfe7>
 
 ## Table of contents
 
@@ -50,7 +50,7 @@ https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/e4
 ### Getting Started
 
 1. Install the plugin and enable it.
-2. Set your language and the template for the insert in the settings (and the other settings as well if you want).
+2. Go to the settings and set your default language and the template for the insert (and the other settings as well if you want).
 3. Start searching/linking/reading :)
 
 ### Commands
@@ -65,7 +65,7 @@ You can access these commands over the command palette (`CTRL+P`). The `Open Art
 ### Features
 
 - **Basic links**  
-   Just use the `Link Article` command somewhere in your file (in edit mode). If you want that action to create a new note for this, change the templates settings.
+   Just use the `Link Article` command somewhere in your file (in edit mode). If you want that action to create a new note for the article and link that instead of the url, change the templates settings.
 - **Opening Articles**  
    The plugin lets you search for Wikipedia articles and open them in your browser or directly in Obsidian with the help of the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)! Just use the `Open Article` command (either via the command palette or the button in the ribbon menu). If you want to open the article in Obsidian you first have to [install](obsidian://show-plugin?id=surfing) the amazing Surfing plugin from the community plugin list (note: this is only available on desktop).
 - **Hyperlinking**  
@@ -75,7 +75,7 @@ You can access these commands over the command palette (`CTRL+P`). The `Open Art
 - **Include the articles intro** (the first paragraph)  
    Add `{intro}` somewhere in your template in the settings. This will be replaced with the articles introduction. (Note: It can be pretty long!)
 - **Multiple templates**  
-   Add multiple template options in the settings and dynamically select the one you want for your specific use case.
+   Add multiple template options in the settings and dynamically select the one you want for your specific use case when linking.
 - **Small workflow optimization settings**  
    Go through the settings to optimize the plugin for your specific workflow.
 
@@ -87,10 +87,7 @@ The available settings and their default values:
 
 ## Questions & Contributions
 
-Feel free to ask me and the community if you have any questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions).
-I am happy to hear your feature requests! Just create an issue if you have a good idea.
-
-If you want to contribute you can do that simply by creating issues and pull requests :)
+Feel free to ask me and the community if you have any questions in the [discussion tab](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/discussions). I am also happy to hear about your ideas for this plugin! Just create an issue if you have a good idea. If you want to contribute you can do that simply by creating issues and pull requests :)
 
 ## License
 
