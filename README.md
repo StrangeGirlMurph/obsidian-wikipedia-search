@@ -14,9 +14,9 @@ _Don't worry about this project being "inactive". It's not inactive. It's done :
 - Using different templates for the insert.
 - Creating notes for articles.
 
-### Demo Video
+### [Demo Video](https://raw.githubusercontent.com/StrangeGirlMurph/obsidian-wikipedia-search/master/assets/demo.mp4)
 
-<img src="assets/demo.mp4" />
+https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/e49a9474-f124-4697-9d7b-4874582abfe7
 
 ## Table of contents
 
