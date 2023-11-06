@@ -286,7 +286,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Open srticle in browser")
+			.setName("Open article in browser")
 			.setDesc(
 				"Whether or not to open articles in the browser instead of in-app if the Surfing plugin is installed and enabled."
 			)
