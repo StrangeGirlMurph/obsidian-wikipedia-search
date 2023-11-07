@@ -6,6 +6,9 @@
 	"description": "Search, link and open Wikipedia articles, all within the app!",
 	"author": "StrangeGirlMurph",
 	"authorUrl": "https://github.com/StrangeGirlMurph/",
-	"fundingUrl": "https://github.com/sponsors/StrangeGirlMurph",
+	"fundingUrl": {
+		"Ko-fi": "https://ko-fi.com/murph",
+		"GitHub Sponsor": "https://github.com/sponsors/StrangeGirlMurph"
+	},
 	"isDesktopOnly": false
 }
