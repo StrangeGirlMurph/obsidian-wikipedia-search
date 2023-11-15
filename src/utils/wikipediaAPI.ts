@@ -5,7 +5,9 @@ export async function getArticles(
 	languageCode: string
 ): Promise<{ title: string; url: string }[] | null> {
 	// https://en.wikipedia.org/w/api.php?format=json&action=opensearch&profile=fuzzy&search=Wikipedia
-	const url = getAPIBaseURL(languageCode) + "&action=opensearch" + "&profile=fuzzy" + "&search=" + query;
+	const url = encodeURI(
+		getAPIBaseURL(languageCode) + "&action=opensearch" + "&profile=fuzzy" + "&search=" + query
+	);
 
 	const response = await fetchData(url);
 	return response[1].map((title: string, index: number) => ({ title, url: response[3][index] }));
@@ -16,12 +18,9 @@ export async function getArticleDescriptions(
 	languageCode: string
 ): Promise<(string | null)[] | null> {
 	// https://en.wikipedia.org/w/api.php?format=json&action=query&prop=pageprops&ppprop=wikibase-shortdesc&titles=Wikipedia
-	const url =
-		getAPIBaseURL(languageCode) +
-		"&action=query" +
-		"&prop=description" +
-		"&titles=" +
-		encodeURIComponent(titles.join("|"));
+	const url = encodeURI(
+		getAPIBaseURL(languageCode) + "&action=query" + "&prop=description" + "&titles=" + titles.join("|")
+	);
 
 	const response = await fetchData(url);
 	if (!response.query) return [];
@@ -36,14 +35,15 @@ export async function getArticleIntros(
 	languageCode: string
 ): Promise<(string | null)[] | null> {
 	// https://en.wikipedia.org/w/api.php?format=json&action=query&prop=extracts&exintro&explaintext&redirects=1&titles=Wikipedia
-	const url =
+	const url = encodeURI(
 		getAPIBaseURL(languageCode) +
-		"&action=query" +
-		"&prop=extracts" +
-		"&exintro" +
-		"&explaintext" +
-		"&titles=" +
-		encodeURIComponent(titles.join("|"));
+			"&action=query" +
+			"&prop=extracts" +
+			"&exintro" +
+			"&explaintext" +
+			"&titles=" +
+			titles.join("|")
+	);
 
 	const response = await fetchData(url);
 	if (!response.query) return [];
@@ -58,14 +58,15 @@ export async function getArticleThumbnails(
 	languageCode: string
 ): Promise<(string | null)[] | null> {
 	//https://en.wikipedia.org/w/api.php?format=json&action=query&prop=pageimages&piprop=original|name&pilicense=any&titles=Wikipedia
-	const url =
+	const url = encodeURI(
 		getAPIBaseURL(languageCode) +
-		"&action=query" +
-		"&prop=pageimages" +
-		"&piprop=original|name" +
-		"&pilicense=any" +
-		"&titles=" +
-		encodeURIComponent(titles.join("|"));
+			"&action=query" +
+			"&prop=pageimages" +
+			"&piprop=original|name" +
+			"&pilicense=any" +
+			"&titles=" +
+			titles.join("|")
+	);
 
 	const response = await fetchData(url);
 	if (!response.query) return null;
