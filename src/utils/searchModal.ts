@@ -60,7 +60,7 @@ export abstract class SearchModal extends SuggestModal<Article> {
 		}
 		this.emptyStateText = "No results found.";
 
-		const searchResponses = await getArticles(query, languageCode);
+		const searchResponses = await getArticles(query, languageCode, this.settings.searchLimit);
 		const descriptions = await getArticleDescriptions(
 			searchResponses?.map((a) => a.title) ?? [],
 			languageCode

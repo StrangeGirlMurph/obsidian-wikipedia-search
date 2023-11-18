@@ -64,7 +64,8 @@ async function insert(
 		.replaceAll("{languageCode}", article.languageCode);
 
 	if (templateString.includes("{intro}")) {
-		const intro: string | null = (await getArticleIntros([article.title], settings.language))?.[0] ?? null;
+		const intro: string | null =
+			(await getArticleIntros([article.title], settings.language, settings.cleanupIntros))?.[0] ?? null;
 		insert = insert.replaceAll("{intro}", intro ?? "");
 		if (!intro) new Notice("Could not fetch the articles introduction.");
 	}

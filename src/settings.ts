@@ -22,12 +22,14 @@ export const DEFAULT_TEMPLATE: Template = {
 
 export interface WikipediaSearchSettings {
 	language: string;
-	thumbnailWidth: number | null;
+	searchLimit: number;
+	thumbnailWidth: number;
 	defaultNotePath: string;
 	templates: Template[];
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
 	prioritizeArticleTitle: boolean;
+	cleanupIntros: boolean;
 	openArticleInFullscreen: boolean;
 	openArticlesInBrowser: boolean;
 	showedSurfingMessage: boolean;
@@ -35,12 +37,14 @@ export interface WikipediaSearchSettings {
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	language: "en",
-	thumbnailWidth: null,
+	searchLimit: 10,
+	thumbnailWidth: NaN,
 	defaultNotePath: "/",
 	templates: [DEFAULT_TEMPLATE],
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
 	prioritizeArticleTitle: false,
+	cleanupIntros: true,
 	openArticleInFullscreen: false,
 	openArticlesInBrowser: false,
 	showedSurfingMessage: false,
@@ -103,6 +107,21 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
+			.setName("Search limit")
+			.setDesc("Maximum number of search results to show. (Between 1 and 500) (Default: 10)")
+			.addText((text) =>
+				text
+					.setPlaceholder("Limit")
+					.setValue(this.settings.searchLimit ? this.settings.searchLimit.toString() : "")
+					.onChange(async (value) => {
+						const parsed = parseInt(value);
+						if (parsed < 1 || parsed > 500) return;
+						this.settings.searchLimit = parsed;
+						await this.plugin.saveSettings();
+					})
+			);
+
+		new Setting(containerEl)
 			.setName("Thumbnail width")
 			.setDesc("The width of the thumbnails in pixels. (Leave empty to use the original size.)")
 			.addText((text) =>
@@ -110,7 +129,9 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					.setPlaceholder("Width")
 					.setValue(this.settings.thumbnailWidth ? this.settings.thumbnailWidth.toString() : "")
 					.onChange(async (value) => {
-						this.settings.thumbnailWidth = parseInt(value);
+						const parsed = parseInt(value);
+						if (typeof parsed !== "number") return;
+						this.settings.thumbnailWidth = parsed;
 						await this.plugin.saveSettings();
 					})
 			);
@@ -281,6 +302,19 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.prioritizeArticleTitle).onChange(async (value) => {
 					this.settings.prioritizeArticleTitle = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		const desc = new DocumentFragment();
+		desc.createEl("span").innerHTML =
+			"Whether or not to stop auto-cleaning the articles intros for better readability. Especially for intros containing math (<a href='https://en.wikipedia.org/w/api.php?format=json&redirects=1&action=query&prop=extracts&exintro&explaintext&titles=Total%20order'>example</a>).";
+		new Setting(containerEl)
+			.setName("Stop auto-cleanup of intros")
+			.setDesc(desc)
+			.addToggle((toggle) =>
+				toggle.setValue(!this.settings.cleanupIntros).onChange(async (value) => {
+					this.settings.cleanupIntros = !value;
 					await this.plugin.saveSettings();
 				})
 			);
