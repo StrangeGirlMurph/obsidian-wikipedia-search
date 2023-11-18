@@ -1,0 +1,49 @@
+
+site_name: Obsidian Wikipedia Search
+site_url: https://strangegirlmurph.github.io/obsidian-wikipedia-search/
+site_author: Murphy
+site_description: >-
+  An Obsidian plugin to search, link and open Wikipedia articles directly from the app. 
+
+copyright: Copyright &copy; 2023 Murphy
+
+repo_url: https://github.com/StrangeGirlMurph/obsidian-wikipedia-search
+repo_name: Obsidian Wikipedia Search
+theme:
+  features:
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - search.share
+    - navigation.tabs
+    - navigation.path  
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    logo: simple/wikipedia
+  name: material
+  palette:
+    - scheme: default
+      primary: white
+      accent: lime
+      toggle:
+        icon: material/lightbulb
+        name: Switch to dark mode
+    - scheme: slate
+      primary: black
+      accent: lime
+      toggle:
+        icon: material/lightbulb-outline
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+extra:
+  social:
+    - icon: material/web
+      link: https://murphy-in.space/
+    - icon: fontawesome/brands/github
+      link: https://github.com/StrangeGirlMurph
+    - icon: fontawesome/brands/reddit
+      link: https://www.reddit.com/user/StrangeGirlMurph
