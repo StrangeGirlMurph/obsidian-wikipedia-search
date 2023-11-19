@@ -18,9 +18,9 @@ _Don't worry about this project being "inactive". It's not inactive. It's done :
 - Using different templates for the insert.
 - Creating notes for articles.
 
-## [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/e49a9474-f124-4697-9d7b-4874582abfe7)
+## [Demo Video](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/71b40cc1-36b7-491d-95eb-623d1fb66a96)
 
-<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/e49a9474-f124-4697-9d7b-4874582abfe7>
+<https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/assets/62220780/71b40cc1-36b7-491d-95eb-623d1fb66a96>
 
 ## [Questions & Contributions](https://strangegirlmurph.github.io/obsidian-wikipedia-search/support/)
 
