@@ -108,7 +108,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Search limit")
-			.setDesc("Maximum number of search results to show. (Between 1 and 500) (Default: 10)")
+			.setDesc("Maximum number of search results to show. (Between 1 and 500)")
 			.addText((text) =>
 				text
 					.setPlaceholder("Limit")
@@ -257,7 +257,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				.onClick(async () => {
 					if (this.settings.templates.length == 21)
 						return new Notice(
-							"Easy buddy... I need to stop you right there. You can only have up to 20 additional templates. It's for your own good! (I think) If you really need more come and talk to me on GitHub. If you convince me I'll let you have more.",
+							"Easy buddy... I need to stop you right there. You can only have up to 20 templates. It's for your own good! (I think) If you really need more come and talk to me on GitHub. If you convince me I'll let you have more.",
 							15000
 						);
 
@@ -285,7 +285,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Auto-select single response queries")
 			.setDesc(
-				"When hyperlinking: Whether or not to automatically select the response to a query when there is only one article to choose from."
+				"Whether or not to automatically select the response to a query when there is only one article to choose from."
 			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.autoInsertSingleResponseQueries).onChange(async (value) => {
@@ -306,12 +306,9 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				})
 			);
 
-		const desc = new DocumentFragment();
-		desc.createEl("span").innerHTML =
-			"Whether or not to stop auto-cleaning the articles intros for better readability. Especially for intros containing math (<a href='https://en.wikipedia.org/w/api.php?format=json&redirects=1&action=query&prop=extracts&exintro&explaintext&titles=Total%20order'>example</a>).";
 		new Setting(containerEl)
 			.setName("Stop auto-cleanup of intros")
-			.setDesc(desc)
+			.setDesc("Whether or not to stop auto-cleaning the articles intros for better readability.")
 			.addToggle((toggle) =>
 				toggle.setValue(!this.settings.cleanupIntros).onChange(async (value) => {
 					this.settings.cleanupIntros = !value;

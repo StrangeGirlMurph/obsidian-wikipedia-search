@@ -29,7 +29,7 @@ class TemplateModal extends SuggestModal<Template> {
 	}
 
 	renderSuggestion(template: Template, el: HTMLElement) {
-		el.createEl("div", { text: `${template.name} ${template.createNote ? "(new note)" : "(inplace)"}` });
+		el.createEl("div", { text: `${template.name} ${template.createNote ? "(note)" : "(inplace)"}` });
 		el.createEl("small", {
 			text: template.templateString.replaceAll("\n", "\\n"),
 		});

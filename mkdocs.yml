@@ -15,8 +15,8 @@ theme:
     - search.suggest
     - search.highlight
     - search.share
-    - navigation.tabs
-    - navigation.path  
+    - navigation.path 
+    - navigation.top 
   icon:
     repo: fontawesome/brands/github
     edit: material/pencil
@@ -25,13 +25,13 @@ theme:
   palette:
     - scheme: default
       primary: white
-      accent: lime
+      accent: blue
       toggle:
         icon: material/lightbulb
         name: Switch to dark mode
     - scheme: slate
       primary: black
-      accent: lime
+      accent: blue
       toggle:
         icon: material/lightbulb-outline
         name: Switch to light mode
@@ -47,3 +47,23 @@ extra:
       link: https://github.com/StrangeGirlMurph
     - icon: fontawesome/brands/reddit
       link: https://www.reddit.com/user/StrangeGirlMurph
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+nav:
+  - "index.md"
+  - "getting-started.md"
+  - "installation.md"
+  - "settings.md"
+  - "commands.md"
+  - "roadmap.md"
+  - "changelog.md"
+  - "support.md"
+  - "license.md"
