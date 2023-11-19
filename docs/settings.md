@@ -1,6 +1,11 @@
 A list of all the available settings including detailed explanations for each one.
 
 ## General settings
+
+??? info "Screenshot"
+
+    ![general settings screenshot](assets/general-settings.png)
+
 ### Language
 Select the default Wikipedia (as in language of the Wikipedia) to search. See [languages.ts](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/blob/master/src/utils/languages.ts) for a list of all available languages.
 Note: Some features might not work with all languages. (Some APIs might not have all the necessary functionality.)
@@ -29,6 +34,10 @@ The settings for a template can be separated into the following three parts:
 
 *Note: You can only have up to 20 templates. It's a limitation that isn't really justified. I just thought adding this would be a good idea for your own good. If you need more than 20 leave a message.*
 
+??? info "Screenshot"
+
+    ![template settings screenshot](assets/tempalte-settings.png)
+
 ### Template name
 The first field of each template sets the name of the template.The name of the default template can't be changed (that's why that field is disabled) while the additional templates can have any name.
 
@@ -55,6 +64,11 @@ The last and most important part of any template is its template string. You can
 Default: `[{title}]({url})` for inline templates and `{thumbnail}\n[{title}]({url}): {intro}` for note templates
 
 ## Workflow optimization settings
+
+??? info "Screenshot"
+
+    ![workflow optimization settings screenshot](assets/workflow-optimizations.png)
+
 ### Cursor placement
 Whether or not the cursor is placed infront of the insert instead of after it. For longer inserts it might make it easier to keep the cursor at the start of the insert.
 
@@ -79,16 +93,15 @@ intro.replaceAll("\\displaystyle ", "") // removes all occurrences of '\displays
     .replaceAll(/\.\w/g, (e: string) => e.split("").join(" "));   // adds a space between any dot directly followed by a letter
 ```
 
-<details>
-  <summary>Example</summary>
-  
-  <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable.  That is, a total order is a binary relation \n  \n    \n      \n        ≤\n      \n    \n    {\\displaystyle \\leq }\n   on some set \n  \n    \n      \n        X\n      \n    \n    {\\displaystyle X}\n  , which satisfies the following for all \n  \n    \n      \n        a\n        ,\n        b\n      \n    \n    {\\displaystyle a,b}\n   and \n  \n    \n      \n        c\n      \n    \n    {\\displaystyle c}\n   in \n  \n    \n      \n        X\n      \n    \n    {\\displaystyle X}\n  :\n\n  \n    \n      \n        a\n        ≤\n        a\n      \n    \n    {\\displaystyle a\\leq a}\n   (reflexive).\nIf \n  \n    \n      \n        a\n        ≤\n        b\n      \n    \n    {\\displaystyle a\\leq b}\n   and \n  \n    \n      \n        b\n        ≤\n        c\n      \n    \n    {\\displaystyle b\\leq c}\n   then \n  \n    \n      \n        a\n        ≤\n        c\n      \n    \n    {\\displaystyle a\\leq c}\n   (transitive).\nIf \n  \n    \n      \n        a\n        ≤\n        b\n      \n    \n    {\\displaystyle a\\leq b}\n   and \n  \n    \n      \n        b\n        ≤\n        a\n      \n    \n    {\\displaystyle b\\leq a}\n   then \n  \n    \n      \n        a\n        =\n        b\n      \n    \n    {\\displaystyle a=b}\n   (antisymmetric).\n\n  \n    \n      \n        a\n        ≤\n        b\n      \n    \n    {\\displaystyle a\\leq b}\n   or \n  \n    \n      \n        b\n        ≤\n        a\n      \n    \n    {\\displaystyle b\\leq a}\n   (strongly connected, formerly called total).Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders.\nTotal orders are sometimes also called simple, connex, or full orders.A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set.\nAn extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
-  
-  gets turned into
 
-  <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation ≤ {\\leq } on some set X {X} , which satisfies the following for all a , b {a,b} and c {c} in X {X} : a ≤ a {a\\leq a} (reflexive). If a ≤ b {a\\leq b} and b ≤ c {b\\leq c} then a ≤ c {a\\leq c} (transitive). If a ≤ b {a\\leq b} and b ≤ a {b\\leq a} then a = b {a=b} (antisymmetric). a ≤ b {a\\leq b} or b ≤ a {b\\leq a} (strongly connected, formerly called total). Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders. Total orders are sometimes also called simple, connex, or full orders. A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set. An extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
+??? example "Example"
   
-</details>
+    <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable.  That is, a total order is a binary relation \n  \n    \n      \n        ≤\n      \n    \n    {\\displaystyle \\leq }\n   on some set \n  \n    \n      \n        X\n      \n    \n    {\\displaystyle X}\n  , which satisfies the following for all \n  \n    \n      \n        a\n        ,\n        b\n      \n    \n    {\\displaystyle a,b}\n   and \n  \n    \n      \n        c\n      \n    \n    {\\displaystyle c}\n   in \n  \n    \n      \n        X\n      \n    \n    {\\displaystyle X}\n  :\n\n  \n    \n      \n        a\n        ≤\n        a\n      \n    \n    {\\displaystyle a\\leq a}\n   (reflexive).\nIf \n  \n    \n      \n        a\n        ≤\n        b\n      \n    \n    {\\displaystyle a\\leq b}\n   and \n  \n    \n      \n        b\n        ≤\n        c\n      \n    \n    {\\displaystyle b\\leq c}\n   then \n  \n    \n      \n        a\n        ≤\n        c\n      \n    \n    {\\displaystyle a\\leq c}\n   (transitive).\nIf \n  \n    \n      \n        a\n        ≤\n        b\n      \n    \n    {\\displaystyle a\\leq b}\n   and \n  \n    \n      \n        b\n        ≤\n        a\n      \n    \n    {\\displaystyle b\\leq a}\n   then \n  \n    \n      \n        a\n        =\n        b\n      \n    \n    {\\displaystyle a=b}\n   (antisymmetric).\n\n  \n    \n      \n        a\n        ≤\n        b\n      \n    \n    {\\displaystyle a\\leq b}\n   or \n  \n    \n      \n        b\n        ≤\n        a\n      \n    \n    {\\displaystyle b\\leq a}\n   (strongly connected, formerly called total).Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders.\nTotal orders are sometimes also called simple, connex, or full orders.A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set.\nAn extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
+  
+    gets turned into
+
+    <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation ≤ {\\leq } on some set X {X} , which satisfies the following for all a , b {a,b} and c {c} in X {X} : a ≤ a {a\\leq a} (reflexive). If a ≤ b {a\\leq b} and b ≤ c {b\\leq c} then a ≤ c {a\\leq c} (transitive). If a ≤ b {a\\leq b} and b ≤ a {b\\leq a} then a = b {a=b} (antisymmetric). a ≤ b {a\\leq b} or b ≤ a {b\\leq a} (strongly connected, formerly called total). Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders. Total orders are sometimes also called simple, connex, or full orders. A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set. An extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
+
 
 Default: `false`
 

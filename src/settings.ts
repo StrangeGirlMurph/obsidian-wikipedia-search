@@ -83,7 +83,10 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		new Setting(containerEl).setName("Wikipedia Search Settings").setHeading();
+		const fragment = new DocumentFragment();
+		fragment.createEl("span").innerHTML =
+			"Wikipedia Search Settings > Read the <a href='https://strangegirlmurph.github.io/obsidian-wikipedia-search/'>documentation</a>!";
+		new Setting(containerEl).setName(fragment).setHeading();
 
 		new Setting(containerEl)
 			.setName("Language")
@@ -341,8 +344,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl).setName("Feedback, bug reports and feature requests 🌿").setHeading();
-		const appendix = `<p style="border-top:1px solid var(--background-modifier-border); padding: 0.75em 0; margin: unset;">If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">on GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
-		<p>PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
+		const appendix = `<p style="border-top:1px solid var(--background-modifier-border); padding: 0.75em 0; margin: unset;">If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue on <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
+		<p style="margin: unset;">PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
 		const div = containerEl.createEl("div");
 		div.innerHTML = appendix;
 	}
