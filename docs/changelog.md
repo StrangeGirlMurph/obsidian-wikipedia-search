@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.3.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.3.1) (18.11.2023)
+- Introduces the new documentation and links it from the settings page.
+
 ## [2.3.0](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.3.0) (18.11.2023)
 - Fixes article redirect bugs and adds intro auto cleanup.
 
