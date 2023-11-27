@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.3.2](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.3.2) (27.11.2023)
+- Adds the `Create article note` command
+- Adds the `Open created article notes` setting
+
 ## [2.3.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.3.1) (18.11.2023)
 - Introduces the new documentation and links it from the settings page.
 
