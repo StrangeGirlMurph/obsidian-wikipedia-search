@@ -111,6 +111,11 @@ Whether or not to always open articles in the browser instead of in-app even if 
 Default: `false`
 
 ### Article tab placement
-Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin to open the articles directly in Obsidian.
+Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin to [open the articles directly in Obsidian](commands.md#open-article) or [opening newly created article notes](#open-created-article-notes).
+
+Default: `false`
+
+### Open created article notes
+Whether or not to open the newly created article notes directly after creating them. Follows the [article tab placement setting](#article-tab-placement).
 
 Default: `false`

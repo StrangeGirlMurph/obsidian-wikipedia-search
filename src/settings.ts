@@ -32,6 +32,7 @@ export interface WikipediaSearchSettings {
 	cleanupIntros: boolean;
 	openArticleInFullscreen: boolean;
 	openArticlesInBrowser: boolean;
+	openCreatedNotes: boolean;
 	showedSurfingMessage: boolean;
 }
 
@@ -47,6 +48,7 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	cleanupIntros: true,
 	openArticleInFullscreen: false,
 	openArticlesInBrowser: false,
+	openCreatedNotes: false,
 	showedSurfingMessage: false,
 };
 
@@ -334,11 +336,21 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Article tab placement")
 			.setDesc(
-				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin."
+				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin or creating an article note."
 			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.openArticleInFullscreen).onChange(async (value) => {
 					this.settings.openArticleInFullscreen = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
+			.setName("Open created article notes")
+			.setDesc("Whether or not to open the newly created article notes after creating them.")
+			.addToggle((toggle) =>
+				toggle.setValue(this.settings.openCreatedNotes).onChange(async (value) => {
+					this.settings.openCreatedNotes = value;
 					await this.plugin.saveSettings();
 				})
 			);

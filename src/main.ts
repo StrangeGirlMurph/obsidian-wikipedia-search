@@ -1,5 +1,5 @@
-import { Editor, Plugin, addIcon } from "obsidian";
-import { LinkingModal } from "./commands/linkArticles";
+import { Editor, Notice, Plugin, addIcon } from "obsidian";
+import { LinkArticleModal } from "./commands/linkArticles";
 import {
 	DEFAULT_SETTINGS,
 	DEFAULT_TEMPLATE,
@@ -8,6 +8,7 @@ import {
 } from "./settings";
 import { OpenArticleModal } from "./commands/openArticles";
 import { wikipediaIcon } from "./utils/wikipediaIcon";
+import { CreateArticleNoteModal } from "./commands/createArticleNotes";
 
 export default class WikipediaSearchPlugin extends Plugin {
 	settings: WikipediaSearchSettings;
@@ -21,7 +22,7 @@ export default class WikipediaSearchPlugin extends Plugin {
 			id: "link-article",
 			name: "Link Article",
 			editorCallback: (editor: Editor) => {
-				new LinkingModal(app, this.settings, editor).open();
+				new LinkArticleModal(this.app, this.settings, editor).open();
 			},
 		});
 
@@ -31,10 +32,22 @@ export default class WikipediaSearchPlugin extends Plugin {
 			callback: () => new OpenArticleModal(this, this.settings).open(),
 		});
 
+		this.addCommand({
+			id: "create-article-note",
+			name: "Create Article Note",
+			callback: () => {
+				if (this.settings.templates.filter((template) => template.createNote).length === 0) {
+					new Notice("You have to create a note template first! (see the docs)");
+					return;
+				}
+				new CreateArticleNoteModal(this.app, this.settings).open();
+			},
+		});
+
 		addIcon("wikipedia", wikipediaIcon);
 		this.addRibbonIcon("wikipedia", "Open Article", () => new OpenArticleModal(this, this.settings).open());
 
-		this.addSettingTab(new WikipediaSearchSettingTab(app, this));
+		this.addSettingTab(new WikipediaSearchSettingTab(this.app, this));
 	}
 
 	onunload() {}
