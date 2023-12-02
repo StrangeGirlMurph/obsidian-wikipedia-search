@@ -1,4 +1,4 @@
-import { App, TFile } from "obsidian";
+import { App, Notice, TFile } from "obsidian";
 import { Template, WikipediaSearchSettings } from "../settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
@@ -10,7 +10,7 @@ export class CreateArticleNoteModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
 		const templates = this.settings.templates.filter((template) => template.createNote);
 		if (templates.length > 1) {
-			new CreateArticleNoteTemplateModal(this.app, this.settings, this.editor!, article).open();
+			new CreateArticleNoteTemplateModal(this.app, this.settings, this.editor!, article, true).open();
 		} else {
 			createArticleNote(this.app, this.settings, article, templates[0]);
 		}
@@ -18,19 +18,6 @@ export class CreateArticleNoteModal extends SearchModal {
 }
 
 class CreateArticleNoteTemplateModal extends TemplateModal {
-	renderSuggestion(template: Template, el: HTMLElement) {
-		el.createEl("div", { text: `${template.name}` });
-		el.createEl("small", {
-			text: template.templateString.replaceAll("\n", "\\n"),
-		});
-	}
-
-	async getSuggestions(query: string): Promise<Template[]> {
-		return this.settings.templates
-			.filter((template) => template.createNote)
-			.filter((template) => template.name.toLowerCase().includes(query.toLowerCase()));
-	}
-
 	async onChooseSuggestion(template: Template) {
 		createArticleNote(this.app, this.settings, this.article, template);
 	}
@@ -42,12 +29,22 @@ async function createArticleNote(
 	article: Article,
 	template: Template
 ) {
-	const insert = await generateInsert(settings, article, template.templateString, "");
+	let templateString = template.templateString;
+	if (template.useTemplateFile) {
+		const templateFile = app.vault.getAbstractFileByPath(template.templateFilePath);
+		if (!templateFile || !(templateFile instanceof TFile)) {
+			new Notice(`Aborting! Template file '${template.templateFilePath}' not found!`);
+			return;
+		}
+		templateString = await app.vault.read(templateFile);
+	}
+	const insert = await generateInsert(settings, article, templateString, "");
 	const path = await createNoteInFolder(
 		app,
 		article.title,
 		insert,
-		template.customPath || settings.defaultNotePath
+		template.customPath || settings.defaultNotePath,
+		settings.overrideFiles
 	);
 	if (!path) return;
 	if (settings.openCreatedNotes) {

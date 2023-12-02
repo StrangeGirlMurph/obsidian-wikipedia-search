@@ -37,7 +37,7 @@ export default class WikipediaSearchPlugin extends Plugin {
 			name: "Create Article Note",
 			callback: () => {
 				if (this.settings.templates.filter((template) => template.createNote).length === 0) {
-					new Notice("You have to create a note template first! (see the docs)");
+					new Notice("To use this command you have to create a note template first!");
 					return;
 				}
 				new CreateArticleNoteModal(this.app, this.settings).open();

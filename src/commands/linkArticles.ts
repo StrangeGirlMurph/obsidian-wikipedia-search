@@ -17,19 +17,6 @@ export class LinkArticleModal extends SearchModal {
 }
 
 class LinkArticleTemplateModal extends TemplateModal {
-	renderSuggestion(template: Template, el: HTMLElement) {
-		el.createEl("div", { text: `${template.name} ${template.createNote ? "(note)" : "(inplace)"}` });
-		el.createEl("small", {
-			text: template.templateString.replaceAll("\n", "\\n"),
-		});
-	}
-
-	async getSuggestions(query: string): Promise<Template[]> {
-		return this.settings.templates.filter((template) =>
-			template.name.toLowerCase().includes(query.toLowerCase())
-		);
-	}
-
 	async onChooseSuggestion(template: Template) {
 		insertLink(app, this.editor, this.settings, this.article, template);
 	}
@@ -49,7 +36,8 @@ async function insertLink(
 			app,
 			article.title,
 			insert,
-			template.customPath === "" ? settings.defaultNotePath : template.customPath
+			template.customPath === "" ? settings.defaultNotePath : template.customPath,
+			settings.overrideFiles
 		);
 		if (path == null) return;
 

@@ -1,13 +1,16 @@
-import { App, Modal, Notice, PluginSettingTab, SearchComponent, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, SearchComponent, Setting } from "obsidian";
 import { languages } from "./utils/languages";
 import WikipediaSearchPlugin from "./main";
 import { FolderSuggest } from "./utils/suggesters/folderSuggest";
+import { FileSuggest } from "./utils/suggesters/fileSuggest";
 
 export interface Template {
 	name: string;
 	templateString: string;
 	createNote: boolean;
-	customPath: string; // use the default if empty
+	customPath: string; // use the default if empty string
+	useTemplateFile: boolean;
+	templateFilePath: string;
 }
 
 const DEFAULT_TEMPLATE_STRING_INLINE = "[{title}]({url})";
@@ -18,6 +21,8 @@ export const DEFAULT_TEMPLATE: Template = {
 	templateString: DEFAULT_TEMPLATE_STRING_INLINE,
 	createNote: false,
 	customPath: "",
+	useTemplateFile: false,
+	templateFilePath: "",
 };
 
 export interface WikipediaSearchSettings {
@@ -33,6 +38,7 @@ export interface WikipediaSearchSettings {
 	openArticleInFullscreen: boolean;
 	openArticlesInBrowser: boolean;
 	openCreatedNotes: boolean;
+	overrideFiles: boolean;
 	showedSurfingMessage: boolean;
 }
 
@@ -49,6 +55,7 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	openArticleInFullscreen: false,
 	openArticlesInBrowser: false,
 	openCreatedNotes: false,
+	overrideFiles: false,
 	showedSurfingMessage: false,
 };
 
@@ -60,24 +67,6 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		super(app, plugin);
 		this.plugin = plugin;
 		this.settings = plugin.settings;
-	}
-
-	addNotePathSearch(item: Template, setting: Setting): Setting {
-		if (!item.createNote) return setting;
-
-		setting.addSearch((search: SearchComponent) => {
-			new FolderSuggest(app, search.inputEl);
-			search
-				.setPlaceholder("custom note path")
-				.setValue(item.customPath)
-				.onChange(async (newFolder: string) => {
-					item.customPath = newFolder;
-					await this.plugin.saveSettings();
-				});
-		});
-
-		setting.controlEl.children[2].setAttr("style", "flex-grow:1;width:170px;");
-		return setting;
 	}
 
 	display(): void {
@@ -116,7 +105,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.setDesc("Maximum number of search results to show. (Between 1 and 500)")
 			.addText((text) =>
 				text
-					.setPlaceholder("Limit")
+					.setPlaceholder("limit")
 					.setValue(this.settings.searchLimit ? this.settings.searchLimit.toString() : "")
 					.onChange(async (value) => {
 						const parsed = parseInt(value);
@@ -131,7 +120,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			.setDesc("The width of the thumbnails in pixels. (Leave empty to use the original size.)")
 			.addText((text) =>
 				text
-					.setPlaceholder("Width")
+					.setPlaceholder("width")
 					.setValue(this.settings.thumbnailWidth ? this.settings.thumbnailWidth.toString() : "")
 					.onChange(async (value) => {
 						const parsed = parseInt(value);
@@ -160,120 +149,12 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 					});
 			});
 
-		new Setting(containerEl)
-			.setName("Template guide")
-			.setDesc("Get an explanation on how to configure templates.")
-			.addButton((button) =>
-				button.setButtonText("Guide").onClick(async () => {
-					const modal = new Modal(app);
-					modal.titleEl.setText("Template guide");
-					modal.contentEl.innerHTML =
-						"1. Start by giving your template a name in the text field at the left. <br/><br/> 2. Next you can use the toggle to make the template create a new note with it's content being the inserted template when linking an article instead of inserting directly in the current file. <br/><br/> 3. If that toggle is on, a search field appears which allows you to set a custom path for the new note. You can leave it empty if that template should just use the default note path. <br/><br/> 4. Lastly you can set the actual template for the insert. All occurrences of '{title}', '{url}', '{language}', '{languageCode}', '{description}', '{intro}' and '{thumbnail}' will be replaced with the articles title (or the selection), url, language, language code, description (if available), intro (the articles first section) and thumbnail embed (if available) respectively.<br/><br/>Note: You can't rename nor delete the default template.";
-					modal.open();
-				})
-			);
+		const templateSettings = new DocumentFragment();
+		templateSettings.createEl("span").innerHTML =
+			"Templates (<a href='https://strangegirlmurph.github.io/obsidian-wikipedia-search/settings/#template-settings'>Guide</a>)";
+		new Setting(containerEl).setName(templateSettings).setHeading();
 
-		new Setting(containerEl).setName("Templates").setHeading();
-
-		for (const [i, template] of this.settings.templates.entries()) {
-			const isDefaultTemplate = i == 0;
-
-			let setting = new Setting(containerEl);
-			setting.settingEl.removeChild(setting.infoEl);
-			setting.controlEl.style.flexWrap = "wrap";
-			setting.controlEl.style.justifyContent = "center";
-
-			setting.addText((text) => {
-				if (isDefaultTemplate) text.setDisabled(true);
-				return text
-					.setValue(isDefaultTemplate ? "Default Tempalte" : template.name)
-					.setPlaceholder("Name")
-					.onChange(async (value) => {
-						template.name = value;
-						await this.plugin.saveSettings();
-					});
-			});
-			setting.controlEl.children[0].setAttr("style", "width: 160px;");
-
-			setting.addToggle((toggle) =>
-				toggle
-					.setTooltip("creates note")
-					.setValue(template.createNote)
-					.onChange(async (value) => {
-						template.createNote = value;
-						if (
-							template.createNote &&
-							(template.templateString == DEFAULT_TEMPLATE_STRING_INLINE || template.templateString === "")
-						) {
-							template.templateString = DEFAULT_TEMPLATE_STRING_NOTE;
-						} else if (
-							!template.createNote &&
-							(template.templateString == DEFAULT_TEMPLATE_STRING_NOTE || template.templateString === "")
-						) {
-							template.templateString = DEFAULT_TEMPLATE_STRING_INLINE;
-						}
-						await this.plugin.saveSettings();
-						this.display();
-					})
-			);
-
-			setting = this.addNotePathSearch(template, setting);
-
-			setting.addTextArea((text) => {
-				text.inputEl.setAttr(
-					"style",
-					"white-space:pre;overflow-wrap:normal;overflow:hidden;resize:none;flex-grow:1;"
-				);
-				text.inputEl.setAttr("rows", "2");
-
-				return text
-					.setPlaceholder("Template")
-					.setValue(template.templateString)
-					.onChange(async (value) => {
-						template.templateString = value;
-						await this.plugin.saveSettings();
-					});
-			});
-
-			setting.addExtraButton((button) => {
-				if (isDefaultTemplate) button.setDisabled(true);
-				button.extraSettingsEl.style.height = "min-content";
-				return button
-					.setTooltip("delete template")
-					.setIcon("minus")
-					.onClick(async () => {
-						this.settings.templates.splice(i, 1);
-						await this.plugin.saveSettings();
-						this.display();
-					});
-			});
-
-			const div = setting.controlEl.createDiv();
-			div.setAttr("style", "display:flex;flex-grow:1;gap:var(--size-4-2);align-items:center;");
-
-			div.appendChild(setting.controlEl.children[setting.controlEl.children.length - 3]);
-			div.appendChild(setting.controlEl.children[setting.controlEl.children.length - 2]);
-		}
-
-		new Setting(containerEl).addExtraButton((button) =>
-			button
-				.setTooltip("create new template")
-				.setIcon("plus")
-				.onClick(async () => {
-					if (this.settings.templates.length == 21)
-						return new Notice(
-							"Easy buddy... I need to stop you right there. You can only have up to 20 templates. It's for your own good! (I think) If you really need more come and talk to me on GitHub. If you convince me I'll let you have more.",
-							15000
-						);
-
-					this.settings.templates.push({
-						...DEFAULT_TEMPLATE,
-						name: `Additional Template`,
-					});
-					await this.plugin.saveSettings();
-					this.display();
-				})
-		);
+		this.addTemplateSettings(containerEl);
 
 		new Setting(containerEl).setName("Workflow optimizations").setHeading();
 
@@ -355,10 +236,175 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				})
 			);
 
+		new Setting(containerEl)
+			.setName("Override files")
+			.setDesc("Whether or not to override existing files when creating article notes.")
+			.addToggle((toggle) =>
+				toggle.setValue(this.settings.overrideFiles).onChange(async (value) => {
+					this.settings.overrideFiles = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
 		new Setting(containerEl).setName("Feedback, bug reports and feature requests 🌿").setHeading();
 		const appendix = `<p style="border-top:1px solid var(--background-modifier-border); padding: 0.75em 0; margin: unset;">If you have any kind of feedback, please let me know! No matter how small! I also obsess a lot about small details. I want to make this plugin as useful as possible for everyone. I love to hear about your ideas for new features, all the bugs you found and everything that annoys you. Don't be shy! Just create an issue on <a href="https://github.com/StrangeGirlMurph/obsidian-wikipedia-search">GitHub</a> and I'll get back to you ASAP. ~ Murphy :)</p>
 		<p style="margin: unset;">PS: Wikipedia also has a dark mode for everyone with an account.</p>`;
 		const div = containerEl.createEl("div");
 		div.innerHTML = appendix;
+	}
+
+	addTemplateSettings(containerEl: HTMLElement) {
+		for (const [i, template] of this.settings.templates.entries()) {
+			const isDefaultTemplate = i == 0;
+
+			let setting = new Setting(containerEl);
+			setting.settingEl.removeChild(setting.infoEl);
+			setting.controlEl.style.flexWrap = "wrap";
+			setting.controlEl.style.justifyContent = "center";
+
+			setting.addText((text) => {
+				if (isDefaultTemplate) text.setDisabled(true);
+				return text
+					.setValue(isDefaultTemplate ? "Default Template" : template.name)
+					.setPlaceholder("Name")
+					.onChange(async (value) => {
+						template.name = value;
+						await this.plugin.saveSettings();
+					});
+			});
+			setting.controlEl.children[setting.controlEl.children.length - 1].setAttr("style", "width: 140px;");
+
+			setting.addToggle((toggle) =>
+				toggle
+					.setTooltip("creates a note")
+					.setValue(template.createNote)
+					.onChange(async (value) => {
+						template.createNote = value;
+						if (
+							template.createNote &&
+							(template.templateString == DEFAULT_TEMPLATE_STRING_INLINE || template.templateString === "")
+						) {
+							template.templateString = DEFAULT_TEMPLATE_STRING_NOTE;
+						} else if (
+							!template.createNote &&
+							(template.templateString == DEFAULT_TEMPLATE_STRING_NOTE || template.templateString === "")
+						) {
+							template.templateString = DEFAULT_TEMPLATE_STRING_INLINE;
+						}
+						await this.plugin.saveSettings();
+						this.display();
+					})
+			);
+
+			const firstGroup = setting.controlEl.createDiv();
+			firstGroup.setAttr("style", "display:flex;gap:var(--size-4-2);align-items:center;");
+			firstGroup.appendChild(setting.controlEl.children[0]);
+			firstGroup.appendChild(setting.controlEl.children[0]);
+
+			if (template.createNote) {
+				setting.addSearch((search: SearchComponent) => {
+					new FolderSuggest(app, search.inputEl);
+					search
+						.setPlaceholder("custom note path")
+						.setValue(template.customPath)
+						.onChange(async (newFolder: string) => {
+							template.customPath = newFolder;
+							await this.plugin.saveSettings();
+						});
+				});
+
+				setting.controlEl.children[setting.controlEl.children.length - 1].setAttr(
+					"style",
+					"flex-grow:1;width:170px;"
+				);
+
+				setting.addToggle((toggle) =>
+					toggle
+						.setTooltip("uses a template file")
+						.setValue(template.useTemplateFile)
+						.onChange(async (value) => {
+							template.useTemplateFile = value;
+							await this.plugin.saveSettings();
+							this.display();
+						})
+				);
+
+				const secondGroup = setting.controlEl.createDiv();
+				secondGroup.setAttr("style", "display:flex;flex-grow:1;gap:var(--size-4-2);align-items:center;");
+				secondGroup.appendChild(setting.controlEl.children[1]);
+				secondGroup.appendChild(setting.controlEl.children[1]);
+			}
+
+			if (template.useTemplateFile && template.createNote) {
+				setting.addSearch((search: SearchComponent) => {
+					new FileSuggest(app, search.inputEl);
+					search
+						.setPlaceholder("template file path")
+						.setValue(template.templateFilePath)
+						.onChange(async (newFolder: string) => {
+							template.templateFilePath = newFolder;
+							await this.plugin.saveSettings();
+						});
+				});
+				setting.controlEl.children[setting.controlEl.children.length - 1].setAttr(
+					"style",
+					"flex-grow:1;width:170px;"
+				);
+			} else {
+				setting.addTextArea((text) => {
+					text.inputEl.setAttr(
+						"style",
+						"white-space:pre;overflow-wrap:normal;overflow:hidden;resize:none;flex-grow:1;width:220px;"
+					);
+					text.inputEl.setAttr("rows", "2");
+
+					return text
+						.setPlaceholder("template string")
+						.setValue(template.templateString)
+						.onChange(async (value) => {
+							template.templateString = value;
+							await this.plugin.saveSettings();
+						});
+				});
+			}
+
+			setting.addExtraButton((button) => {
+				if (isDefaultTemplate) button.setDisabled(true);
+				button.extraSettingsEl.style.height = "min-content";
+				return button
+					.setTooltip("delete template")
+					.setIcon("minus")
+					.onClick(async () => {
+						this.settings.templates.splice(i, 1);
+						await this.plugin.saveSettings();
+						this.display();
+					});
+			});
+
+			const thirdGroup = setting.controlEl.createDiv();
+			thirdGroup.setAttr("style", "display:flex;flex-grow:1;gap:var(--size-4-2);align-items:center;");
+			thirdGroup.appendChild(setting.controlEl.children[setting.controlEl.children.length - 3]);
+			thirdGroup.appendChild(setting.controlEl.children[setting.controlEl.children.length - 2]);
+		}
+
+		new Setting(containerEl).addExtraButton((button) =>
+			button
+				.setTooltip("add template")
+				.setIcon("plus")
+				.onClick(async () => {
+					if (this.settings.templates.length == 21)
+						return new Notice(
+							"Easy buddy... I need to stop you right there. You can only have up to 20 templates. It's for your own good! (I think) If you really need more come and talk to me on GitHub. If you convince me I'll let you have more.",
+							15000
+						);
+
+					this.settings.templates.push({
+						...DEFAULT_TEMPLATE,
+						name: `Additional Template`,
+					});
+					await this.plugin.saveSettings();
+					this.display();
+				})
+		);
 	}
 }

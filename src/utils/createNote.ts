@@ -1,33 +1,36 @@
-import { App, normalizePath, Notice } from "obsidian";
+import { App, normalizePath, Notice, TFile } from "obsidian";
 
 export async function createNoteInFolder(
 	app: App,
 	title: string,
 	content: string,
-	path: string
+	folderPath: string,
+	overrideExisting: boolean
 ): Promise<string | null> {
-	if (!(await app.vault.adapter.exists(path))) {
+	if (
+		!(await app.vault.adapter.exists(folderPath)) ||
+		app.vault.getAbstractFileByPath(folderPath) instanceof TFile
+	) {
 		new Notice(
 			"Aborted! The folder you specified in the settings to create this new note in does not exist. Please visit the plugin settings and change the path!",
 			15000
 		);
 		return null;
 	}
-	path = normalizePath(`${path}/${title}.md`);
-	const file = app.vault.getAbstractFileByPath(path);
 
-	if (file) {
-		new Notice(`Aborted! '${path}' already exists.`);
+	const filePath = normalizePath(`${folderPath}/${title}.md`);
+	const file = app.vault.getAbstractFileByPath(filePath);
+
+	if (file && !overrideExisting) {
+		new Notice(`Aborted! '${filePath}' already exists.`);
 		return null;
-	}
-
-	try {
-		await app.vault.create(path, content);
+	} else if (file && overrideExisting) {
+		await app.vault.modify(file as TFile, content);
+		new Notice(`Note successfully overwritten.`);
+		return filePath;
+	} else {
+		await app.vault.create(filePath, content);
 		new Notice("New note created successfully.");
-		return path;
-	} catch (err) {
-		new Notice("Error creating new note... Please check the console logs for more information.");
-		console.error("Error creating new note:", err);
-		return null;
+		return filePath;
 	}
 }

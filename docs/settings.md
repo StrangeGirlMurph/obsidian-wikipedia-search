@@ -28,30 +28,30 @@ The default vault folder where articles notes should be created. This only gets 
 Default: `/` (the root folder)
 
 ## Template settings
-Each user has a list of templates for the inserts that this plugin creates when linking articles. "Linking" in this context might be a bit misdirecting though given the fact that this plugin can do more than just link the article with a url. The templates can be separated into one default template and multiple additional templates. Templates can be deleted with the `-` button at the end. The default template can't be deleted.
+Each user has a list of templates for the inserts that this plugin creates when [linking articles](commands.md#link-article) or [creating article notes](commands.md#create-article-note). The templates can be separated into one default template and multiple additional templates. Templates can be deleted with the `-` button at the end. The default template can't be deleted. You can create new templates with the `+` button at the bottom right.
 
 The settings for a template can be separated into the following three parts:
 
-*Note: You can only have up to 20 templates. It's a limitation that isn't really justified. I just thought adding this would be a good idea for your own good. If you need more than 20 leave a message.*
-
 ??? info "Screenshot"
 
-    ![template settings screenshot](assets/tempalte-settings.png)
+    ![template settings screenshot](assets/template-settings.png)
 
 ### Template name
-The first field of each template sets the name of the template.The name of the default template can't be changed (that's why that field is disabled) while the additional templates can have any name.
+The first field of each template sets the name of the template. The name of the default template can't be changed (that's why that field is disabled) while the additional templates can have any name.
 
 Default: `Additional Template`
 
 ### Creates note & Custom note path
-The middle part of a templates settings is all about note creation. It consist of a toggle and a text field that appears when the toggle in the "on" state. The toggle controls whether or not the template should create a new note with the articles title as its name, paste the insert in there and link the newly created note instead of directly pasting the insert into the current note. This allows for creating notes for wikipedia articles. We call templates that create new notes "note templates" and templates that doesn't "inline templates".
+The middle part of a templates settings is all about note creation. It consist of a toggle and a text field that appears when the "creates a note" toggle is in the "on" state. The toggle controls whether or not the template should create a new note with the articles title as its name, paste the insert in there and link the newly created note instead of directly pasting the insert into the current note. This allows for creating notes for wikipedia articles. We call templates that create new notes "note templates" and templates that doesn't "inline templates".
 
 By default all the notes will be created at the [default note path](#default-note-path). The appearing text field lets you customize the location for any given template. Leave it empty to use the default note path.
 
-Default: `false` for the toggle (inline) and `‎` (empty) for the custom note path
+Default: `false` as in "inline" for the toggle and `‎` (empty) for the custom note path
 
 ### Template string
-The last and most important part of any template is its template string. You can edit it over the big text field at the end. The template string is the blueprint for the insert. It can be any kind of string containing line breaks. The plugin recognizes the following character sequences and replaces all occurrences with the following:
+The last and most important part of any template is its template string. The template string is the blueprint for the insert. This last section consists of a toggle and an input field which is either a big text or a file search field. The toggle sets whether or not the template string is declared directly in the settings tab in the big text field or separately in a file which the file search field references instead. Template files are only supported for note templates. That's why the toggle disappears and the input automatically switches to the text field once you switch to an inline template.
+
+The template string can be any kind of string containing line breaks and whatever you can think of. The plugin recognizes the following character sequences and replaces all occurrences with the corresponding data:
 
 - `{title}` The articles title or current selection (based on [this setting](#use-article-title-instead-of-selection)).
 - `{description}` The articles description if available. If not all occurrences will be removed with a notice. 
@@ -62,6 +62,12 @@ The last and most important part of any template is its template string. You can
 - `{thumbnail}` An embed to the articles thumbnail if available. If not all occurrences will be removed with a notice. This will look like `![{title} Thumbnail](<url-to-thumbnail>)` or `![{title} Thumbnail | <thumbnail-width>](<url-to-thumbnail>)` if the [thumbnail width](#thumbnail-width) is set. 
 
 Default: `[{title}]({url})` for inline templates and `{thumbnail}\n[{title}]({url}): {intro}` for note templates
+
+??? tip
+
+    You can also use [Templater](https://github.com/SilentVoid13/Templater) Syntax in the template string of note templates to make the article notes even better! Just [install](obsidian://show-plugin?id=templater) and enable the Templater Plugin and enable its "Trigger Templater on new file creation" setting:
+
+    ![Templater Setting](assets/templater-setting.png)
 
 ## Workflow optimization settings
 
@@ -117,5 +123,10 @@ Default: `false`
 
 ### Open created article notes
 Whether or not to open the newly created article notes directly after creating them. Follows the [article tab placement setting](#article-tab-placement).
+
+Default: `false`
+
+### Override files
+Whether or not to override existing files when creating article notes.
 
 Default: `false`

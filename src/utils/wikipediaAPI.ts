@@ -59,7 +59,7 @@ export async function getArticleIntros(
 	return sortResponsesByTitle(titles, Object.values(response.query.pages)).map((page: any) => {
 		const extract = page.extract.trim() ?? null;
 		if (extract && cleanup) {
-			extract
+			return extract
 				.replaceAll("\\displaystyle ", "")
 				.replaceAll("\n", "")
 				.replaceAll(/  +/g, " ")
