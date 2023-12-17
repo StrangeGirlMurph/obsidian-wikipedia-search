@@ -23,7 +23,7 @@ The width of the inserted thumbnails in pixels. Leave this field empty to use th
 Default: `‎` (empty)
 
 ### Default note path
-The default vault folder where articles notes should be created. This only gets used when there is a template which creates notes and it's custom path empty i.e. not set.
+The default vault folder where articles notes should be created. This only gets used when there is a template which creates notes and it's custom path empty i.e. not set. If set to `[current folder]` the parent folder of the currently active note will be used.
 
 Default: `/` (the root folder)
 
@@ -44,7 +44,7 @@ Default: `Additional Template`
 ### Creates note & Custom note path
 The middle part of a templates settings is all about note creation. It consist of a toggle and a text field that appears when the "creates a note" toggle is in the "on" state. The toggle controls whether or not the template should create a new note with the articles title as its name, paste the insert in there and link the newly created note instead of directly pasting the insert into the current note. This allows for creating notes for wikipedia articles. We call templates that create new notes "note templates" and templates that doesn't "inline templates".
 
-By default all the notes will be created at the [default note path](#default-note-path). The appearing text field lets you customize the location for any given template. Leave it empty to use the default note path.
+By default all the notes will be created at the [default note path](#default-note-path). The appearing text field lets you customize the location for any given template. Leave it empty to use the default note path or set it to `[current folder]` to use the parent folder of the currently active note. Note that this means you always have to make sure you have an active note when using [`Create article note`](commands.md#create-article-note).
 
 Default: `false` as in "inline" for the toggle and `‎` (empty) for the custom note path
 

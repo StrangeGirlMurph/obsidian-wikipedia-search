@@ -4,7 +4,7 @@ import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 import { TemplateModal } from "src/utils/templateModal";
 import { generateInsert } from "src/utils/generateInsert";
-import { createNoteInFolder } from "src/utils/createNote";
+import { createNoteInActiveNotesFolderMarker, createNoteInFolder } from "src/utils/createNote";
 
 export class CreateArticleNoteModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
@@ -38,18 +38,24 @@ async function createArticleNote(
 		}
 		templateString = await app.vault.read(templateFile);
 	}
+
+	let folderPath: string | null = template.customPath === "" ? settings.defaultNotePath : template.customPath;
+	if (folderPath === createNoteInActiveNotesFolderMarker) {
+		folderPath = app.workspace.getActiveFile()?.parent?.path || null;
+		if (folderPath == null) {
+			new Notice(
+				"Aborted! You have to have an active file to create a note in the current files parent folder."
+			);
+			return;
+		}
+	}
+
 	const insert = await generateInsert(settings, article, templateString, "");
-	const path = await createNoteInFolder(
-		app,
-		article.title,
-		insert,
-		template.customPath || settings.defaultNotePath,
-		settings.overrideFiles
-	);
-	if (!path) return;
+	const filePath = await createNoteInFolder(app, article.title, insert, folderPath, settings.overrideFiles);
+	if (!filePath) return;
 	if (settings.openCreatedNotes) {
 		app.workspace
 			.getLeaf(settings.openArticleInFullscreen ? "tab" : "split")
-			.openFile(app.vault.getAbstractFileByPath(path)! as TFile);
+			.openFile(app.vault.getAbstractFileByPath(filePath)! as TFile);
 	}
 }

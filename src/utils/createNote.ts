@@ -1,5 +1,7 @@
 import { App, normalizePath, Notice, TFile } from "obsidian";
 
+export const createNoteInActiveNotesFolderMarker = "[current folder]";
+
 export async function createNoteInFolder(
 	app: App,
 	title: string,

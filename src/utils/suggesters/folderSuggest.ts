@@ -2,28 +2,31 @@
 
 import { TAbstractFile, TFolder } from "obsidian";
 import { TextInputSuggest } from "./suggest";
+import { createNoteInActiveNotesFolderMarker } from "../createNote";
 
-export class FolderSuggest extends TextInputSuggest<TFolder> {
-	getSuggestions(inputStr: string): TFolder[] {
+export class FolderSuggest extends TextInputSuggest<string> {
+	getSuggestions(inputStr: string): string[] {
 		const abstractFiles = this.app.vault.getAllLoadedFiles();
-		const folders: TFolder[] = [];
+		const folders: string[] = [];
 		const lowerCaseInputStr = inputStr.toLowerCase();
+
+		folders.push(createNoteInActiveNotesFolderMarker);
 
 		abstractFiles.forEach((folder: TAbstractFile) => {
 			if (folder instanceof TFolder && folder.path.toLowerCase().contains(lowerCaseInputStr)) {
-				folders.push(folder);
+				folders.push(folder.path);
 			}
 		});
 
 		return folders;
 	}
 
-	renderSuggestion(file: TFolder, el: HTMLElement): void {
-		el.setText(file.path);
+	renderSuggestion(folderPath: string, el: HTMLElement): void {
+		el.setText(folderPath);
 	}
 
-	selectSuggestion(file: TFolder): void {
-		this.inputEl.value = file.path;
+	selectSuggestion(folderPath: string): void {
+		this.inputEl.value = folderPath;
 		this.inputEl.trigger("input");
 		this.close();
 	}
