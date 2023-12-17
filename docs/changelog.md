@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.0](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.0) (17.12.2023)
+- Fixes a big bug that made using template files with the link article command impossible.
+- Adds the option to use the parent folder of the currently active note to create new notes in.
+
 ## [2.3.3](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.3.3) (02.12.2023)
 - Adds the template file option.
 - Adds the `Override files` setting
