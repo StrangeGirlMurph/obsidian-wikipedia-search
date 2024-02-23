@@ -254,7 +254,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 	}
 
 	addTemplateSettings(containerEl: HTMLElement) {
-		for (const [i, template] of this.settings.templates.entries()) {
+		for (let [i, template] of this.settings.templates.entries()) {
 			const isDefaultTemplate = i == 0;
 
 			let setting = new Setting(containerEl);
@@ -265,8 +265,8 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			setting.addText((text) => {
 				if (isDefaultTemplate) text.setDisabled(true);
 				return text
-					.setValue(isDefaultTemplate ? "Default Template" : template.name)
 					.setPlaceholder("Name")
+					.setValue(isDefaultTemplate ? "Default Template" : template.name)
 					.onChange(async (value) => {
 						template.name = value;
 						await this.plugin.saveSettings();

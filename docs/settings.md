@@ -91,12 +91,14 @@ Whether or not to use the articles title instead of the selected text for the '{
 Default: `false`
 
 ### Stop auto-cleanup of intros
-Whether or not to stop auto-cleaning the articles intros for better readability. Many articles intros and mostly intros that contain any math are very poorly formatted the way the Wikipedia API returns them in plain-text. For example the intro of the [Total order](https://en.wikipedia.org/w/api.php?format=json&redirects=1&action=query&prop=extracts&exintro&explaintext&titles=Total%20order) with lots of weirdly placed empty spaces and linebreakes. Therefor every response gets cleaned up a bit for better readability with the following code:
+Whether or not to stop auto-cleaning/parsing the articles intros for better readability. Many articles intros and mostly intros that contain any math are very poorly formatted the way the Wikipedia API returns them in plain-text. For example the intro of the [Total order](https://en.wikipedia.org/w/api.php?format=json&redirects=1&action=query&prop=extracts&exintro&explaintext&titles=Total%20order) with lots of weirdly placed empty spaces and linebreakes. Therefor every response gets cleaned up a bit for better readability with the following code:
 ```ts
-intro.replaceAll("\\displaystyle ", "") // removes all occurrences of '\displaystyle'
-    .replaceAll("\n", "")       // removes all line breaks
-    .replaceAll(/  +/g, " ")    // reduces all spaces to a single space
-    .replaceAll(/\.\w/g, (e: string) => e.split("").join(" "));   // adds a space between any dot directly followed by a letter
+intro
+    // turns all "{\displaystyle ... }" occurrences into a proper LaTeX equation.
+    .replaceAll(/{\\displaystyle [^\n]+}/g, (text: string) => "$" + text.slice(15,-1).trim() + "$")
+    .replaceAll("\n ", "")      // removes all the unnecessary linebreakes
+    .replaceAll(/  \S  /g, "")  // removes the unicode characters that try to replace the LaTeX
+    .replaceAll(/  +/g, " ")    // removes any left over whitespace
 ```
 
 
@@ -106,7 +108,7 @@ intro.replaceAll("\\displaystyle ", "") // removes all occurrences of '\displays
   
     gets turned into
 
-    <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation ≤ {\\leq } on some set X {X} , which satisfies the following for all a , b {a,b} and c {c} in X {X} : a ≤ a {a\\leq a} (reflexive). If a ≤ b {a\\leq b} and b ≤ c {b\\leq c} then a ≤ c {a\\leq c} (transitive). If a ≤ b {a\\leq b} and b ≤ a {b\\leq a} then a = b {a=b} (antisymmetric). a ≤ b {a\\leq b} or b ≤ a {b\\leq a} (strongly connected, formerly called total). Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders. Total orders are sometimes also called simple, connex, or full orders. A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set. An extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
+    <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation $\leq$ on some set $X$ , which satisfies the following for all $a,b$ and $c$ in $X$ :\n $a\leq a$ (reflexive).\nIf $a\leq b$ and $b\leq c$ then $a\leq c$ (transitive).\nIf $a\leq b$ and $b\leq a$ then $a=b$ (antisymmetric).\n $a\leq b$ or $b\leq a$ (strongly connected, formerly called total).Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders.\nTotal orders are sometimes also called simple, connex, or full orders.A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set.\nAn extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
 
 
 Default: `false`
