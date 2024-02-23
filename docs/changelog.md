@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.4.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.1) (23.02.2024)
+- Fixes a bug where a template still uses the specified template file without creating a note
+- Improves the auto-cleanup feature to also parse the LaTeX of a Wikipedia articles intro.
+
 ## [2.4.0](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.0) (17.12.2023)
 - Fixes a big bug that made using template files with the link article command impossible. (#25)
 - Adds the option to use the parent folder of the currently active note to create new notes in. (#24)
