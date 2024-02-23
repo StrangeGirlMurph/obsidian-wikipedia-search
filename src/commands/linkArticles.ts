@@ -30,7 +30,7 @@ async function insertLink(
 	template: Template
 ) {
 	let templateString = template.templateString;
-	if (template.useTemplateFile) {
+	if (template.useTemplateFile && template.createNote) {
 		const templateFile = app.vault.getAbstractFileByPath(template.templateFilePath);
 		if (!templateFile || !(templateFile instanceof TFile)) {
 			new Notice(`Aborting! Template file '${template.templateFilePath}' not found!`);
