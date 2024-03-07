@@ -13,10 +13,15 @@ export class FolderSuggest extends TextInputSuggest<string> {
 		folders.push(createNoteInActiveNotesFolderMarker);
 
 		abstractFiles.forEach((folder: TAbstractFile) => {
-			if (folder instanceof TFolder && folder.path.toLowerCase().contains(lowerCaseInputStr)) {
-				folders.push(folder.path);
+			if (folder instanceof TFolder) {
+				const path = folder.path === "/" ? "/" : "/" + folder.path;
+				if (path.toLowerCase().contains(lowerCaseInputStr)) {
+					folders.push(path);
+				}
 			}
 		});
+		
+		folders.sort((a, b) => a.localeCompare(b) )
 
 		return folders;
 	}
