@@ -1,5 +1,8 @@
 # Changelog
 
+## [2.4.3](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.3) (07.03.2024)
+- Adds the `{thumbnailUrl}` option for the template strings.
+
 ## [2.4.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.1) (23.02.2024)
 - Fixes a bug where a template still uses the specified template file without creating a note
 - Improves the auto-cleanup feature to also parse the LaTeX of a Wikipedia articles intro.

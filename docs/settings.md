@@ -59,7 +59,8 @@ The template string can be any kind of string containing line breaks and whateve
 - `{language}` The name of the language of this article.
 - `{languageCode}` The language code of the language of this article. 
 - `{intro}` The articles intro (the first big paragraph). *Note: It can be pretty long!*
-- `{thumbnail}` An embed to the articles thumbnail if available. If not all occurrences will be removed with a notice. This will look like `![{title} Thumbnail](<url-to-thumbnail>)` or `![{title} Thumbnail | <thumbnail-width>](<url-to-thumbnail>)` if the [thumbnail width](#thumbnail-width) is set. 
+- `{thumbnail}` An embed to the articles thumbnail if available. If not all occurrences will be removed with a notice. This will look like `![<article-title> Thumbnail](<url-to-thumbnail>)` or `![<article-title> Thumbnail | <thumbnail-width>](<url-to-thumbnail>)` if the [thumbnail width](#thumbnail-width) is set. 
+- `{thumbnailUrl}` The url of the articles thumbnail if available. If not all occurrences will be removed with a notice.
 
 Default: `[{title}]({url})` for inline templates and `{thumbnail}\n[{title}]({url}): {intro}` for note templates
 

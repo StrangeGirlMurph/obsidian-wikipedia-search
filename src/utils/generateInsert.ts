@@ -25,7 +25,7 @@ export async function generateInsert(
 		if (!intro) new Notice("Could not fetch the articles introduction.");
 	}
 
-	if (templateString.includes("{thumbnail}")) {
+	if (templateString.includes("{thumbnail}") || templateString.includes("{thumbnailUrl}")) {
 		const thumbnailUrl: string | null =
 			(await getArticleThumbnails([article.title], settings.language))?.[0] ?? null;
 		insert = insert.replaceAll(
@@ -35,7 +35,7 @@ export async function generateInsert(
 						settings.thumbnailWidth ? ` | ${settings.thumbnailWidth}` : ""
 				  }](${thumbnailUrl})`
 				: ""
-		);
+		).replaceAll("{thumbnailUrl}", thumbnailUrl ?? "");
 		if (!thumbnailUrl) new Notice("Could not fetch the articles thumbnail.");
 	}
 
