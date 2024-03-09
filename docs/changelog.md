@@ -1,6 +1,10 @@
 # Changelog
 
 ## [2.4.3](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.3) (07.03.2024)
+- Fixes a forbidden characters in file name bug.
+- Fixes a bug with the directory search in the settings with the forced `/`.
+
+## [2.4.2](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.2) (07.03.2024)
 - Adds the `{thumbnailUrl}` option for the template strings.
 
 ## [2.4.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.1) (23.02.2024)
