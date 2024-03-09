@@ -20,7 +20,8 @@ export async function createNoteInFolder(
 		return null;
 	}
 
-	const filePath = normalizePath(`${folderPath}/${title}.md`);
+	const sanitizedTitle = title.replaceAll(`"`, `'`).replace(/[\\/:*?]/g, '~');
+	const filePath = normalizePath(`${folderPath}/${sanitizedTitle}.md`);
 	const file = app.vault.getAbstractFileByPath(filePath);
 
 	if (file && !overrideExisting) {
