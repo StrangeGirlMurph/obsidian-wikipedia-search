@@ -20,11 +20,7 @@ export async function createNoteInFolder(
 		return null;
 	}
 
-	function sanitizeFileName(input: string): string {
-		return input.replace(/[\\/:*?"<>|]/g, '');
-	}
-
-	const sanitizedTitle = sanitizeFileName(title);
+	const sanitizedTitle = title.replaceAll(`"`, `'`).replace(/[\\/:*?]/g, '~');
 	const filePath = normalizePath(`${folderPath}/${sanitizedTitle}.md`);
 	const file = app.vault.getAbstractFileByPath(filePath);
 
