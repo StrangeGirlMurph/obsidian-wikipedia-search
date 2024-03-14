@@ -64,6 +64,9 @@ export async function getArticleIntros(
 				.replaceAll("\n ", "")
 				.replaceAll(/  \S  /g, "")
 				.replaceAll(/  +/g, " ")
+				.replaceAll("\n ", "\n")
+				.replaceAll(" ,", ",")
+				.replaceAll(" :", ":")
 		}
 		return extract;
 	});

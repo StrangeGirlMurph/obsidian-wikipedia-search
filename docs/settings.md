@@ -100,6 +100,10 @@ intro
     .replaceAll("\n ", "")      // removes all the unnecessary linebreakes
     .replaceAll(/  \S  /g, "")  // removes the unicode characters that try to replace the LaTeX
     .replaceAll(/  +/g, " ")    // removes any left over whitespace
+    // takes care of some other quirks that can occur
+    .replaceAll("\n ", "\n")
+    .replaceAll(" ,", ",")
+    .replaceAll(" :", ":")
 ```
 
 
