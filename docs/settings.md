@@ -104,6 +104,8 @@ intro
     .replaceAll("\n ", "\n")
     .replaceAll(" ,", ",")
     .replaceAll(" :", ":")
+    // escapes some markdown syntax
+    .replaceAll(" `", " \\`")
 ```
 
 
@@ -116,7 +118,7 @@ intro
     <pre style="white-space:pre-wrap;">In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation $\leq$ on some set $X$ , which satisfies the following for all $a,b$ and $c$ in $X$ :\n $a\leq a$ (reflexive).\nIf $a\leq b$ and $b\leq c$ then $a\leq c$ (transitive).\nIf $a\leq b$ and $b\leq a$ then $a=b$ (antisymmetric).\n $a\leq b$ or $b\leq a$ (strongly connected, formerly called total).Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders.\nTotal orders are sometimes also called simple, connex, or full orders.A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set.\nAn extension of a given partial order to a total order is called a linear extension of that partial order.</pre>
 
 
-Default: `false`
+Default: `false` (really recommended)
 
 ### Open article in browser
 Whether or not to always open articles in the browser instead of in-app even if the Surfing plugin is installed and enabled.
