@@ -1,8 +1,23 @@
-# Home
+---
+layout: home
 
-Wikipedia Search is an [Obsidian.md](https://obsidian.md/) plugin to quickly search, link and open Wikipedia articles directly in Obsidian and in your notes.
+hero:
+  name: "Wikipedia Search"
+  text: "Documentation"
+  tagline: An Obsidian plugin to search, link and open Wikipedia articles directly from the app.
+  actions:
+    - theme: brand
+      text: Getting Started
+      link: /getting-started
+    - theme: alt
+      text: Settings
+      link: /settings
+    - theme: alt
+      text: Commands 
+      link: /commands
+---
 
-## Features
+# Features
 
 - Linking Wikipedia articles in all languages.
 - Opening articles and links directly in Obsidian (using the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)).
@@ -12,8 +27,10 @@ Wikipedia Search is an [Obsidian.md](https://obsidian.md/) plugin to quickly sea
 - Using different templates for the insert.
 - Creating notes for articles.
 
-## Demo Video
+# Demo Video
+
+<br/>
 
 <video controls>
-<source src="assets/demo.mp4" type="video/mp4">
+<source src="./public/demo.mp4" type="video/mp4"/>
 </video>

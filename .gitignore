@@ -1,5 +1,7 @@
 .vscode 
 node_modules
+docs/.vitepress/cache
+docs/.vitepress/dist
 
 # Hot Reload
 .hotreload
