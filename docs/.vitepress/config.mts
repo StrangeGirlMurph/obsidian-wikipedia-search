@@ -5,6 +5,7 @@ export default defineConfig({
   title: "Obsidian Wikipedia Search",
   description: "An Obsidian plugin to search, link and open Wikipedia articles directly from the app.",
   lang: 'en-US',
+  base: '/obsidian-wikipedia-search/',
   
   themeConfig: {
     nav: [
