@@ -13,7 +13,7 @@ export default defineConfig({
       { text: 'Settings', link: '/settings' },
       { text: 'Commands', link: '/commands' },
     ],
-    outline: [1,2],
+    outline: [2,3],
     sidebar: [
       {
         text: '',
