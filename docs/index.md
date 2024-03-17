@@ -31,6 +31,6 @@ hero:
 
 <br/>
 
-<video controls>
+<video style="width:800px" controls>
 <source src="./public/demo.mp4" type="video/mp4"/>
 </video>
