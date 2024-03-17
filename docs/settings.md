@@ -1,7 +1,7 @@
 # General settings
 
 ::: details Screenshot
-![general settings screenshot](./public/general-settings.png)
+![general settings screenshot](/general-settings.png)
 :::
 
 ## Language
@@ -31,7 +31,7 @@ Each user has a list of templates for the inserts that this plugin creates when 
 The settings for a template can be separated into the following three parts:
 
 ::: details Screenshot
-![template settings screenshot](./public/template-settings.png)
+![template settings screenshot](/template-settings.png)
 :::
 
 ## Template name
@@ -65,13 +65,13 @@ Default: `[{title}]({url})` for inline templates and `{thumbnail}\n[{title}]({ur
 ::: tip
 You can also use [Templater](https://github.com/SilentVoid13/Templater) Syntax in the template string of note templates to make the article notes even better! Just [install](obsidian://show-plugin?id=templater) and enable the Templater Plugin and enable its "Trigger Templater on new file creation" setting:
 
-![Templater Setting](./public/templater-setting.png)
+![Templater Setting](/templater-setting.png)
 :::
 
 # Workflow optimization settings
 
 ::: details Screenshot
-![workflow optimization settings screenshot](./public/workflow-optimizations.png)
+![workflow optimization settings screenshot](/workflow-optimizations.png)
 :::
 
 ## Cursor placement
