@@ -4,7 +4,7 @@
 
 1. Search under the Community Plugins in the settings for it and click install.
 2. Enable the plugin by using its toggle in the installed plugin list.  
-   ![plugin list entry](./public/plugin.png)
+   ![plugin list entry](/plugin.png)
 
 ## Manual Installation
 
