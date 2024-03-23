@@ -1,4 +1,4 @@
-name: Deploy VitePress site to Pages
+name: Deploy VitePress Documentation to GitHub Pages
 
 on:
   # Runs on pushes targeting the `main` branch. Change this to `master` if you're
