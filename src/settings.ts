@@ -151,7 +151,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		const templateSettings = new DocumentFragment();
 		templateSettings.createEl("span").innerHTML =
-			"Templates (<a href='https://strangegirlmurph.github.io/obsidian-wikipedia-search/settings/#template-settings'>Guide</a>)";
+			"Templates (<a href='https://strangegirlmurph.github.io/obsidian-wikipedia-search/settings.html#template-settings'>Guide</a>)";
 		new Setting(containerEl).setName(templateSettings).setHeading();
 
 		this.addTemplateSettings(containerEl);
