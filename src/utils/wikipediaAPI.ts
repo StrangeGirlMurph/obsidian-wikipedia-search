@@ -57,17 +57,17 @@ export async function getArticleIntros(
 	if (!response.query) return [];
 
 	return sortResponsesByTitle(titles, Object.values(response.query.pages)).map((page: any) => {
-		const extract:string = page.extract.trim() ?? null;
+		const extract: string = page.extract.trim() ?? null;
 		if (extract && cleanup) {
 			return extract
-				.replaceAll(/{\\displaystyle [^\n]+}/g, (text: string) => "$" + text.slice(15,-1).trim() + "$")
+				.replaceAll(/{\\displaystyle [^\n]+}/g, (text: string) => "$" + text.slice(15, -1).trim() + "$")
 				.replaceAll("\n ", "")
 				.replaceAll(/  \S  /g, "")
 				.replaceAll(/  +/g, " ")
 				.replaceAll("\n ", "\n")
 				.replaceAll(" ,", ",")
 				.replaceAll(" :", ":")
-				.replaceAll("`", "\\`")
+				.replaceAll("`", "\\`");
 		}
 		return extract;
 	});

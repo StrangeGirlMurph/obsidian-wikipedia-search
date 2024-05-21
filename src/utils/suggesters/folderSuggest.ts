@@ -20,8 +20,8 @@ export class FolderSuggest extends TextInputSuggest<string> {
 				}
 			}
 		});
-		
-		folders.sort((a, b) => a.localeCompare(b) )
+
+		folders.sort((a, b) => a.localeCompare(b));
 
 		return folders;
 	}

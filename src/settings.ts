@@ -172,9 +172,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Auto-search note title")
-			.setDesc(
-				"Whether or not to automatically use the active notes title when searching for articles."
-			)
+			.setDesc("Whether or not to automatically use the active notes title when searching for articles.")
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.autoSearchNoteTitle).onChange(async (value) => {
 					this.settings.autoSearchNoteTitle = value;

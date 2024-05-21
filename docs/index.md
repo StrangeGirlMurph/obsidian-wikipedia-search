@@ -13,7 +13,7 @@ hero:
       text: Settings
       link: /settings
     - theme: alt
-      text: Commands 
+      text: Commands
       link: /commands
 ---
 

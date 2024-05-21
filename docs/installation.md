@@ -10,4 +10,4 @@
 
 1. Create the directory `[path-to-vault]/.obsidian/plugins/wikipedia-search`.
 2. Download the `main.js` and `mainfest.json` from the [latest release](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases) and put them in the created directory.
-3. Enable the plugin by using its toggle in the installed plugin list.  
+3. Enable the plugin by using its toggle in the installed plugin list.

@@ -28,14 +28,16 @@ export async function generateInsert(
 	if (templateString.includes("{thumbnail}") || templateString.includes("{thumbnailUrl}")) {
 		const thumbnailUrl: string | null =
 			(await getArticleThumbnails([article.title], settings.language))?.[0] ?? null;
-		insert = insert.replaceAll(
-			"{thumbnail}",
-			thumbnailUrl
-				? `![${article.title} Thumbnail${
-						settings.thumbnailWidth ? ` | ${settings.thumbnailWidth}` : ""
-				  }](${thumbnailUrl})`
-				: ""
-		).replaceAll("{thumbnailUrl}", thumbnailUrl ?? "");
+		insert = insert
+			.replaceAll(
+				"{thumbnail}",
+				thumbnailUrl
+					? `![${article.title} Thumbnail${
+							settings.thumbnailWidth ? ` | ${settings.thumbnailWidth}` : ""
+						}](${thumbnailUrl})`
+					: ""
+			)
+			.replaceAll("{thumbnailUrl}", thumbnailUrl ?? "");
 		if (!thumbnailUrl) new Notice("Could not fetch the articles thumbnail.");
 	}
 
