@@ -83,7 +83,7 @@ Whether or not the cursor is placed infront of the insert instead of after it. F
 
 Default: `false`
 
-### Auto-select single response queries
+### Auto-search note title
 Whether or not to automatically use the active notes title when searching for articles. The current selection will be prioritized.
 
 Default: `false`
