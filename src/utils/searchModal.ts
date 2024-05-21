@@ -22,8 +22,18 @@ export abstract class SearchModal extends SuggestModal<Article> {
 	}
 
 	onOpen(): void {
+		this.inputEl.value = "";
 		if (this.editor) {
-			this.inputEl.value = this.editor.getSelection();
+			const selection = this.editor?.getSelection();
+			if (selection != "") {
+				this.inputEl.value = selection;
+			}
+		}
+		if (this.settings.autoSearchNoteTitle) {
+			const fileName = this.app.workspace.getActiveFile()?.basename;
+			if (fileName && fileName != "") {
+				this.inputEl.value = fileName;
+			}
 		}
 		//@ts-ignore - private method
 		super.updateSuggestions();

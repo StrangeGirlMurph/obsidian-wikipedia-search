@@ -33,6 +33,7 @@ export interface WikipediaSearchSettings {
 	templates: Template[];
 	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
+	autoSearchNoteTitle: boolean;
 	prioritizeArticleTitle: boolean;
 	cleanupIntros: boolean;
 	openArticleInFullscreen: boolean;
@@ -50,6 +51,7 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	templates: [DEFAULT_TEMPLATE],
 	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
+	autoSearchNoteTitle: false,
 	prioritizeArticleTitle: false,
 	cleanupIntros: true,
 	openArticleInFullscreen: false,
@@ -102,7 +104,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Search limit")
-			.setDesc("Maximum number of search results to show. (Between 1 and 500)")
+			.setDesc("Maximum number of search results to show. (1≤limit≤500)")
 			.addText((text) =>
 				text
 					.setPlaceholder("limit")
@@ -169,6 +171,18 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
+			.setName("Auto-search note title")
+			.setDesc(
+				"Whether or not to automatically use the active notes title when searching for articles."
+			)
+			.addToggle((toggle) =>
+				toggle.setValue(this.settings.autoSearchNoteTitle).onChange(async (value) => {
+					this.settings.autoSearchNoteTitle = value;
+					await this.plugin.saveSettings();
+				})
+			);
+
+		new Setting(containerEl)
 			.setName("Auto-select single response queries")
 			.setDesc(
 				"Whether or not to automatically select the response to a query when there is only one article to choose from."
@@ -183,7 +197,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		new Setting(containerEl)
 			.setName("Use article title instead of selection")
 			.setDesc(
-				"When hyperlinking: Whether or not to use the articles title instead of the selected text for the '{title}' parameter of your template."
+				"When hyperlinking: Whether or not to use the articles title instead of the selected text for the '{title}' tag of your template."
 			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.prioritizeArticleTitle).onChange(async (value) => {

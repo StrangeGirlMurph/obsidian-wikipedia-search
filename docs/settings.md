@@ -84,6 +84,11 @@ Whether or not the cursor is placed infront of the insert instead of after it. F
 Default: `false`
 
 ### Auto-select single response queries
+Whether or not to automatically use the active notes title when searching for articles. The current selection will be prioritized.
+
+Default: `false`
+
+### Auto-select single response queries
 Whether or not to automatically select the response to a query when there is only one article to choose from. For example when you select someones name and want to hyperlink it to the persons Wikipedia article this feature will automatically select the article when there is only one article related to that name. 
 
 Default: `false`
