@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.5.0](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.5.0) (08.06.2024)
+
+- Fixes a broken link in the settings
+- Gets rid of the cursor positioning setting and introduces `{cursor}` as a replacement
+- Adds auto-search with note title
+- Adds global replacements (all tags in the file will be replaced and not just the ones in the template string)
+- Few minor tweaks like better texts
+
 ## [2.4.4](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.4.4) (15.03.2024)
 
 - Tweaks the auto cleanup for some more edge cases.
