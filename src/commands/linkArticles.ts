@@ -11,37 +11,39 @@ export class LinkArticleModal extends SearchModal {
 		if (this.settings.templates.length > 1) {
 			new LinkArticleTemplateModal(app, this.settings, this.editor!, article).open();
 		} else {
-			insertLink(app, this.editor!, this.settings, article, this.settings.templates[0]);
+			linkArticle(this.app, this.editor!, this.settings, article, this.settings.templates[0]);
 		}
 	}
 }
 
 class LinkArticleTemplateModal extends TemplateModal {
 	async onChooseSuggestion(template: Template) {
-		insertLink(app, this.editor, this.settings, this.article, template);
+		linkArticle(this.app, this.editor, this.settings, this.article, template);
 	}
 }
 
-async function insertLink(
+async function linkArticle(
 	app: App,
 	editor: Editor,
 	settings: WikipediaSearchSettings,
 	article: Article,
 	template: Template
 ) {
-	let templateString = template.templateString;
-	if (template.useTemplateFile && template.createNote) {
-		const templateFile = app.vault.getAbstractFileByPath(template.templateFilePath);
-		if (!templateFile || !(templateFile instanceof TFile)) {
-			new Notice(`Aborting! Template file '${template.templateFilePath}' not found!`);
-			return;
-		}
-		templateString = await app.vault.read(templateFile);
-	}
-
-	let insert = await generateInsert(settings, article, templateString, editor.getSelection());
+	let templateString = template.templateString
+	const selection = editor.getSelection()
 
 	if (template.createNote) {
+		if (template.useTemplateFile) {
+			const templateFile = app.vault.getAbstractFileByPath(template.templateFilePath);
+			if (!templateFile || !(templateFile instanceof TFile)) {
+				new Notice(`Aborting! Template file '${template.templateFilePath}' not found!`);
+				return;
+			}
+			templateString = await app.vault.read(templateFile);
+		}
+
+		const content = await generateInsert(settings, article, templateString, selection)
+
 		let folderPath: string | null =
 			template.customPath === "" ? settings.defaultNotePath : template.customPath;
 		if (folderPath === createNoteInActiveNotesFolderMarker) {
@@ -54,15 +56,28 @@ async function insertLink(
 			}
 		}
 
-		const notePath = await createNoteInFolder(app, article.title, insert, folderPath, settings.overrideFiles);
+		const notePath = await createNoteInFolder(app, article.title, content.insert, folderPath, settings.overrideFiles);
 		if (notePath == null) return;
 
-		insert = `[[${notePath}|${
-			settings.prioritizeArticleTitle || editor.getSelection() === "" ? article.title : editor.getSelection()
-		}]]`;
-	}
+		editor.replaceSelection(`[[${notePath}|${
+			settings.prioritizeArticleTitle || selection === "" ? article.title : selection
+		}]]`);
+	} else {
+		const internalCursorMarker = "{cursorMarker}"
 
-	const cursorPosition = editor.getCursor();
-	editor.replaceSelection(insert);
-	if (settings.placeCursorInfrontOfInsert) editor.setCursor(cursorPosition);
+		let content = editor.getValue();
+		content = content.substring(0, editor.posToOffset(editor.getCursor("from"))) + templateString + internalCursorMarker + content.substring(editor.posToOffset(editor.getCursor("to")))
+
+		const result = await generateInsert(settings, article, content, selection);
+		let newContent = result.insert
+		let cursorPosition = result.cursorPosition
+		if (cursorPosition == null) 
+			cursorPosition = newContent.search(internalCursorMarker);
+		newContent = newContent.replace(internalCursorMarker, "")
+
+		editor.setValue(newContent)
+		const cursorPos = editor.offsetToPos(cursorPosition!)
+		editor.setCursor(cursorPos)
+		editor.scrollIntoView({from: cursorPos, to: cursorPos}, true); 
+	}
 }

@@ -50,8 +50,8 @@ async function createArticleNote(
 		}
 	}
 
-	const insert = await generateInsert(settings, article, templateString, "");
-	const filePath = await createNoteInFolder(app, article.title, insert, folderPath, settings.overrideFiles);
+	const result = await generateInsert(settings, article, templateString, "");
+	const filePath = await createNoteInFolder(app, article.title, result.insert, folderPath, settings.overrideFiles);
 	if (!filePath) return;
 	if (settings.openCreatedNotes) {
 		app.workspace

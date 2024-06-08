@@ -31,7 +31,6 @@ export interface WikipediaSearchSettings {
 	thumbnailWidth: number;
 	defaultNotePath: string;
 	templates: Template[];
-	placeCursorInfrontOfInsert: boolean;
 	autoInsertSingleResponseQueries: boolean;
 	autoSearchNoteTitle: boolean;
 	prioritizeArticleTitle: boolean;
@@ -49,7 +48,6 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	thumbnailWidth: NaN,
 	defaultNotePath: "/",
 	templates: [DEFAULT_TEMPLATE],
-	placeCursorInfrontOfInsert: false,
 	autoInsertSingleResponseQueries: false,
 	autoSearchNoteTitle: false,
 	prioritizeArticleTitle: false,
@@ -159,16 +157,6 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 		this.addTemplateSettings(containerEl);
 
 		new Setting(containerEl).setName("Workflow optimizations").setHeading();
-
-		new Setting(containerEl)
-			.setName("Cursor placement")
-			.setDesc("Whether or not the cursor is placed infront of the insert instead of after it.")
-			.addToggle((toggle) =>
-				toggle.setValue(this.settings.placeCursorInfrontOfInsert).onChange(async (value) => {
-					this.settings.placeCursorInfrontOfInsert = value;
-					await this.plugin.saveSettings();
-				})
-			);
 
 		new Setting(containerEl)
 			.setName("Auto-search note title")
@@ -315,7 +303,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 			if (template.createNote) {
 				setting.addSearch((search: SearchComponent) => {
-					new FolderSuggest(app, search.inputEl);
+					new FolderSuggest(this.app, search.inputEl);
 					search
 						.setPlaceholder("custom note path")
 						.setValue(template.customPath)
@@ -349,7 +337,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 			if (template.useTemplateFile && template.createNote) {
 				setting.addSearch((search: SearchComponent) => {
-					new FileSuggest(app, search.inputEl);
+					new FileSuggest(this.app, search.inputEl);
 					search
 						.setPlaceholder("template file path")
 						.setValue(template.templateFilePath)
@@ -368,7 +356,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 						"style",
 						"white-space:pre;overflow-wrap:normal;overflow:hidden;resize:none;flex-grow:1;width:220px;"
 					);
-					text.inputEl.setAttr("rows", "2");
+					text.inputEl.setAttr("rows", template.createNote ? "3" : "2");
 
 					return text
 						.setPlaceholder("template string")
@@ -406,7 +394,7 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 				.onClick(async () => {
 					if (this.settings.templates.length == 21)
 						return new Notice(
-							"Easy buddy... I need to stop you right there. You can only have up to 20 templates. It's for your own good! (I think) If you really need more come and talk to me on GitHub. If you convince me I'll let you have more.",
+							"Easy buddy... I need to stop you right there. You can only have up to 20 templates. It's for your own good! (I think) If you really need more write me. If you convince me I'll let you have more.",
 							15000
 						);
 

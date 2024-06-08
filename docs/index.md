@@ -17,7 +17,7 @@ hero:
       link: /commands
 ---
 
-### Features
+### Feature Overview
 
 - Linking Wikipedia articles in all languages.
 - Opening articles and links directly in Obsidian (using the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)).

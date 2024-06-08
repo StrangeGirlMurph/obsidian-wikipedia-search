@@ -61,7 +61,7 @@ Default: `false` as in "inline" for the toggle and `‎` (empty) for the custom 
 
 The last and most important part of any template is its template string. The template string is the blueprint for the insert. This last section consists of a toggle and an input field which is either a big text or a file search field. The toggle sets whether or not the template string is declared directly in the settings tab in the big text field or separately in a file which the file search field references instead. Template files are only supported for note templates. That's why the toggle disappears and the input automatically switches to the text field once you switch to an inline template.
 
-The template string can be any kind of string containing line breaks and whatever you can think of. The plugin recognizes the following character sequences and replaces all occurrences with the corresponding data:
+The template string can be any kind of string containing line breaks and whatever you can think of. The plugin recognizes the following character sequences (tags) and replaces all occurrences with the corresponding data:
 
 - `{title}` The articles title or current selection (based on [this setting](#use-article-title-instead-of-selection)).
 - `{description}` The articles description if available. If not, all occurrences will be removed with a notice.
@@ -71,6 +71,7 @@ The template string can be any kind of string containing line breaks and whateve
 - `{intro}` The articles intro (the first big paragraph). _Note: It can be pretty long!_
 - `{thumbnail}` An embed to the articles thumbnail if available. If not, all occurrences will be removed with a notice. This will look like `![<article-title> Thumbnail](<url-to-thumbnail>)` or `![<article-title> Thumbnail | <thumbnail-width>](<url-to-thumbnail>)` if the [thumbnail width](#thumbnail-width) is set.
 - `{thumbnailUrl}` The url of the articles thumbnail if available. If not, all occurrences will be removed with a notice.
+- `{cursor}` The position of the cursor after inserting. The first reference will be used an all the other deleted. By default (if no `{cursor}` is found) the cursor will be placed after the locally inserted content.
 
 Default: `[{title}]({url})` for inline templates and `{thumbnail}\n[{title}]({url}): {intro}` for note templates
 
@@ -85,12 +86,6 @@ You can also use [Templater](https://github.com/SilentVoid13/Templater) Syntax i
 ::: details Screenshot
 ![workflow optimization settings screenshot](/workflow-optimizations.png)
 :::
-
-### Cursor placement
-
-Whether or not the cursor is placed infront of the insert instead of after it. For longer inserts it might make it easier to keep the cursor at the start of the insert.
-
-Default: `false`
 
 ### Auto-search note title
 
