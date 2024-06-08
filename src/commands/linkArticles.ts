@@ -29,8 +29,8 @@ async function linkArticle(
 	article: Article,
 	template: Template
 ) {
-	let templateString = template.templateString
-	const selection = editor.getSelection()
+	let templateString = template.templateString;
+	const selection = editor.getSelection();
 
 	if (template.createNote) {
 		if (template.useTemplateFile) {
@@ -42,7 +42,7 @@ async function linkArticle(
 			templateString = await app.vault.read(templateFile);
 		}
 
-		const content = await generateInsert(settings, article, templateString, selection)
+		const content = await generateInsert(settings, article, templateString, selection);
 
 		let folderPath: string | null =
 			template.customPath === "" ? settings.defaultNotePath : template.customPath;
@@ -56,28 +56,37 @@ async function linkArticle(
 			}
 		}
 
-		const notePath = await createNoteInFolder(app, article.title, content.insert, folderPath, settings.overrideFiles);
+		const notePath = await createNoteInFolder(
+			app,
+			article.title,
+			content.insert,
+			folderPath,
+			settings.overrideFiles
+		);
 		if (notePath == null) return;
 
-		editor.replaceSelection(`[[${notePath}|${
-			settings.prioritizeArticleTitle || selection === "" ? article.title : selection
-		}]]`);
+		editor.replaceSelection(
+			`[[${notePath}|${settings.prioritizeArticleTitle || selection === "" ? article.title : selection}]]`
+		);
 	} else {
-		const internalCursorMarker = "{cursorMarker}"
+		const internalCursorMarker = "{cursorMarker}";
 
 		let content = editor.getValue();
-		content = content.substring(0, editor.posToOffset(editor.getCursor("from"))) + templateString + internalCursorMarker + content.substring(editor.posToOffset(editor.getCursor("to")))
+		content =
+			content.substring(0, editor.posToOffset(editor.getCursor("from"))) +
+			templateString +
+			internalCursorMarker +
+			content.substring(editor.posToOffset(editor.getCursor("to")));
 
 		const result = await generateInsert(settings, article, content, selection);
-		let newContent = result.insert
-		let cursorPosition = result.cursorPosition
-		if (cursorPosition == null) 
-			cursorPosition = newContent.search(internalCursorMarker);
-		newContent = newContent.replace(internalCursorMarker, "")
+		let newContent = result.insert;
+		let cursorPosition = result.cursorPosition;
+		if (cursorPosition == null) cursorPosition = newContent.search(internalCursorMarker);
+		newContent = newContent.replace(internalCursorMarker, "");
 
-		editor.setValue(newContent)
-		const cursorPos = editor.offsetToPos(cursorPosition!)
-		editor.setCursor(cursorPos)
-		editor.scrollIntoView({from: cursorPos, to: cursorPos}, true); 
+		editor.setValue(newContent);
+		const cursorPos = editor.offsetToPos(cursorPosition!);
+		editor.setCursor(cursorPos);
+		editor.scrollIntoView({ from: cursorPos, to: cursorPos }, true);
 	}
 }

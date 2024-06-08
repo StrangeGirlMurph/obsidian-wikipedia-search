@@ -83,10 +83,6 @@ You can also use [Templater](https://github.com/SilentVoid13/Templater) Syntax i
 
 ## Workflow optimization settings
 
-::: details Screenshot
-![workflow optimization settings screenshot](/workflow-optimizations.png)
-:::
-
 ### Auto-search note title
 
 Whether or not to automatically use the active notes title when searching for articles. The current selection will be prioritized.

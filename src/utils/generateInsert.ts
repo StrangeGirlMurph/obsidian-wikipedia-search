@@ -9,7 +9,7 @@ export async function generateInsert(
 	article: Article,
 	content: string,
 	selection: string
-): Promise<{insert: string, cursorPosition: number | null}> {
+): Promise<{ insert: string; cursorPosition: number | null }> {
 	const title = settings.prioritizeArticleTitle || selection === "" ? article.title : selection;
 	let insert = content
 		.replaceAll("{title}", title)
@@ -44,10 +44,10 @@ export async function generateInsert(
 	if (content.includes("{description}") && !article.description)
 		new Notice("The article has no description.");
 
-	let cursorPosition: number | null = insert.search("{cursor}")
-	cursorPosition = cursorPosition != -1 ? cursorPosition : null
+	let cursorPosition: number | null = insert.search("{cursor}");
+	cursorPosition = cursorPosition != -1 ? cursorPosition : null;
 
-	insert = insert.replaceAll("{cursor}", "")
+	insert = insert.replaceAll("{cursor}", "");
 
-	return {insert, cursorPosition };
+	return { insert, cursorPosition };
 }

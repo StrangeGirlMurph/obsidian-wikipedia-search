@@ -7,7 +7,6 @@ export default defineConfig({
 	lang: "en-US",
 	base: "/obsidian-wikipedia-search/",
 
-	
 	themeConfig: {
 		search: {
 			provider: "local",
