@@ -68,7 +68,7 @@ The template string can be any kind of string containing line breaks and whateve
 - `{url}` The url of the Wikipedia article.
 - `{language}` The name of the language of this article.
 - `{languageCode}` The language code of the language of this article.
-- `{intro}` The articles intro (the first big paragraph). _Note: It can be pretty long!_
+- `{intro}` The articles intro (the first big paragraph). _Note: It can be pretty long and there are some [caveats](https://www.mediawiki.org/wiki/Extension:TextExtracts#Caveats) with the API! (intros can have weird mistakes)_
 - `{thumbnail}` An embed to the articles thumbnail if available. If not, all occurrences will be removed with a notice. This will look like `![<article-title> Thumbnail](<url-to-thumbnail>)` or `![<article-title> Thumbnail | <thumbnail-width>](<url-to-thumbnail>)` if the [thumbnail width](#thumbnail-width) is set.
 - `{thumbnailUrl}` The url of the articles thumbnail if available. If not, all occurrences will be removed with a notice.
 - `{cursor}` The position of the cursor after inserting. The first reference will be used an all the other deleted. By default (if no `{cursor}` is found) the cursor will be placed after the locally inserted content.
@@ -109,15 +109,13 @@ Whether or not to stop auto-cleaning/parsing the articles intros for better read
 intro
 	// turns all "{\displaystyle ... }" occurrences into a proper LaTeX equation.
 	.replaceAll(/{\\displaystyle [^\n]+}/g, (text: string) => "$" + text.slice(15, -1).trim() + "$")
-	.replaceAll("\n ", "") // removes all the unnecessary linebreakes
-	.replaceAll(/  \S  /g, "") // removes the unicode characters that try to replace the LaTeX
-	.replaceAll(/  +/g, " ") // removes any left over whitespace
-	// takes care of some other quirks that can occur
-	.replaceAll("\n ", "\n")
-	.replaceAll(" ,", ",")
-	.replaceAll(" :", ":")
-	// escapes some markdown syntax
-	.replaceAll(" `", " \\`");
+	// removes the unicode characters that try to replace the LaTeX and all the unnecessary linebreakes
+	.replaceAll("$\n  \n", "$")
+	.replaceAll(/\n  \n    \n      \n[^\$]*      \n    \n    \$/g, "$")
+	// take care of some other quirks that can occur
+	.replaceAll("  ", " ")
+	// escape some markdown syntax
+	.replaceAll("`", "\\`")
 ```
 
 ::: details Example
@@ -126,7 +124,7 @@ intro
 
 gets turned into
 
-<pre style="white-space:pre-wrap;">"In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation $\leq$ on some set $X$ , which satisfies the following for all $a,b$ and $c$ in $X$ :\n $a\leq a$ (reflexive).\nIf $a\leq b$ and $b\leq c$ then $a\leq c$ (transitive).\nIf $a\leq b$ and $b\leq a$ then $a=b$ (antisymmetric).\n $a\leq b$ or $b\leq a$ (strongly connected, formerly called total).Reflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders.\nTotal orders are sometimes also called simple, connex, or full orders.A set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set.\nAn extension of a given partial order to a total order is called a linear extension of that partial order."</pre>
+<pre style="white-space:pre-wrap;">"In mathematics, a total order or linear order is a partial order in which any two elements are comparable. That is, a total order is a binary relation $\leq$ on some set $X$, which satisfies the following for all $a,b$ and $c$ in $X$:\n$a\leq a$ (reflexive).\nIf $a\leq b$ and $b\leq c$ then $a\leq c$ (transitive).\nIf $a\leq b$ and $b\leq a$ then $a=b$ (antisymmetric).\n$a\leq b$ or $b\leq a$ (strongly connected, formerly called total).\nReflexivity (1.) already follows from connectedness (4.), but is required explicitly by many authors nevertheless, to indicate the kinship to partial orders.\nTotal orders are sometimes also called simple, connex, or full orders.\nA set equipped with a total order is a totally ordered set; the terms simply ordered set, linearly ordered set, and loset are also used. The term chain is sometimes defined as a synonym of totally ordered set, but refers generally to some sort of totally ordered subsets of a given partially ordered set.\nAn extension of a given partial order to a total order is called a linear extension of that partial order."</pre>
 
 :::
 

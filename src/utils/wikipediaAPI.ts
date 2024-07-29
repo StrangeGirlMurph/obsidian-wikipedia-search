@@ -59,15 +59,19 @@ export async function getArticleIntros(
 	return sortResponsesByTitle(titles, Object.values(response.query.pages)).map((page: any) => {
 		const extract: string = page.extract.trim() ?? null;
 		if (extract && cleanup) {
-			return extract
-				.replaceAll(/{\\displaystyle [^\n]+}/g, (text: string) => "$" + text.slice(15, -1).trim() + "$")
-				.replaceAll("\n ", "")
-				.replaceAll(/  \S  /g, "")
-				.replaceAll(/  +/g, " ")
-				.replaceAll("\n ", "\n")
-				.replaceAll(" ,", ",")
-				.replaceAll(" :", ":")
-				.replaceAll("`", "\\`");
+			// auto-cleanup of intros
+			return (
+				extract
+					// turns all "{\displaystyle ... }" occurrences into a proper LaTeX equation.
+					.replaceAll(/{\\displaystyle [^\n]+}/g, (text: string) => "$" + text.slice(15, -1).trim() + "$")
+					// removes the unicode characters that try to replace the LaTeX and all the unnecessary linebreakes
+					.replaceAll("$\n  \n", "$")
+					.replaceAll(/\n  \n    \n      \n[^\$]*      \n    \n    \$/g, "$")
+					// take care of some other quirks that can occur
+					.replaceAll("  ", " ")
+					// escape some markdown syntax
+					.replaceAll("`", "\\`")
+			);
 		}
 		return extract;
 	});
