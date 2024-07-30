@@ -1,24 +1,31 @@
-import { App, Editor, SuggestModal } from "obsidian";
+import { App, Editor, Notice, SuggestModal } from "obsidian";
 import { languages } from "../utils/languages";
-import { getArticleDescriptions, getArticles } from "../utils/wikipediaAPI";
+import { getWikipediaArticleDescriptions, getWikipediaArticles } from "../API/wikipedia";
 import { WikipediaSearchSettings } from "../settings";
+import { getWikiArticles } from "../API/mediawiki";
+import { Wiki } from "src/main";
 
 export interface Article {
 	title: string;
 	url: string;
 	languageCode: string;
+}
+
+export interface ArticleWithDescription extends Article {
 	description: string | null;
 }
 
 export abstract class SearchModal extends SuggestModal<Article> {
 	settings: WikipediaSearchSettings;
 	editor: Editor | undefined;
+	wiki: Wiki;
 
-	constructor(app: App, settings: WikipediaSearchSettings, editor?: Editor) {
+	constructor(app: App, settings: WikipediaSearchSettings, wiki: Wiki, editor?: Editor) {
 		super(app);
 		this.settings = settings;
+		this.wiki = wiki;
 		this.editor = editor;
-		this.setPlaceholder("Search Wikipedia...");
+		this.setPlaceholder(`Search ${wiki}...`);
 	}
 
 	onOpen(): void {
@@ -35,14 +42,15 @@ export abstract class SearchModal extends SuggestModal<Article> {
 		super.updateSuggestions();
 	}
 
-	renderSuggestion(article: Article, el: HTMLElement) {
+	renderSuggestion(article: Article | ArticleWithDescription, el: HTMLElement) {
 		el.createEl("div", { text: article.title });
-		el.createEl("small", {
-			text: article.description || article.url.slice(8),
-		});
+		if ("description" in article)
+			el.createEl("small", {
+				text: article.description || article.url.slice(8),
+			});
 	}
 
-	async getSuggestions(query: string): Promise<Article[]> {
+	async getSuggestions(query: string): Promise<Article[] | ArticleWithDescription[]> {
 		if (!window.navigator.onLine) {
 			this.emptyStateText = "You have to be connected to the internet to search!";
 			return [];
@@ -66,33 +74,48 @@ export abstract class SearchModal extends SuggestModal<Article> {
 		}
 		this.emptyStateText = "No results found.";
 
-		const searchResponses = await getArticles(query, languageCode, this.settings.searchLimit);
-		const descriptions = await getArticleDescriptions(
-			searchResponses?.map((a) => a.title) ?? [],
-			languageCode
-		);
+		let searchResponses: Article[] | null = null;
 
-		if (!searchResponses || !descriptions) {
-			this.emptyStateText = "An error occurred... Go check the logs and create a bug report!";
+		if (this.wiki === "Wikipedia") {
+			searchResponses = await getWikipediaArticles(query, languageCode, this.settings.searchLimit);
+		} else {
+			searchResponses = await getWikiArticles(query, languageCode, this.wiki, this.settings.searchLimit);
+		}
+
+		if (searchResponses == null) {
+			this.emptyStateText = `Couldn't fetch any search results. Are you sure that ${this.wiki} supports this language?`;
+			return [];
+		} else if (searchResponses.length === 0) {
 			return [];
 		}
 
 		if (this.settings.autoInsertSingleResponseQueries && searchResponses.length === 1) {
 			this.close();
-			this.onChooseSuggestion({
-				title: searchResponses[0].title,
-				url: searchResponses[0].url,
-				description: descriptions[0],
-				languageCode,
-			});
+			this.onChooseSuggestion(searchResponses[0]);
 		}
 
-		return searchResponses.map((article, index) => ({
-			title: article.title,
-			url: article.url,
-			description: descriptions[index],
-			languageCode,
-		}));
+		let descriptions: (string | null)[] | null = [];
+
+		if (this.wiki == "Wikipedia") {
+			descriptions = await getWikipediaArticleDescriptions(
+				searchResponses?.map((a) => a.title) ?? [],
+				languageCode
+			);
+		}
+
+		if (descriptions == null) {
+			new Notice("Couldn't fetch any article descriptions.");
+			descriptions = new Array(searchResponses.length).fill(null);
+		}
+
+		if (descriptions.length === 0) {
+			return searchResponses;
+		} else {
+			return searchResponses.map((article, index) => ({
+				description: descriptions[index],
+				...article,
+			}));
+		}
 	}
 
 	abstract onChooseSuggestion(article: Article): void;

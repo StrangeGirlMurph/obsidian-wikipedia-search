@@ -1,25 +1,44 @@
-import { App, Notice, TFile } from "obsidian";
+import { App, Editor, Notice, TFile } from "obsidian";
 import { Template, WikipediaSearchSettings } from "../settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
 import { TemplateModal } from "src/utils/templateModal";
 import { generateInsert } from "src/utils/generateInsert";
 import { createNoteInActiveNotesFolderMarker, createNoteInFolder } from "src/utils/createNote";
+import { Wiki } from "src/main";
 
 export class CreateArticleNoteModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
 		const templates = this.settings.templates.filter((template) => template.createNote);
 		if (templates.length > 1) {
-			new CreateArticleNoteTemplateModal(this.app, this.settings, this.editor!, article, true).open();
+			new CreateArticleNoteTemplateModal(
+				this.app,
+				this.settings,
+				this.editor!,
+				article,
+				this.wiki,
+				true
+			).open();
 		} else {
-			createArticleNote(this.app, this.settings, article, templates[0]);
+			createArticleNote(this.app, this.settings, article, this.wiki, templates[0]);
 		}
 	}
 }
 
 class CreateArticleNoteTemplateModal extends TemplateModal {
+	constructor(
+		app: App,
+		settings: WikipediaSearchSettings,
+		editor: Editor,
+		article: Article,
+		wiki: Wiki,
+		noteTemplatesOnly = false
+	) {
+		super(app, settings, editor, article, wiki, noteTemplatesOnly);
+	}
+
 	async onChooseSuggestion(template: Template) {
-		createArticleNote(this.app, this.settings, this.article, template);
+		createArticleNote(this.app, this.settings, this.article, this.wiki, template);
 	}
 }
 
@@ -27,6 +46,7 @@ async function createArticleNote(
 	app: App,
 	settings: WikipediaSearchSettings,
 	article: Article,
+	wiki: Wiki,
 	template: Template
 ) {
 	let templateString = template.templateString;
@@ -50,7 +70,7 @@ async function createArticleNote(
 		}
 	}
 
-	const result = await generateInsert(settings, article, templateString, "");
+	const result = await generateInsert(settings, article, wiki, templateString, "");
 	const filePath = await createNoteInFolder(
 		app,
 		article.title,

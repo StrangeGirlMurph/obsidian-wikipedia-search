@@ -2,11 +2,17 @@ import { Notice } from "obsidian";
 import { WikipediaSearchSettings } from "src/settings";
 import { languages } from "./languages";
 import { Article } from "./searchModal";
-import { getArticleIntros, getArticleThumbnails } from "./wikipediaAPI";
+import {
+	getWikipediaArticleDescriptions,
+	getWikipediaArticleIntros,
+	getWikipediaArticleThumbnails,
+} from "../API/wikipedia";
+import { Wiki } from "src/main";
 
 export async function generateInsert(
 	settings: WikipediaSearchSettings,
 	article: Article,
+	wiki: Wiki,
 	content: string,
 	selection: string
 ): Promise<{ insert: string; cursorPosition: number | null }> {
@@ -14,35 +20,47 @@ export async function generateInsert(
 	let insert = content
 		.replaceAll("{title}", title)
 		.replaceAll("{url}", article.url)
-		.replaceAll("{description}", article.description ?? "")
 		.replaceAll("{language}", languages[article.languageCode])
 		.replaceAll("{languageCode}", article.languageCode);
 
-	if (content.includes("{intro}")) {
-		const intro: string | null =
-			(await getArticleIntros([article.title], settings.language, settings.cleanupIntros))?.[0] ?? null;
-		insert = insert.replaceAll("{intro}", intro ?? "");
-		if (!intro) new Notice("Could not fetch the articles introduction.");
-	}
+	if (wiki == "Wikipedia") {
+		if (content.includes("{description}")) {
+			const description: string | null =
+				(await getWikipediaArticleDescriptions([article.title], settings.language))?.[0] ?? null;
+			insert = insert.replaceAll("{description}", description ?? "");
+			if (!description) new Notice("Could not fetch the articles description.");
+		}
 
-	if (content.includes("{thumbnail}") || content.includes("{thumbnailUrl}")) {
-		const thumbnailUrl: string | null =
-			(await getArticleThumbnails([article.title], settings.language))?.[0] ?? null;
+		if (content.includes("{intro}")) {
+			const intro: string | null =
+				(await getWikipediaArticleIntros([article.title], settings.language, settings.cleanupIntros))?.[0] ??
+				null;
+			insert = insert.replaceAll("{intro}", intro ?? "");
+			if (!intro) new Notice("Could not fetch the articles introduction.");
+		}
+
+		if (content.includes("{thumbnail}") || content.includes("{thumbnailUrl}")) {
+			const thumbnailUrl: string | null =
+				(await getWikipediaArticleThumbnails([article.title], settings.language))?.[0] ?? null;
+			insert = insert
+				.replaceAll(
+					"{thumbnail}",
+					thumbnailUrl
+						? `![${article.title} Thumbnail${
+								settings.thumbnailWidth ? ` | ${settings.thumbnailWidth}` : ""
+							}](${thumbnailUrl})`
+						: ""
+				)
+				.replaceAll("{thumbnailUrl}", thumbnailUrl ?? "");
+			if (!thumbnailUrl) new Notice("Could not fetch the articles thumbnail.");
+		}
+	} else {
 		insert = insert
-			.replaceAll(
-				"{thumbnail}",
-				thumbnailUrl
-					? `![${article.title} Thumbnail${
-							settings.thumbnailWidth ? ` | ${settings.thumbnailWidth}` : ""
-						}](${thumbnailUrl})`
-					: ""
-			)
-			.replaceAll("{thumbnailUrl}", thumbnailUrl ?? "");
-		if (!thumbnailUrl) new Notice("Could not fetch the articles thumbnail.");
+			.replaceAll("{description}", "")
+			.replaceAll("{intro}", "")
+			.replaceAll("{thumbnail}", "")
+			.replaceAll("{thumbnailUrl}", "");
 	}
-
-	if (content.includes("{description}") && !article.description)
-		new Notice("The article has no description.");
 
 	let cursorPosition: number | null = insert.search("{cursor}");
 	cursorPosition = cursorPosition != -1 ? cursorPosition : null;

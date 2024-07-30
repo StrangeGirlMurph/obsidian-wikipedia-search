@@ -5,20 +5,21 @@ import { SearchModal } from "src/utils/searchModal";
 import { TemplateModal } from "src/utils/templateModal";
 import { generateInsert } from "src/utils/generateInsert";
 import { createNoteInActiveNotesFolderMarker, createNoteInFolder } from "src/utils/createNote";
+import { Wiki } from "src/main";
 
 export class LinkArticleModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
 		if (this.settings.templates.length > 1) {
-			new LinkArticleTemplateModal(app, this.settings, this.editor!, article).open();
+			new LinkArticleTemplateModal(this.app, this.settings, this.editor!, article, this.wiki).open();
 		} else {
-			linkArticle(this.app, this.editor!, this.settings, article, this.settings.templates[0]);
+			linkArticle(this.app, this.editor!, this.settings, article, this.wiki, this.settings.templates[0]);
 		}
 	}
 }
 
 class LinkArticleTemplateModal extends TemplateModal {
 	async onChooseSuggestion(template: Template) {
-		linkArticle(this.app, this.editor, this.settings, this.article, template);
+		linkArticle(this.app, this.editor, this.settings, this.article, this.wiki, template);
 	}
 }
 
@@ -27,6 +28,7 @@ async function linkArticle(
 	editor: Editor,
 	settings: WikipediaSearchSettings,
 	article: Article,
+	wiki: Wiki,
 	template: Template
 ) {
 	let templateString = template.templateString;
@@ -42,7 +44,7 @@ async function linkArticle(
 			templateString = await app.vault.read(templateFile);
 		}
 
-		const content = await generateInsert(settings, article, templateString, selection);
+		const content = await generateInsert(settings, article, wiki, templateString, selection);
 
 		let folderPath: string | null =
 			template.customPath === "" ? settings.defaultNotePath : template.customPath;
@@ -78,7 +80,7 @@ async function linkArticle(
 			internalCursorMarker +
 			content.substring(editor.posToOffset(editor.getCursor("to")));
 
-		const result = await generateInsert(settings, article, content, selection);
+		const result = await generateInsert(settings, article, wiki, content, selection);
 		let newContent = result.insert;
 		let cursorPosition = result.cursorPosition;
 		if (cursorPosition == null) cursorPosition = newContent.search(internalCursorMarker);

@@ -10,7 +10,7 @@ A list of all the available settings including detailed explanations for each on
 
 ### Language
 
-Select the default Wikipedia (as in language of the Wikipedia) to search. See [languages.ts](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/blob/master/src/utils/languages.ts) for a list of all available languages.
+Select the default Wiki language to search. See [languages.ts](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/blob/master/src/utils/languages.ts) for a list of all available languages.
 Note: Some features might not work with all languages. (Some APIs might not have all the necessary functionality.)
 
 Default: `en - English`
@@ -51,7 +51,7 @@ Default: `Additional Template`
 
 ### Creates note & Custom note path
 
-The middle part of a templates settings is all about note creation. It consist of a toggle and a text field that appears when the "creates a note" toggle is in the "on" state. The toggle controls whether or not the template should create a new note with the articles title as its name, paste the insert in there and link the newly created note instead of directly pasting the insert into the current note. This allows for creating notes for wikipedia articles. We call templates that create new notes "note templates" and templates that doesn't "inline templates".
+The middle part of a templates settings is all about note creation. It consist of a toggle and a text field that appears when the "creates a note" toggle is in the "on" state. The toggle controls whether or not the template should create a new note with the articles title as its name, paste the insert in there and link the newly created note instead of directly pasting the insert into the current note. This allows for creating notes for articles. We call templates that create new notes "note templates" and templates that doesn't "inline templates".
 
 By default all the notes will be created at the [default note path](#default-note-path). The appearing text field lets you customize the location for any given template. Leave it empty to use the default note path or set it to `[current folder]` to use the parent folder of the currently active note. Note that this means you always have to make sure you have an active note when using [`Create article note`](commands.md#create-article-note).
 
@@ -63,15 +63,18 @@ The last and most important part of any template is its template string. The tem
 
 The template string can be any kind of string containing line breaks and whatever you can think of. The plugin recognizes the following character sequences (tags) and replaces all occurrences with the corresponding data:
 
+_Available for all Wikis:_
 - `{title}` The articles title or current selection (based on [this setting](#use-article-title-instead-of-selection)).
-- `{description}` The articles description if available. If not, all occurrences will be removed with a notice.
-- `{url}` The url of the Wikipedia article.
+- `{url}` The url of the article.
 - `{language}` The name of the language of this article.
 - `{languageCode}` The language code of the language of this article.
+- `{cursor}` The position of the cursor after inserting. The first reference will be used an all the other deleted. By default (if no `{cursor}` is found) the cursor will be placed after the locally inserted content.
+
+_Available only for Wikipedia articles (for the other Wikis these tags simply get removed):_
+- `{description}` The articles description if available. If not, all occurrences will be removed with a notice.
 - `{intro}` The articles intro (the first big paragraph). _Note: It can be pretty long and there are some [caveats](https://www.mediawiki.org/wiki/Extension:TextExtracts#Caveats) with the API! (intros can have weird mistakes)_
 - `{thumbnail}` An embed to the articles thumbnail if available. If not, all occurrences will be removed with a notice. This will look like `![<article-title> Thumbnail](<url-to-thumbnail>)` or `![<article-title> Thumbnail | <thumbnail-width>](<url-to-thumbnail>)` if the [thumbnail width](#thumbnail-width) is set.
 - `{thumbnailUrl}` The url of the articles thumbnail if available. If not, all occurrences will be removed with a notice.
-- `{cursor}` The position of the cursor after inserting. The first reference will be used an all the other deleted. By default (if no `{cursor}` is found) the cursor will be placed after the locally inserted content.
 
 Default: `[{title}]({url})` for inline templates and `{thumbnail}\n[{title}]({url}): {intro}` for note templates
 
@@ -91,7 +94,7 @@ Default: `false`
 
 ### Auto-select single response queries
 
-Whether or not to automatically select the response to a query when there is only one article to choose from. For example when you select someones name and want to hyperlink it to the persons Wikipedia article this feature will automatically select the article when there is only one article related to that name.
+Whether or not to automatically select the response to a query when there is only one article to choose from. For example when you select someones name and want to hyperlink it to the persons article this feature will automatically select the article when there is only one article related to that name.
 
 Default: `false`
 

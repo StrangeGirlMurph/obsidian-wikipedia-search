@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.6.0](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.6.0) (30.07.2024)
+
+- Fix problems with wrong auto-cleanup of intros
+- Add basic support for Wiktionary, Wikibooks, Wikiquote, Wikiversity, Wikivoyage, Wikisource, Wikinews 
+
 ## [2.5.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.5.1) (09.06.2024)
 
 - Small bug fix. The keyboard wouldn't open automatically on commands on mobile.

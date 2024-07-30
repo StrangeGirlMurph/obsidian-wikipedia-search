@@ -4,7 +4,7 @@ layout: home
 hero:
   name: "Wikipedia Search"
   text: "Documentation"
-  tagline: An Obsidian plugin to search, link and open Wikipedia articles directly from the app.
+  tagline: An Obsidian plugin to search, link and open Wikipedia/Wiki articles directly from the app.
   actions:
     - theme: brand
       text: Getting Started
@@ -19,13 +19,13 @@ hero:
 
 ### Feature Overview
 
-- Linking Wikipedia articles in all languages.
+- Simply linking Wikipedia, Wiktionary, Wikibooks, Wikiquote, Wikiversity, Wikivoyage, Wikisource, Wikinews articles in all available languages.
 - Opening articles and links directly in Obsidian (using the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)).
+- Inserting a Wikipedia articles description, introduction and thumbnail.
+- Using different templates for the inserts.
 - Hyperlinking selected text.
 - Quicksearching different languages.
-- Inserting an articles introduction and thumbnail.
-- Using different templates for the insert.
-- Creating notes for articles.
+- Creating notes for Wikipedia articles.
 
 ### Demo Video
 

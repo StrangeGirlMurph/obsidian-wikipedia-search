@@ -1,5 +1,5 @@
-import { Workspace, Modal, Platform } from "obsidian";
-import WikipediaSearchPlugin from "src/main";
+import { Workspace, Modal, Platform, App } from "obsidian";
+import WikipediaSearchPlugin, { Wiki } from "src/main";
 import { WikipediaSearchSettings } from "src/settings";
 import { Article } from "src/utils/searchModal";
 import { SearchModal } from "src/utils/searchModal";
@@ -8,8 +8,8 @@ export class OpenArticleModal extends SearchModal {
 	workspace: Workspace;
 	plugin: WikipediaSearchPlugin;
 
-	constructor(plugin: WikipediaSearchPlugin, settings: WikipediaSearchSettings) {
-		super(app, settings);
+	constructor(app: App, settings: WikipediaSearchSettings, wiki: Wiki, plugin: WikipediaSearchPlugin) {
+		super(app, settings, wiki);
 		this.workspace = app.workspace;
 		this.plugin = plugin;
 	}
@@ -17,11 +17,11 @@ export class OpenArticleModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
 		if (
 			// @ts-expect-error undocumented
-			app.plugins.enabledPlugins.has("surfing") &&
+			this.app.plugins.enabledPlugins.has("surfing") &&
 			!this.settings.openArticlesInBrowser &&
 			Platform.isDesktopApp
 		) {
-			app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split").setViewState({
+			this.app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split").setViewState({
 				type: "surfing-view",
 				active: true,
 				state: { url: article.url },
@@ -31,7 +31,7 @@ export class OpenArticleModal extends SearchModal {
 			Platform.isDesktopApp &&
 			!this.settings.openArticlesInBrowser
 		) {
-			const modal = new Modal(app);
+			const modal = new Modal(this.app);
 			modal.onClose = () => this.onChooseSuggestion(article);
 			modal.titleEl.setText("Wikipedia Search plugin ♥ Surfing plugin");
 			modal.contentEl.innerHTML = `The Wikipedia Search plugin integrates with the amazing Surfing plugin to enable you to open Wikipedia articles directly inside of Obsidian! You just need to install and enable it. It has tons of awesome features and does the heavy lifting of loading the website itself in Obsidian. In this case the Wikipedia Search plugin just provides the search functionality. Using the Surfing plugin is completely optional but I highly recommend you check it out! Note: This will only be shown to you once but you can always find the information later in the README on GitHub as well. ~ Murphy :)<br><br>

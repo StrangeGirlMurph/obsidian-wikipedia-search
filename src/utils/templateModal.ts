@@ -1,11 +1,13 @@
 import { SuggestModal, Editor, App, TFile } from "obsidian";
 import { Template, WikipediaSearchSettings } from "src/settings";
 import { Article } from "./searchModal";
+import { Wiki } from "src/main";
 
 export abstract class TemplateModal extends SuggestModal<Template> {
 	settings: WikipediaSearchSettings;
 	editor: Editor;
 	article: Article;
+	wiki: Wiki;
 	noteTemplatesOnly: boolean;
 
 	constructor(
@@ -13,12 +15,14 @@ export abstract class TemplateModal extends SuggestModal<Template> {
 		settings: WikipediaSearchSettings,
 		editor: Editor,
 		article: Article,
+		wiki: Wiki,
 		noteTemplatesOnly = false
 	) {
 		super(app);
 		this.settings = settings;
 		this.editor = editor;
 		this.article = article;
+		this.wiki = wiki;
 		this.noteTemplatesOnly = noteTemplatesOnly;
 		this.setPlaceholder("Pick a template...");
 	}

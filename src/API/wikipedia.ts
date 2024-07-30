@@ -1,10 +1,11 @@
-import { requestUrl } from "obsidian";
+import { Article } from "../utils/searchModal";
+import { fetchData, sortResponsesByTitle, titlesToURLParameter } from "../utils/toolsAPI";
 
-export async function getArticles(
+export async function getWikipediaArticles(
 	query: string,
 	languageCode: string,
 	limit: number
-): Promise<{ title: string; url: string }[] | null> {
+): Promise<Article[] | null> {
 	// https://en.wikipedia.org/w/api.php?format=json&action=opensearch&profile=fuzzy&redirects=resolve&search=Wikipedia
 	const url =
 		getAPIBaseURL(languageCode) +
@@ -15,10 +16,15 @@ export async function getArticles(
 		"&search=" +
 		encodeURIComponent(query);
 	const response = await fetchData(url);
-	return response[1].map((title: string, index: number) => ({ title, url: response[3][index] }));
+	if (!response) return null;
+	return response[1].map((title: string, index: number) => ({
+		title,
+		url: response[3][index],
+		languageCode,
+	}));
 }
 
-export async function getArticleDescriptions(
+export async function getWikipediaArticleDescriptions(
 	titles: string[],
 	languageCode: string
 ): Promise<(string | null)[] | null> {
@@ -31,14 +37,14 @@ export async function getArticleDescriptions(
 		titlesToURLParameter(titles);
 
 	const response = await fetchData(url);
-	if (!response.query) return [];
+	if (!response.query) return null;
 
 	return sortResponsesByTitle(titles, Object.values(response.query.pages)).map(
 		(page: any) => page.description || null
 	);
 }
 
-export async function getArticleIntros(
+export async function getWikipediaArticleIntros(
 	titles: string[],
 	languageCode: string,
 	cleanup: boolean
@@ -54,7 +60,7 @@ export async function getArticleIntros(
 		titlesToURLParameter(titles);
 
 	const response = await fetchData(url);
-	if (!response.query) return [];
+	if (!response.query) return null;
 
 	return sortResponsesByTitle(titles, Object.values(response.query.pages)).map((page: any) => {
 		const extract: string = page.extract.trim() ?? null;
@@ -77,7 +83,7 @@ export async function getArticleIntros(
 	});
 }
 
-export async function getArticleThumbnails(
+export async function getWikipediaArticleThumbnails(
 	titles: string[],
 	languageCode: string
 ): Promise<(string | null)[] | null> {
@@ -101,24 +107,4 @@ export async function getArticleThumbnails(
 
 function getAPIBaseURL(languageCode: string) {
 	return `https://${languageCode}.wikipedia.org/w/api.php?format=json`;
-}
-
-function sortResponsesByTitle(titles: string[], responses: unknown[]) {
-	return responses.sort((a: any, b: any) => titles.indexOf(a.title) - titles.indexOf(b.title));
-}
-
-function titlesToURLParameter(titles: string[]) {
-	return titles.map((title) => encodeURIComponent(title)).join("|");
-}
-
-async function fetchData(url: string) {
-	const response = (
-		await requestUrl(url).catch((e) => {
-			console.error(e);
-			return null;
-		})
-	)?.json;
-
-	if (!response) return null;
-	return response;
 }
