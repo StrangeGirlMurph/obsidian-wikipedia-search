@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.6.1](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.6.1) (09.02.2025)
+
+- Remove surfing integration and replace with web viewer core plugin
+
 ## [2.6.0](https://github.com/StrangeGirlMurph/obsidian-wikipedia-search/releases/tag/2.6.0) (30.07.2024)
 
 - Fix problems with wrong auto-cleanup of intros
