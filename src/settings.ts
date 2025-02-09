@@ -36,10 +36,9 @@ export interface WikipediaSearchSettings {
 	prioritizeArticleTitle: boolean;
 	cleanupIntros: boolean;
 	openArticleInFullscreen: boolean;
-	openArticlesInBrowser: boolean;
 	openCreatedNotes: boolean;
 	overrideFiles: boolean;
-	showedSurfingMessage: boolean;
+	showedWebviewerMessage: boolean;
 }
 
 export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
@@ -53,10 +52,9 @@ export const DEFAULT_SETTINGS: WikipediaSearchSettings = {
 	prioritizeArticleTitle: false,
 	cleanupIntros: true,
 	openArticleInFullscreen: false,
-	openArticlesInBrowser: false,
 	openCreatedNotes: false,
 	overrideFiles: false,
-	showedSurfingMessage: false,
+	showedWebviewerMessage: false,
 };
 
 export class WikipediaSearchSettingTab extends PluginSettingTab {
@@ -160,7 +158,9 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 
 		new Setting(containerEl)
 			.setName("Auto-search note title")
-			.setDesc("Whether or not to automatically use the active notes title when searching for articles and nothing is selected.")
+			.setDesc(
+				"Whether or not to automatically use the active notes title when searching for articles and nothing is selected."
+			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.autoSearchNoteTitle).onChange(async (value) => {
 					this.settings.autoSearchNoteTitle = value;
@@ -203,21 +203,9 @@ export class WikipediaSearchSettingTab extends PluginSettingTab {
 			);
 
 		new Setting(containerEl)
-			.setName("Open article in browser")
-			.setDesc(
-				"Whether or not to open articles in the browser instead of in-app if the Surfing plugin is installed and enabled."
-			)
-			.addToggle((toggle) =>
-				toggle.setValue(this.settings.openArticlesInBrowser).onChange(async (value) => {
-					this.settings.openArticlesInBrowser = value;
-					await this.plugin.saveSettings();
-				})
-			);
-
-		new Setting(containerEl)
 			.setName("Article tab placement")
 			.setDesc(
-				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin or creating an article note."
+				"Whether or not to open articles in a fullscreen tab instead of a split view when using the Web viewer plugin or creating an article note."
 			)
 			.addToggle((toggle) =>
 				toggle.setValue(this.settings.openArticleInFullscreen).onChange(async (value) => {

@@ -133,15 +133,9 @@ gets turned into
 
 Default: `false` (really recommended)
 
-### Open article in browser
-
-Whether or not to always open articles in the browser instead of in-app even if the Surfing plugin is installed and enabled.
-
-Default: `false`
-
 ### Article tab placement
 
-Whether or not to open articles in a fullscreen tab instead of a split view when using the Surfing plugin to [open the articles directly in Obsidian](commands.md#open-article) or [opening newly created article notes](#open-created-article-notes).
+Whether or not to open articles in a fullscreen tab instead of a split view when using the Web viewer core plugin to [open the articles directly in Obsidian](commands.md#open-article) or [opening newly created article notes](#open-created-article-notes).
 
 Default: `false`
 

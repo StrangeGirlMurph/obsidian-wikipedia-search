@@ -20,7 +20,7 @@ hero:
 ### Feature Overview
 
 - Simply linking Wikipedia, Wiktionary, Wikibooks, Wikiquote, Wikiversity, Wikivoyage, Wikisource, Wikinews articles in all available languages.
-- Opening articles and links directly in Obsidian (using the [Surfing plugin](https://github.com/PKM-er/Obsidian-Surfing)).
+- Opening articles directly in Obsidian (using the Web viewer plugin).
 - Inserting a Wikipedia articles description, introduction and thumbnail.
 - Using different templates for the inserts.
 - Hyperlinking selected text.

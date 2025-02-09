@@ -17,31 +17,26 @@ export class OpenArticleModal extends SearchModal {
 	async onChooseSuggestion(article: Article) {
 		if (
 			// @ts-expect-error undocumented
-			this.app.plugins.enabledPlugins.has("surfing") &&
-			!this.settings.openArticlesInBrowser &&
+			this.app.setting.pluginTabs.find((e) => e.id == "webviewer") &&
 			Platform.isDesktopApp
 		) {
 			this.app.workspace.getLeaf(this.settings.openArticleInFullscreen ? "tab" : "split").setViewState({
-				type: "surfing-view",
+				type: "webviewer",
 				active: true,
 				state: { url: article.url },
 			});
-		} else if (
-			!this.settings.showedSurfingMessage &&
-			Platform.isDesktopApp &&
-			!this.settings.openArticlesInBrowser
-		) {
+		} else if (!this.settings.showedWebviewerMessage && Platform.isDesktopApp) {
 			const modal = new Modal(this.app);
 			modal.onClose = () => this.onChooseSuggestion(article);
-			modal.titleEl.setText("Wikipedia Search plugin ♥ Surfing plugin");
-			modal.contentEl.innerHTML = `The Wikipedia Search plugin integrates with the amazing Surfing plugin to enable you to open Wikipedia articles directly inside of Obsidian! You just need to install and enable it. It has tons of awesome features and does the heavy lifting of loading the website itself in Obsidian. In this case the Wikipedia Search plugin just provides the search functionality. Using the Surfing plugin is completely optional but I highly recommend you check it out! Note: This will only be shown to you once but you can always find the information later in the README on GitHub as well. ~ Murphy :)<br><br>
-			<b>tl;dr: Install and enable the amazing <a href="obsidian://show-plugin?id=surfing">Surfing plugin</a> to open Wikipedia articles directly inside of Obsidian!</b>`;
+			modal.titleEl.setText("Wikipedia Search plugin ♥ Web viewer plugin");
+			modal.contentEl.innerHTML = `The Wikipedia Search plugin integrates with the Web viewer core plugin to enable you to open articles directly inside of Obsidian! You just need to enable it. It does the heavy lifting of loading the website itself in Obsidian. In this case the Wikipedia Search plugin just provides the search functionality. Using the Web viewer plugin is completely optional but I highly recommend you check it out! Without it enabled all articles will be opened in your default browser. Note: This will only be shown to you once but you can always find the information later in the README on GitHub as well. ~ Murphy :)<br><br>
+			<b>tl;dr: Enable the Web viewer plugin (Settings > Core plugins > Web viewer) to open Wikipedia articles directly inside of Obsidian!</b>`;
 			modal.open();
 
-			this.settings.showedSurfingMessage = true;
+			this.settings.showedWebviewerMessage = true;
 			this.plugin.saveSettings();
 		} else {
-			window.open(article.url, "_blank");
+			window.open(article.url);
 		}
 	}
 }
